@@ -1,0 +1,4098 @@
+{
+  "schemaVersion": 1,
+  "source": "NK DB.xls",
+  "statisticsAuthority": "spreadsheet",
+  "cards": [
+    {
+      "id": "NK-ROW-002",
+      "name": "The Ngonnen",
+      "strength": 2,
+      "zeal": 5,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-094",
+          "filename": "1 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 2
+      }
+    },
+    {
+      "id": "NK-ROW-003",
+      "name": "Eparch of Nobadia",
+      "strength": 3,
+      "zeal": 3,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-058",
+          "filename": "2 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 3
+      }
+    },
+    {
+      "id": "NK-ROW-004",
+      "name": "Mari",
+      "strength": 3,
+      "zeal": 6,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-072",
+          "filename": "3 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 4
+      }
+    },
+    {
+      "id": "NK-ROW-005",
+      "name": "Moses Giyorgios",
+      "strength": 4,
+      "zeal": 7,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-046",
+          "filename": "4 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 5
+      }
+    },
+    {
+      "id": "NK-ROW-006",
+      "name": "Merkourios",
+      "strength": 4,
+      "zeal": 9,
+      "wealth": 8,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-030",
+          "filename": "5 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 6
+      }
+    },
+    {
+      "id": "NK-ROW-007",
+      "name": "Adama the Eparch",
+      "strength": 3,
+      "zeal": 4,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-027",
+          "filename": "6 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 7
+      }
+    },
+    {
+      "id": "NK-ROW-008",
+      "name": "Gourresi the Eparch",
+      "strength": 2,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-011",
+          "filename": "7 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 8
+      }
+    },
+    {
+      "id": "NK-ROW-009",
+      "name": "A Choiak-Eikshil",
+      "strength": 1,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-149",
+          "filename": "9 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-162",
+          "filename": "8 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 9
+      }
+    },
+    {
+      "id": "NK-ROW-010",
+      "name": "The Telones",
+      "strength": 2,
+      "zeal": 1,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-066",
+          "filename": "10 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-070",
+          "filename": "11 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 10
+      }
+    },
+    {
+      "id": "NK-ROW-011",
+      "name": "The Pupil-Smiters",
+      "strength": 6,
+      "zeal": 2,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-087",
+          "filename": "12 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-097",
+          "filename": "13 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 11
+      }
+    },
+    {
+      "id": "NK-ROW-012",
+      "name": "Nubian Infantry",
+      "strength": 4,
+      "zeal": 1,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-024",
+          "filename": "14 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-179",
+          "filename": "15 2x Red.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 12
+      }
+    },
+    {
+      "id": "NK-ROW-013",
+      "name": "Nubian Bishop",
+      "strength": 3,
+      "zeal": 6,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-049",
+          "filename": "16 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 13
+      }
+    },
+    {
+      "id": "NK-ROW-014",
+      "name": "Nubian Priest",
+      "strength": 1,
+      "zeal": 4,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-012",
+          "filename": "17 4x Red.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 14
+      }
+    },
+    {
+      "id": "NK-ROW-015",
+      "name": "Nubian Deacon",
+      "strength": 1,
+      "zeal": 2,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-095",
+          "filename": "18 4x Red.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 15
+      }
+    },
+    {
+      "id": "NK-ROW-016",
+      "name": "Nubian Monk",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-175",
+          "filename": "19 4x Red.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 16
+      }
+    },
+    {
+      "id": "NK-ROW-017",
+      "name": "A Farmer",
+      "strength": 2,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-143",
+          "filename": "21 3x Red.jpg",
+          "copyCount": 3,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 17
+      }
+    },
+    {
+      "id": "NK-ROW-018",
+      "name": "Merchant",
+      "strength": 1,
+      "zeal": 1,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-098",
+          "filename": "22 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 18
+      }
+    },
+    {
+      "id": "NK-ROW-019",
+      "name": "Camel Caravan",
+      "strength": 2,
+      "zeal": 1,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-113",
+          "filename": "23 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 19
+      }
+    },
+    {
+      "id": "NK-ROW-020",
+      "name": "Emerald Mine",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-154",
+          "filename": "24 2x Red.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 20
+      }
+    },
+    {
+      "id": "NK-ROW-021",
+      "name": "Castle",
+      "strength": 4,
+      "zeal": 1,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-177",
+          "filename": "25 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 21
+      }
+    },
+    {
+      "id": "NK-ROW-022",
+      "name": "Cathedral",
+      "strength": 3,
+      "zeal": 5,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-174",
+          "filename": "26 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 22
+      }
+    },
+    {
+      "id": "NK-ROW-023",
+      "name": "Ibrim",
+      "strength": 7,
+      "zeal": 3,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-151",
+          "filename": "27 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 23
+      }
+    },
+    {
+      "id": "NK-ROW-024",
+      "name": "Faras",
+      "strength": 5,
+      "zeal": 2,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-023",
+          "filename": "28 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 24
+      }
+    },
+    {
+      "id": "NK-ROW-025",
+      "name": "Meinarti",
+      "strength": 5,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-001",
+          "filename": "29 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 25
+      }
+    },
+    {
+      "id": "NK-ROW-026",
+      "name": "Dongola",
+      "strength": 7,
+      "zeal": 4,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-063",
+          "filename": "30 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 26
+      }
+    },
+    {
+      "id": "NK-ROW-027",
+      "name": "Fort",
+      "strength": 3,
+      "zeal": 1,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-105",
+          "filename": "31 2x Red.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 27
+      }
+    },
+    {
+      "id": "NK-ROW-028",
+      "name": "Vineyard",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-088",
+          "filename": "32 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 28
+      }
+    },
+    {
+      "id": "NK-ROW-029",
+      "name": "Palm Groves",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-096",
+          "filename": "33 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 29
+      }
+    },
+    {
+      "id": "NK-ROW-030",
+      "name": "Saqiya",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-010",
+          "filename": "35 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 30
+      }
+    },
+    {
+      "id": "NK-ROW-031",
+      "name": "Farmland",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-031",
+          "filename": "37 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 31
+      }
+    },
+    {
+      "id": "NK-ROW-032",
+      "name": "Grain Warehouse",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-187",
+          "filename": "39 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 32
+      }
+    },
+    {
+      "id": "NK-ROW-033",
+      "name": "Nile Trading Post",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-142",
+          "filename": "41 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 33
+      }
+    },
+    {
+      "id": "NK-ROW-034",
+      "name": "Oasis",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-112",
+          "filename": "42 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 34
+      }
+    },
+    {
+      "id": "NK-ROW-035",
+      "name": "Monastery",
+      "strength": 2,
+      "zeal": 5,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-115",
+          "filename": "43 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 35
+      }
+    },
+    {
+      "id": "NK-ROW-036",
+      "name": "Marble Quarry",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-181",
+          "filename": "45 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 36
+      }
+    },
+    {
+      "id": "NK-ROW-037",
+      "name": "Dam",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-160",
+          "filename": "46 Red.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 37
+      }
+    },
+    {
+      "id": "NK-ROW-038",
+      "name": "Church",
+      "strength": 2,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-025",
+          "filename": "47 2x Red.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 38
+      }
+    },
+    {
+      "id": "NK-ROW-039",
+      "name": "a Nubian Gospel",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-082",
+          "filename": "48 4x Red.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 39
+      }
+    },
+    {
+      "id": "NK-ROW-040",
+      "name": "Cyril",
+      "strength": 3,
+      "zeal": 6,
+      "wealth": 9,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-005",
+          "filename": "49 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 40
+      }
+    },
+    {
+      "id": "NK-ROW-041",
+      "name": "John of Phanijoit",
+      "strength": 5,
+      "zeal": 8,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-053",
+          "filename": "50 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        },
+        {
+          "assetId": "NK-ASSET-163",
+          "filename": "51 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 41
+      }
+    },
+    {
+      "id": "NK-ROW-042",
+      "name": "The Hunchback's Son",
+      "strength": 2,
+      "zeal": 6,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [],
+      "deckCopies": 0,
+      "availableInPrototype": false,
+      "source": {
+        "spreadsheetRow": 42
+      }
+    },
+    {
+      "id": "NK-ROW-043",
+      "name": "Mawhub ibn Mansur",
+      "strength": 2,
+      "zeal": 6,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-056",
+          "filename": "52 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 43
+      }
+    },
+    {
+      "id": "NK-ROW-044",
+      "name": "Forty-Nine Martyrs",
+      "strength": 4,
+      "zeal": 8,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-159",
+          "filename": "53 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 44
+      }
+    },
+    {
+      "id": "NK-ROW-045",
+      "name": "Gabriel II",
+      "strength": 3,
+      "zeal": 6,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-043",
+          "filename": "54 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 45
+      }
+    },
+    {
+      "id": "NK-ROW-046",
+      "name": "Coptic Banker",
+      "strength": 2,
+      "zeal": 4,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-138",
+          "filename": "55 4x Blue.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 46
+      }
+    },
+    {
+      "id": "NK-ROW-047",
+      "name": "Coptic Vizier",
+      "strength": 2,
+      "zeal": 5,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-015",
+          "filename": "56 4x Blue.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 47
+      }
+    },
+    {
+      "id": "NK-ROW-048",
+      "name": "Coptic Patriarch",
+      "strength": 4,
+      "zeal": 8,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-169",
+          "filename": "57 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 48
+      }
+    },
+    {
+      "id": "NK-ROW-049",
+      "name": "Coptic Bishop",
+      "strength": 3,
+      "zeal": 6,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-035",
+          "filename": "58 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 49
+      }
+    },
+    {
+      "id": "NK-ROW-050",
+      "name": "Coptic Priest",
+      "strength": 2,
+      "zeal": 5,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-034",
+          "filename": "59 4x Blue.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 50
+      }
+    },
+    {
+      "id": "NK-ROW-051",
+      "name": "Coptic Deacon",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-158",
+          "filename": "60 4x Blue.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 51
+      }
+    },
+    {
+      "id": "NK-ROW-052",
+      "name": "Coptic Monk",
+      "strength": 1,
+      "zeal": 4,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-016",
+          "filename": "61 4x Blue.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 52
+      }
+    },
+    {
+      "id": "NK-ROW-053",
+      "name": "Ascetic Holy Man",
+      "strength": 1,
+      "zeal": 5,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-125",
+          "filename": "62 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 53
+      }
+    },
+    {
+      "id": "NK-ROW-054",
+      "name": "Mountain Hermit",
+      "strength": 1,
+      "zeal": 6,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-102",
+          "filename": "63 2x Blue.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 54
+      }
+    },
+    {
+      "id": "NK-ROW-055",
+      "name": "Merchant",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-129",
+          "filename": "64 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 55
+      }
+    },
+    {
+      "id": "NK-ROW-056",
+      "name": "Camel Caravan",
+      "strength": 3,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-065",
+          "filename": "65 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 56
+      }
+    },
+    {
+      "id": "NK-ROW-057",
+      "name": "Farmer",
+      "strength": 2,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-061",
+          "filename": "67 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-134",
+          "filename": "66 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 57
+      }
+    },
+    {
+      "id": "NK-ROW-058",
+      "name": "Nile Trading Post",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-076",
+          "filename": "69 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-139",
+          "filename": "68 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 58
+      }
+    },
+    {
+      "id": "NK-ROW-059",
+      "name": "Ore Deposit",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-081",
+          "filename": "70 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 59
+      }
+    },
+    {
+      "id": "NK-ROW-060",
+      "name": "Cathedral",
+      "strength": 3,
+      "zeal": 6,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-111",
+          "filename": "71 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 60
+      }
+    },
+    {
+      "id": "NK-ROW-061",
+      "name": "Farmland",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-084",
+          "filename": "72 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 61
+      }
+    },
+    {
+      "id": "NK-ROW-062",
+      "name": "Unirrigated Plot",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-106",
+          "filename": "73 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 62
+      }
+    },
+    {
+      "id": "NK-ROW-063",
+      "name": "Dam",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-086",
+          "filename": "74 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 63
+      }
+    },
+    {
+      "id": "NK-ROW-064",
+      "name": "Flood Plain",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-101",
+          "filename": "75 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 64
+      }
+    },
+    {
+      "id": "NK-ROW-065",
+      "name": "Orchard",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-007",
+          "filename": "76 2x Blue.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 65
+      }
+    },
+    {
+      "id": "NK-ROW-066",
+      "name": "Saqiya",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-168",
+          "filename": "77 2x Blue.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 66
+      }
+    },
+    {
+      "id": "NK-ROW-067",
+      "name": "Grain Warehouse",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-090",
+          "filename": "78 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 67
+      }
+    },
+    {
+      "id": "NK-ROW-068",
+      "name": "Oasis",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-120",
+          "filename": "79 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 68
+      }
+    },
+    {
+      "id": "NK-ROW-069",
+      "name": "Church",
+      "strength": 3,
+      "zeal": 4,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-189",
+          "filename": "80 2x Blue.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 69
+      }
+    },
+    {
+      "id": "NK-ROW-070",
+      "name": "Monastery",
+      "strength": 3,
+      "zeal": 4,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-026",
+          "filename": "81 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 70
+      }
+    },
+    {
+      "id": "NK-ROW-071",
+      "name": "Shrine",
+      "strength": 2,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-191",
+          "filename": "82 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 71
+      }
+    },
+    {
+      "id": "NK-ROW-072",
+      "name": "Coptic Gospel",
+      "strength": 0,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-126",
+          "filename": "83 4x Blue.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 72
+      }
+    },
+    {
+      "id": "NK-ROW-073",
+      "name": "The Wizard's Hoard",
+      "strength": 0,
+      "zeal": 2,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Eg",
+      "factionId": "egyptian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-193",
+          "filename": "84 Blue.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 73
+      }
+    },
+    {
+      "id": "NK-ROW-074",
+      "name": "Amda Tseyon",
+      "strength": 4,
+      "zeal": 5,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-117",
+          "filename": "85 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 74
+      }
+    },
+    {
+      "id": "NK-ROW-075",
+      "name": "Yekuno Amlak",
+      "strength": 3,
+      "zeal": 5,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-186",
+          "filename": "86 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 75
+      }
+    },
+    {
+      "id": "NK-ROW-076",
+      "name": "Gebre Meskel",
+      "strength": 3,
+      "zeal": 8,
+      "wealth": 6,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-093",
+          "filename": "87 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 76
+      }
+    },
+    {
+      "id": "NK-ROW-077",
+      "name": "Kedus Harbe",
+      "strength": 3,
+      "zeal": 6,
+      "wealth": 6,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-009",
+          "filename": "88 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 77
+      }
+    },
+    {
+      "id": "NK-ROW-078",
+      "name": "Zara Yaqob",
+      "strength": 4,
+      "zeal": 6,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-119",
+          "filename": "89 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 78
+      }
+    },
+    {
+      "id": "NK-ROW-079",
+      "name": "Dawit",
+      "strength": 4,
+      "zeal": 5,
+      "wealth": 7,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-170",
+          "filename": "90 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 79
+      }
+    },
+    {
+      "id": "NK-ROW-080",
+      "name": "Habesha Spearmen",
+      "strength": 5,
+      "zeal": 2,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-073",
+          "filename": "91 2x Yellow.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 80
+      }
+    },
+    {
+      "id": "NK-ROW-081",
+      "name": "Habesha Swordsmen",
+      "strength": 4,
+      "zeal": 3,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-041",
+          "filename": "92 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 81
+      }
+    },
+    {
+      "id": "NK-ROW-082",
+      "name": "Habesha Archers",
+      "strength": 4,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-130",
+          "filename": "93 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 82
+      }
+    },
+    {
+      "id": "NK-ROW-083",
+      "name": "Habesha Shield-Men",
+      "strength": 3,
+      "zeal": 1,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-173",
+          "filename": "94 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 83
+      }
+    },
+    {
+      "id": "NK-ROW-084",
+      "name": "Habesha Dart-Men",
+      "strength": 3,
+      "zeal": 1,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-064",
+          "filename": "95 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 84
+      }
+    },
+    {
+      "id": "NK-ROW-085",
+      "name": "Habesha Bishop",
+      "strength": 2,
+      "zeal": 7,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-045",
+          "filename": "96 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 85
+      }
+    },
+    {
+      "id": "NK-ROW-086",
+      "name": "Habesha Priest",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-166",
+          "filename": "97 4x Yellow.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 86
+      }
+    },
+    {
+      "id": "NK-ROW-087",
+      "name": "Habesha Deacon",
+      "strength": 1,
+      "zeal": 1,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-109",
+          "filename": "98 4x Yellow.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 87
+      }
+    },
+    {
+      "id": "NK-ROW-088",
+      "name": "Habesha Monk",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-048",
+          "filename": "99 4x Yellow.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 88
+      }
+    },
+    {
+      "id": "NK-ROW-089",
+      "name": "Mountain Hermit",
+      "strength": 1,
+      "zeal": 4,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-091",
+          "filename": "100 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 89
+      }
+    },
+    {
+      "id": "NK-ROW-090",
+      "name": "A Negus",
+      "strength": 3,
+      "zeal": 3,
+      "wealth": 5,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-044",
+          "filename": "102 2x Yellow.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 90
+      }
+    },
+    {
+      "id": "NK-ROW-091",
+      "name": "Ras",
+      "strength": 2,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-155",
+          "filename": "104 3x Yellow.jpg",
+          "copyCount": 3,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 91
+      }
+    },
+    {
+      "id": "NK-ROW-092",
+      "name": "Le'ul",
+      "strength": 2,
+      "zeal": 1,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-144",
+          "filename": "106 2x Yellow.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        },
+        {
+          "assetId": "NK-ASSET-182",
+          "filename": "105 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 92
+      }
+    },
+    {
+      "id": "NK-ROW-093",
+      "name": "Merchant",
+      "strength": 1,
+      "zeal": 1,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-008",
+          "filename": "107 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 93
+      }
+    },
+    {
+      "id": "NK-ROW-094",
+      "name": "Farmer",
+      "strength": 1,
+      "zeal": 2,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-107",
+          "filename": "108 3x Yellow.jpg",
+          "copyCount": 3,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 94
+      }
+    },
+    {
+      "id": "NK-ROW-095",
+      "name": "The Kebra Negast",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-185",
+          "filename": "109 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 95
+      }
+    },
+    {
+      "id": "NK-ROW-096",
+      "name": "The Fetha Negast",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-135",
+          "filename": "110 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 96
+      }
+    },
+    {
+      "id": "NK-ROW-097",
+      "name": "A Gadl of a Saint",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-039",
+          "filename": "111 4x Yellow.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 97
+      }
+    },
+    {
+      "id": "NK-ROW-098",
+      "name": "A Tabot",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-060",
+          "filename": "112 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-167",
+          "filename": "113 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 98
+      }
+    },
+    {
+      "id": "NK-ROW-099",
+      "name": "Castle",
+      "strength": 4,
+      "zeal": 1,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-145",
+          "filename": "114 2x Yellow.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 99
+      }
+    },
+    {
+      "id": "NK-ROW-100",
+      "name": "Monastery",
+      "strength": 3,
+      "zeal": 3,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-051",
+          "filename": "115 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 100
+      }
+    },
+    {
+      "id": "NK-ROW-101",
+      "name": "Church",
+      "strength": 3,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-131",
+          "filename": "117 2x Yellow.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 101
+      }
+    },
+    {
+      "id": "NK-ROW-102",
+      "name": "Dam",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-128",
+          "filename": "118 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 102
+      }
+    },
+    {
+      "id": "NK-ROW-103",
+      "name": "Farmland",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-047",
+          "filename": "119 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 103
+      }
+    },
+    {
+      "id": "NK-ROW-104",
+      "name": "Flood Plain",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-019",
+          "filename": "120 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 104
+      }
+    },
+    {
+      "id": "NK-ROW-105",
+      "name": "Palm Groves",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-198",
+          "filename": "122 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 105
+      }
+    },
+    {
+      "id": "NK-ROW-106",
+      "name": "Orchard",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-017",
+          "filename": "123 2x Yellow.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 106
+      }
+    },
+    {
+      "id": "NK-ROW-107",
+      "name": "Oasis",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-018",
+          "filename": "124 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 107
+      }
+    },
+    {
+      "id": "NK-ROW-108",
+      "name": "Axum",
+      "strength": 3,
+      "zeal": 5,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-108",
+          "filename": "125 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 108
+      }
+    },
+    {
+      "id": "NK-ROW-109",
+      "name": "Gondar",
+      "strength": 4,
+      "zeal": 3,
+      "wealth": 6,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-196",
+          "filename": "126 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 109
+      }
+    },
+    {
+      "id": "NK-ROW-110",
+      "name": "Lalibela",
+      "strength": 6,
+      "zeal": 5,
+      "wealth": 6,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-085",
+          "filename": "127 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 110
+      }
+    },
+    {
+      "id": "NK-ROW-111",
+      "name": "Cathedral",
+      "strength": 5,
+      "zeal": 5,
+      "wealth": 3,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-156",
+          "filename": "128 2x Yellow.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 111
+      }
+    },
+    {
+      "id": "NK-ROW-112",
+      "name": "Saladin",
+      "strength": 6,
+      "zeal": 5,
+      "wealth": 8,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-176",
+          "filename": "129 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 112
+      }
+    },
+    {
+      "id": "NK-ROW-113",
+      "name": "al-Hakim",
+      "strength": 4,
+      "zeal": 7,
+      "wealth": 6,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-003",
+          "filename": "130 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 113
+      }
+    },
+    {
+      "id": "NK-ROW-114",
+      "name": "Sitt al-Mulk",
+      "strength": 2,
+      "zeal": 3,
+      "wealth": 5,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-150",
+          "filename": "131 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 114
+      }
+    },
+    {
+      "id": "NK-ROW-115",
+      "name": "al-Mustansir",
+      "strength": 4,
+      "zeal": 3,
+      "wealth": 6,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-075",
+          "filename": "132 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 115
+      }
+    },
+    {
+      "id": "NK-ROW-116",
+      "name": "Baybars",
+      "strength": 6,
+      "zeal": 5,
+      "wealth": 5,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-121",
+          "filename": "133 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 116
+      }
+    },
+    {
+      "id": "NK-ROW-117",
+      "name": "Qalawun",
+      "strength": 4,
+      "zeal": 5,
+      "wealth": 5,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-141",
+          "filename": "134 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 117
+      }
+    },
+    {
+      "id": "NK-ROW-118",
+      "name": "One of the Hamil",
+      "strength": 1,
+      "zeal": 6,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-092",
+          "filename": "135 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 118
+      }
+    },
+    {
+      "id": "NK-ROW-119",
+      "name": "One of the Hafiz",
+      "strength": 1,
+      "zeal": 6,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-183",
+          "filename": "136 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 119
+      }
+    },
+    {
+      "id": "NK-ROW-120",
+      "name": "A Qadi",
+      "strength": 1,
+      "zeal": 6,
+      "wealth": 4,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-020",
+          "filename": "137 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 120
+      }
+    },
+    {
+      "id": "NK-ROW-121",
+      "name": "The Ulema",
+      "strength": 1,
+      "zeal": 5,
+      "wealth": 5,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-146",
+          "filename": "138 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 121
+      }
+    },
+    {
+      "id": "NK-ROW-122",
+      "name": "An Imam",
+      "strength": 1,
+      "zeal": 4,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-172",
+          "filename": "139 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 122
+      }
+    },
+    {
+      "id": "NK-ROW-123",
+      "name": "A Muezzin",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-089",
+          "filename": "140 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 123
+      }
+    },
+    {
+      "id": "NK-ROW-124",
+      "name": "Mamluk Lancemen",
+      "strength": 3,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-137",
+          "filename": "141 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 124
+      }
+    },
+    {
+      "id": "NK-ROW-125",
+      "name": "Mamluk Crossbows",
+      "strength": 4,
+      "zeal": 2,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-032",
+          "filename": "142 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 125
+      }
+    },
+    {
+      "id": "NK-ROW-126",
+      "name": "Mamluk Horsemen",
+      "strength": 5,
+      "zeal": 2,
+      "wealth": 5,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-114",
+          "filename": "143 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 126
+      }
+    },
+    {
+      "id": "NK-ROW-127",
+      "name": "Mamluk Haleka",
+      "strength": 4,
+      "zeal": 2,
+      "wealth": 4,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-147",
+          "filename": "144 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        },
+        {
+          "assetId": "NK-ASSET-195",
+          "filename": "144a Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 127
+      }
+    },
+    {
+      "id": "NK-ROW-128",
+      "name": "Bedouin Trader",
+      "strength": 2,
+      "zeal": 1,
+      "wealth": 4,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-190",
+          "filename": "145 3x Green.jpg",
+          "copyCount": 3,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 128
+      }
+    },
+    {
+      "id": "NK-ROW-129",
+      "name": "Bedouin Warlord",
+      "strength": 5,
+      "zeal": 1,
+      "wealth": 2,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-104",
+          "filename": "146 3x Green.jpg",
+          "copyCount": 3,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 129
+      }
+    },
+    {
+      "id": "NK-ROW-130",
+      "name": "Sufi Holy-Man",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-079",
+          "filename": "147 4x Green.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 130
+      }
+    },
+    {
+      "id": "NK-ROW-131",
+      "name": "Ascetic Holy Man",
+      "strength": 1,
+      "zeal": 3,
+      "wealth": 1,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-165",
+          "filename": "148 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 131
+      }
+    },
+    {
+      "id": "NK-ROW-132",
+      "name": "Camel Caravan",
+      "strength": 2,
+      "zeal": 1,
+      "wealth": 1,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-014",
+          "filename": "149 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 132
+      }
+    },
+    {
+      "id": "NK-ROW-133",
+      "name": "Merchant",
+      "strength": 1,
+      "zeal": 1,
+      "wealth": 1,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-180",
+          "filename": "150 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 133
+      }
+    },
+    {
+      "id": "NK-ROW-134",
+      "name": "A Farmer",
+      "strength": 1,
+      "zeal": 1,
+      "wealth": 1,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-036",
+          "filename": "151 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 134
+      }
+    },
+    {
+      "id": "NK-ROW-135",
+      "name": "A Book of Hadith",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-078",
+          "filename": "152 4x Green.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 135
+      }
+    },
+    {
+      "id": "NK-ROW-136",
+      "name": "The Holy Quran",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-148",
+          "filename": "153 4x Green.jpg",
+          "copyCount": 4,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 136
+      }
+    },
+    {
+      "id": "NK-ROW-137",
+      "name": "The Kaffir Tax Declaration",
+      "strength": 0,
+      "zeal": 0,
+      "wealth": 5,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-074",
+          "filename": "154 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 137
+      }
+    },
+    {
+      "id": "NK-ROW-138",
+      "name": "Oasis",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-118",
+          "filename": "155 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 138
+      }
+    },
+    {
+      "id": "NK-ROW-139",
+      "name": "Farmland",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-002",
+          "filename": "156 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        },
+        {
+          "assetId": "NK-ASSET-050",
+          "filename": "157 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 139
+      }
+    },
+    {
+      "id": "NK-ROW-140",
+      "name": "Marble Quarry",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-080",
+          "filename": "158 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 140
+      }
+    },
+    {
+      "id": "NK-ROW-141",
+      "name": "Gold Mine",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 5,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-197",
+          "filename": "159 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 141
+      }
+    },
+    {
+      "id": "NK-ROW-142",
+      "name": "Fort",
+      "strength": 3,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-062",
+          "filename": "160 2x Green.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 142
+      }
+    },
+    {
+      "id": "NK-ROW-143",
+      "name": "Castle",
+      "strength": 4,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-077",
+          "filename": "161 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 143
+      }
+    },
+    {
+      "id": "NK-ROW-144",
+      "name": "Mosque",
+      "strength": 2,
+      "zeal": 3,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-052",
+          "filename": "162 3x Green.jpg",
+          "copyCount": 3,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 144
+      }
+    },
+    {
+      "id": "NK-ROW-145",
+      "name": "Alexandria",
+      "strength": 5,
+      "zeal": 4,
+      "wealth": 3,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-006",
+          "filename": "163 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 145
+      }
+    },
+    {
+      "id": "NK-ROW-146",
+      "name": "Al-Kahira",
+      "strength": 7,
+      "zeal": 6,
+      "wealth": 8,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-037",
+          "filename": "164 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 146
+      }
+    },
+    {
+      "id": "NK-ROW-147",
+      "name": "Al-Uqsor",
+      "strength": 5,
+      "zeal": 4,
+      "wealth": 4,
+      "religion": "M",
+      "nation": "Eg",
+      "factionId": "egyptian-muslims",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-184",
+          "filename": "165 Green.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 147
+      }
+    },
+    {
+      "id": "NK-ROW-148",
+      "name": "Yodit the Beta Israel Queen",
+      "strength": 9,
+      "zeal": 9,
+      "wealth": 9,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-068",
+          "filename": "166 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 148
+      }
+    },
+    {
+      "id": "NK-ROW-149",
+      "name": "Beta Israel Tribesmen",
+      "strength": 6,
+      "zeal": 5,
+      "wealth": 2,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-100",
+          "filename": "167 3x White.jpg",
+          "copyCount": 3,
+          "status": "Matched—Card Error"
+        },
+        {
+          "assetId": "NK-ASSET-157",
+          "filename": "167a White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 149
+      }
+    },
+    {
+      "id": "NK-ROW-150",
+      "name": "Beta Israel Warrior",
+      "strength": 7,
+      "zeal": 7,
+      "wealth": 3,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-029",
+          "filename": "168 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        },
+        {
+          "assetId": "NK-ASSET-069",
+          "filename": "169 3x White.jpg",
+          "copyCount": 3,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 150
+      }
+    },
+    {
+      "id": "NK-ROW-151",
+      "name": "Beta Israel Ironworker",
+      "strength": 6,
+      "zeal": 5,
+      "wealth": 5,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-038",
+          "filename": "170 4x White.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 151
+      }
+    },
+    {
+      "id": "NK-ROW-152",
+      "name": "Jewish Merchant",
+      "strength": 2,
+      "zeal": 4,
+      "wealth": 6,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-136",
+          "filename": "171 4x White.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 152
+      }
+    },
+    {
+      "id": "NK-ROW-153",
+      "name": "Jewish Traveler",
+      "strength": 3,
+      "zeal": 4,
+      "wealth": 5,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-153",
+          "filename": "172 4x White.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 153
+      }
+    },
+    {
+      "id": "NK-ROW-154",
+      "name": "Kahen",
+      "strength": 1,
+      "zeal": 7,
+      "wealth": 4,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-071",
+          "filename": "173 4x White.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 154
+      }
+    },
+    {
+      "id": "NK-ROW-155",
+      "name": "Haymanot Scholar",
+      "strength": 1,
+      "zeal": 6,
+      "wealth": 4,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-110",
+          "filename": "174 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        },
+        {
+          "assetId": "NK-ASSET-171",
+          "filename": "175 3x White.jpg",
+          "copyCount": 3,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 155
+      }
+    },
+    {
+      "id": "NK-ROW-156",
+      "name": "Beta Israel Priest",
+      "strength": 1,
+      "zeal": 8,
+      "wealth": 4,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-054",
+          "filename": "177 3x White.jpg",
+          "copyCount": 3,
+          "status": "Matched—Card Error"
+        },
+        {
+          "assetId": "NK-ASSET-164",
+          "filename": "176 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 156
+      }
+    },
+    {
+      "id": "NK-ROW-157",
+      "name": "A Farmer",
+      "strength": 2,
+      "zeal": 4,
+      "wealth": 2,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-188",
+          "filename": "178 2x White.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 157
+      }
+    },
+    {
+      "id": "NK-ROW-158",
+      "name": "Mashafah Kedus",
+      "strength": 0,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-099",
+          "filename": "179 4x White.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 158
+      }
+    },
+    {
+      "id": "NK-ROW-159",
+      "name": "The Sacred Geniza",
+      "strength": 0,
+      "zeal": 3,
+      "wealth": 2,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-067",
+          "filename": "180 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 159
+      }
+    },
+    {
+      "id": "NK-ROW-160",
+      "name": "A Tabot",
+      "strength": 0,
+      "zeal": 7,
+      "wealth": 3,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-013",
+          "filename": "181 2x White.jpg",
+          "copyCount": 2,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 160
+      }
+    },
+    {
+      "id": "NK-ROW-161",
+      "name": "Shalot Bet",
+      "strength": 3,
+      "zeal": 3,
+      "wealth": 4,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-116",
+          "filename": "182 4x White.jpg",
+          "copyCount": 4,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 4,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 161
+      }
+    },
+    {
+      "id": "NK-ROW-162",
+      "name": "Nile Trading Post",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 4,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-161",
+          "filename": "183 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 162
+      }
+    },
+    {
+      "id": "NK-ROW-163",
+      "name": "Ore Deposit",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 5,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-021",
+          "filename": "184 3x White.jpg",
+          "copyCount": 3,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 163
+      }
+    },
+    {
+      "id": "NK-ROW-164",
+      "name": "Marble Quarry",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 6,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-057",
+          "filename": "185 White.jpg",
+          "copyCount": 1,
+          "status": "Matched"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 164
+      }
+    },
+    {
+      "id": "NK-ROW-165",
+      "name": "Farmland",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-127",
+          "filename": "186 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 165
+      }
+    },
+    {
+      "id": "NK-ROW-166",
+      "name": "Grain Warehouse",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 4,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-083",
+          "filename": "187 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 166
+      }
+    },
+    {
+      "id": "NK-ROW-167",
+      "name": "Palm Groves",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-192",
+          "filename": "188 White.jpg",
+          "copyCount": 1,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 167
+      }
+    },
+    {
+      "id": "NK-ROW-168",
+      "name": "Vineyard",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 3,
+      "religion": "J",
+      "nation": "Et",
+      "factionId": "ethiopian-jews",
+      "type": "unknown",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-124",
+          "filename": "189 3x White.jpg",
+          "copyCount": 3,
+          "status": "Matched—Card Error"
+        }
+      ],
+      "deckCopies": 3,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": 168
+      }
+    }
+  ]
+}

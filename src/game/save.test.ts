@@ -1,0 +1,2 @@
+import{expect,it}from"vitest";import{parseGame,serializeGame}from"./save";import type{BeginnerState}from"./types";
+it("round-trips versioned game state",()=>{const s={version:1,players:[],selectorIndex:0,phase:"select",nileFloods:false,round:1}as BeginnerState;expect(parseGame(serializeGame(s))).toEqual(s)});it("rejects corrupt and incompatible saves",()=>{expect(parseGame("bad")).toBeUndefined();expect(parseGame('{"version":2,"players":[]}')).toBeUndefined()});
