@@ -1,0 +1,10 @@
+.git
+.next
+.npm-cache
+.pnpm-home
+.pnpm-store
+.vercel
+.vercel-runtime
+node_modules
+coverage
+*.log
