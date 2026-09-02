@@ -61,9 +61,9 @@ body{background:#efd49b}
 .comparisonStage{background:radial-gradient(circle at 50% 16%,#fff3c2c7,transparent 62%)}.comparisonCard{background:#f7dfb1;border-color:#b17e3f;box-shadow:0 13px 28px #67401d45}.comparisonCard.result-winner{border-color:#b87917;box-shadow:0 0 0 2px #d4992f,0 13px 28px #67401d45}.comparisonScore span,.comparisonScore small,.tieTrail>p,.tieTrail article>small{color:#6d5435}.comparisonScore b,.result-winner .comparisonScore span{color:#8b540b}.tieTrail{border-top-color:#b98b4d}.noNewCards{border-color:#b48243;background:#f4dcad;color:#594129}
 .routeLinks a,.routeLinks .textButton,.heirChoices>div>b,.heirRow>span{color:#85510b}.amateurPlayer .heirRow,.discardViewer{border-color:#bb8c4e}.discardViewer summary{color:#654b2f}.amateurBadge{background:#6f421fd9;border-color:#e4b964;color:#fff2c3}.replenishmentChoices small{color:#62492d}
 
-/* Aksum-stela outline used as the shared Nubian Kings mark. */
-.stelaMark{display:inline-block;overflow:visible;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.royalMark{width:48px;height:58px;margin:8px auto 2px;color:var(--gold)}
-.miniMark{grid-row:1/3;width:27px;height:34px;color:var(--gold)}
-.cardCrown{width:24%;height:auto;margin:8% auto 0;color:#7c2c25}
-.victory>.stelaMark{width:42px;height:52px;color:var(--gold)}
+/* Horned crown outline inspired by medieval depictions of Nobadian eparchs. */
+.eparchCrownMark{display:inline-block;overflow:visible;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.royalMark{width:62px;height:50px;margin:8px auto 2px;color:var(--gold)}
+.miniMark{grid-row:1/3;width:34px;height:30px;color:var(--gold)}
+.cardCrown{width:32%;height:auto;margin:8% auto 0;color:#7c2c25}
+.victory>.eparchCrownMark{width:58px;height:48px;color:var(--gold)}
