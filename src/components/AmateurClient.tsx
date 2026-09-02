@@ -24,6 +24,7 @@ import {
   type PreparedAmateurGame,
 } from "@/game/amateur";
 import { AMATEUR_SAVE_KEY, parseAmateurGame, serializeAmateurGame } from "@/game/amateur-save";
+import { amateurEventText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
 
@@ -100,21 +101,6 @@ function AmateurCardView({
   );
 }
 
-function eventText(event: AmateurEvent, state: AmateurState) {
-  const playerId = "playerId" in event ? event.playerId : undefined;
-  const player = playerId ? state.players.find((candidate) => candidate.id === playerId) : undefined;
-  const who = player ? (player.controller === "human" ? "You" : INFO[player.factionId].name) : "A player";
-  if (event.type === "tie") return "The attack ended in a tie. Neither card was defeated.";
-  if (event.type === "defeated") return `${who}'s ${event.heir ? "heir" : "card"} was defeated.`;
-  if (event.type === "replenishment-available") return `${who} may replenish the army.`;
-  if (event.type === "replenished") return event.source === "discard" ? `${who} restored a discarded card.` : `${who} drew a hidden card from the unused deck.`;
-  if (event.type === "replenishment-skipped") return `${who} declined replenishment.`;
-  if (event.type === "player-eliminated") return `${who}'s heir was eliminated.`;
-  if (event.type === "turn-advanced") return `${who} begins the next turn.`;
-  if (event.type === "game-won") return `${who} won the game.`;
-  return "";
-}
-
 export default function AmateurClient() {
   const [screen, setScreen] = useState<"home" | "setup" | "heir" | "game">("home");
   const [state, setState] = useState<AmateurState>();
@@ -181,7 +167,7 @@ export default function AmateurClient() {
   }
 
   function addEvents(events: AmateurEvent[], next: AmateurState) {
-    const lines = events.map((event) => eventText(event, next)).filter(Boolean);
+    const lines = events.map((event) => amateurEventText(event, next)).filter(Boolean);
     setHistory((prior) => [...lines.reverse(), ...prior].slice(0, 24));
   }
 

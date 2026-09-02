@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
 import { chooseNpcStatForCard, factionProfile } from "@/game/npc";
+import { beginnerEventText } from "@/game/player-language";
 import { randomSource } from "@/game/random";
 import { parseGame, SAVE_KEY, serializeGame } from "@/game/save";
 import { createBeginnerGame, FACTIONS } from "@/game/setup";
@@ -30,22 +31,6 @@ function playerName(player: Player) {
 function upcoming(player: Player, excluded: string[] = []) {
   const copy = { ...player, cards: player.cards.map((card) => ({ ...card })) };
   return nextCard(copy, new Set(excluded));
-}
-
-function eventText(event: GameEvent, state: BeginnerState) {
-  const player = "playerId" in event ? state.players.find((p) => p.id === event.playerId) : undefined;
-  const who = player ? (player.controller === "human" ? "You" : INFO[player.factionId].name) : "A player";
-  if (event.type === "stat-selected") return `${who} chose ${event.stat}.`;
-  if (event.type === "card-revealed") return `${who} revealed ${player?.cards.find((c) => c.id === event.cardId)?.name ?? "a card"}.`;
-  if (event.type === "score") return `${who} scored ${event.total}${event.die ? ` (${event.base} + ${event.die})` : ""}.`;
-  if (event.type === "die-rolled") return `${who} rolled ${event.value}.`;
-  if (event.type === "cards-discarded") return `${who} discarded ${event.cardIds.length === 1 ? "a card" : `${event.cardIds.length} cards`}.`;
-  if (event.type === "tie") return `The comparison is tied. Another card must be played.`;
-  if (event.type === "comparison-won") return `${who} won the comparison.`;
-  if (event.type === "player-eliminated") return `${who} was eliminated.`;
-  if (event.type === "selector-advanced") return player?.controller === "human" ? "You choose the next trait." : `${who} chooses the next trait.`;
-  if (event.type === "game-won") return `${who} won the game.`;
-  return "";
 }
 
 function artwork(card: Card) {
@@ -133,7 +118,7 @@ export default function GameClient() {
     const sequenceCardIds = [...new Set([...priorSequence, ...scores.map((score) => score.cardId)])];
     const nextReview: ComparisonReview = { stat, scores, sequenceCardIds, cardIds: [...new Set([...sequenceCardIds, ...discarded])], winnerId: winnerEvent?.playerId, outcome: events.some((event) => event.type === "tie") ? "Tie — the tied armies will play another card." : winnerPlayer ? `${winnerPlayer.controller === "human" ? "You win" : `${INFO[winnerPlayer.factionId].name} win`} this comparison.` : "The comparison is resolved." };
     localStorage.setItem(REVIEW_KEY, JSON.stringify(nextReview)); setReview(nextReview);
-    persist(next); setState(next); setHistory((old) => [...events.map((e) => eventText(e, next)).reverse(), ...old].slice(0, 18));
+    persist(next); setState(next); setHistory((old) => [...events.map((e) => beginnerEventText(e, next)).reverse(), ...old].slice(0, 18));
   }
 
   function continueAfterReview() {
