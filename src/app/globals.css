@@ -34,3 +34,29 @@
 .amateurChooser .chosenStat{outline:3px solid #ffe18c}.replenishmentPanel{text-align:left}.replenishmentHeading{width:min(1100px,100%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.replenishmentHeading p{margin:0}.replenishmentHeading button{min-width:100px}.replenishmentChoices{width:min(1100px,100%);margin:10px auto 0!important;display:flex!important;justify-content:flex-start!important;gap:8px!important;overflow-x:auto}.replenishmentChoices button{min-width:220px!important;display:flex;flex-direction:column;align-items:flex-start;padding:9px 12px;text-align:left}.replenishmentChoices small{margin-top:3px;color:#d0bea0}.amateurReview{padding-bottom:35px}.reviewContinue{display:block;min-width:180px;margin:30px auto 0}
 @media(max-width:900px){.amateurArmy{grid-template-columns:repeat(10,92px)}.amateurOpponents{grid-template-columns:1fr}.amateurPlayer .heirRow{grid-template-columns:55px 105px}}
 @media(max-width:600px){.routeLinks{flex-direction:column;gap:10px}.amateurGame{padding-bottom:185px}.amateurBoard{padding:8px 5px}.amateurPlayer{padding:10px 7px}.amateurPlayer .heirRow{grid-template-columns:48px 92px;margin-bottom:9px}.amateurArmy{grid-template-columns:repeat(10,82px);gap:5px}.amateurBadge{font-size:.34rem;padding:1px 3px}.heirChoices{gap:12px}.heirChoices>div{width:44%}.replenishmentChoices button{min-width:190px!important}.amateurReview{padding-bottom:25px}.reviewContinue{margin-top:20px}.amateurChooser p{max-width:94%;margin-inline:auto}}
+
+/* Sunlit desert palette shared by Beginner and Amateur modes. */
+:root{color:#3b2818;background:#efd49b;--gold:#a66c18;--ink:#2f2116;--panel:#f3ddb0;--muted:#735d40}
+body{background:#efd49b}
+.landing{background:radial-gradient(circle at 50% 5%,#fff5cc 0,#f3d895 34%,#dca75e 72%,#bd7840 100%),repeating-linear-gradient(45deg,#fff2 0 2px,transparent 2px 10px)}
+.setupPage{background:radial-gradient(circle at 50% 0,#fff3c4 0,#efd18d 42%,#d99f58 100%)}
+.panel,.setupPanel{border-color:#b77b29;outline-color:#e0b867;background:linear-gradient(145deg,#fff2cb,#e9c786);box-shadow:0 22px 55px #6c431d4f}
+.titlePanel>p:not(.kicker,.subtitle),.lede,.titlePanel small{color:#654e32}
+.kicker,.subtitle,.setupPanel h2,.royalMark,.miniMark{color:#9a6115}
+.secondary,.iconButton,.backButton{border-color:#9e6d35;color:#50371f}
+.faction{background:#f8e6bc;border-color:#b88c50;color:#382717;box-shadow:0 5px 14px #76501f24}
+.faction.selected{outline-color:#b8791f;background:#fff1cd}.faction b{color:#784a0b}
+.settings>label{border-color:#b78d52;background:#f8e6bd}.settings select,.seedSetting input{border:1px solid #aa7b3c;background:#fff8df;color:#312116}.toggle small,.seedSetting small{color:#715b3e}
+.gamePage{background:radial-gradient(circle at 50% 0,#fff2c5 0,#efd49a 42%,#d9aa68 100%);color:#3a2819}
+.gameHeader{background:#f7dfacf0;border-bottom-color:#b17b36;box-shadow:0 4px 18px #76502533}.gameHeader small,.statusBar small,.playerArea header small{color:#6f593d}
+.statusBar{border-bottom-color:#c49a60}.turnDot{background:#dc8c22;box-shadow:0 0 14px #f0a52e}
+.playerArea,.npcArea{background:#f6dfb2e8;border-color:#b78345;box-shadow:0 9px 24px #70491f33}.humanArea{border-color:#a86c20;background:linear-gradient(135deg,#fff0c9ee,#e9c683f2);box-shadow:0 13px 34px #7148193b}
+.selectorBadge{border-color:#a86c20;color:#754707}
+.card{border-color:#a97832;box-shadow:0 5px 11px #59371655}.card.back{background:repeating-radial-gradient(circle,#b56e38 0 4px,#8f512e 5px 12px);color:#fff0bb}.backOrnament{border-color:#ffe09a}.card.active:not(.discarded){box-shadow:0 0 0 3px #c7831f,0 6px 14px #68421f55}
+.chooser{background:#f8e2b5f5;border-top-color:#a8702c;box-shadow:0 -10px 28px #70451d3d}.chooser p,.npcChoicePanel>p:not(.kicker){color:#594126}.chooser.waiting{opacity:.94}
+.history{border-color:#b6874c;background:#f4dcace8}.history h2{color:#83510d}.history ol{color:#574029}.history p{color:#725b3d}
+.victory,.modal{background:#f8e4ba;color:#382719;border-color:#ad7124;box-shadow:0 20px 60px #4f2d175e}.victory{box-shadow:0 0 0 100vmax #4c2c178c}.modalShade{background:#4b2c178f}.modalClose{background:#f0cc8edb;border-color:#a86a1e;color:#402917}.note{background:#efd19a;color:#554028}
+.cardDetail>div>p:not(.kicker),.cardDetail small{color:#665037}.detailStats span{background:#f4dba9;border-color:#b27d3c}.detailStats b{color:#8b5210}
+.reviewPanel .scoreSummary>span{background:#f4d8a4;border-color:#b57e39}.reviewPanel .scoreSummary small{color:#6b5336}.reviewPanel .scoreSummary b{color:#734506}
+.comparisonStage{background:radial-gradient(circle at 50% 16%,#fff3c2c7,transparent 62%)}.comparisonCard{background:#f7dfb1;border-color:#b17e3f;box-shadow:0 13px 28px #67401d45}.comparisonCard.result-winner{border-color:#b87917;box-shadow:0 0 0 2px #d4992f,0 13px 28px #67401d45}.comparisonScore span,.comparisonScore small,.tieTrail>p,.tieTrail article>small{color:#6d5435}.comparisonScore b,.result-winner .comparisonScore span{color:#8b540b}.tieTrail{border-top-color:#b98b4d}.noNewCards{border-color:#b48243;background:#f4dcad;color:#594129}
+.routeLinks a,.routeLinks .textButton,.heirChoices>div>b,.heirRow>span{color:#85510b}.amateurPlayer .heirRow,.discardViewer{border-color:#bb8c4e}.discardViewer summary{color:#654b2f}.amateurBadge{background:#6f421fd9;border-color:#e4b964;color:#fff2c3}.replenishmentChoices small{color:#62492d}
