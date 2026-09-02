@@ -176,8 +176,8 @@ export default function GameClient() {
     <main className="landing"><section className="panel titlePanel">
       <p className="kicker">CORE RULES PROTOTYPE</p><div className="royalMark">♜</div><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
       <p>Lead a medieval African faction through a contest of strength, zeal, and wealth.</p>
-      <div className="actions"><button onClick={() => setScreen("setup")}>New Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Game</button></div>
-      <button className="textButton" onClick={() => setHelp(true)}>How to play</button><small>Prototype mode · Special card effects are deferred</small>
+      <div className="actions"><button onClick={() => setScreen("setup")}>New Beginner Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Beginner Game</button></div>
+      <div className="routeLinks"><a href="/amateur">Play Amateur Level</a><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button></div><small>Core prototype · Special card effects are deferred</small>
     </section>{help && <Help onClose={() => setHelp(false)} />}</main>
   );
 
