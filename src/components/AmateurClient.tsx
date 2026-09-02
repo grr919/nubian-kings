@@ -64,6 +64,7 @@ function AmateurCardView({
   visible = card.face === "up",
   selected = false,
   enabled = false,
+  defeated = false,
   badge,
   onClick,
 }: {
@@ -71,6 +72,7 @@ function AmateurCardView({
   visible?: boolean;
   selected?: boolean;
   enabled?: boolean;
+  defeated?: boolean;
   badge?: string;
   onClick?: () => void;
 }) {
@@ -78,7 +80,7 @@ function AmateurCardView({
   return (
     <button
       type="button"
-      className={`card amateurCard ${visible ? "face" : "back"} ${selected ? "selectedCard" : ""} ${enabled ? "selectableCard" : ""}`}
+      className={`card amateurCard ${visible ? "face" : "back"} ${defeated ? "reviewDefeated" : ""} ${selected ? "selectedCard" : ""} ${enabled ? "selectableCard" : ""}`}
       disabled={!enabled}
       onClick={onClick}
       aria-label={enabled ? `Select ${visible ? card.name : "hidden card"}` : undefined}
@@ -97,6 +99,7 @@ function AmateurCardView({
       ) : (
         <><div className="backOrnament">NK</div><span>Hidden</span></>
       )}
+      {defeated && <span className="outcomeMark">Defeated</span>}
     </button>
   );
 }
@@ -426,7 +429,7 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
       ].map(({ player, card, role }) => {
         const score = review.scores.find((entry) => entry.cardId === card.id)!;
         const result = review.tie ? "Tied" : score.total === high ? "Winner" : "Defeated";
-        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><AmateurCardView card={card} visible badge={card.type === "leader" ? "Heir" : undefined} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
+        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><AmateurCardView card={card} visible defeated={result === "Defeated"} badge={card.type === "leader" ? "Heir" : undefined} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
       })}</div>
       <button className="reviewContinue" onClick={onContinue}>Continue</button>
     </section>
