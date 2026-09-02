@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
-import { chooseNpcStat, factionProfile } from "@/game/npc";
+import { chooseNpcStatForCard, factionProfile } from "@/game/npc";
 import { randomSource } from "@/game/random";
 import { parseGame, SAVE_KEY, serializeGame } from "@/game/save";
 import { createBeginnerGame, FACTIONS } from "@/game/setup";
@@ -157,9 +157,8 @@ export default function GameClient() {
       const participates = !state.tie || state.tie.participantIds.includes(selector.id);
       const excluded = state.tie?.usedCardIds[selector.id] ?? [];
       const card = participates ? upcoming(selector, excluded) : undefined;
-      const visible = card?.face === "up" ? card : undefined;
       const next = structuredClone(state);
-      const choice = { playerId: selector.id, stat: chooseNpcStat(profiles[selector.factionId], visible, randomSource(next.random), STATS) };
+      const choice = { playerId: selector.id, stat: chooseNpcStatForCard(profiles[selector.factionId], card, randomSource(next.random), STATS) };
       next.pendingNpcChoice = choice;
       persist(next); setState(next);
       localStorage.removeItem(NPC_CHOICE_KEY); setNpcChoice(choice);
