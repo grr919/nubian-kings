@@ -17,6 +17,7 @@ import {
   startPreparedAmateurGame,
   type AmateurCard,
   type AmateurEvent,
+  type AmateurAttack,
   type AmateurPlayer,
   type AmateurState,
   type AmateurVictoryMode,
@@ -27,6 +28,7 @@ import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
 
 const STATS: Stat[] = ["strength", "zeal", "wealth"];
+const AMATEUR_NPC_ATTACK_KEY = "nubian-kings:amateur-npc-attack:v1";
 const ART_BASE_URL = "https://nubian-kings-qtsa6vhio-grr919-6387s-projects.vercel.app";
 const ART_BY_ID = Object.fromEntries(cardData.cards.flatMap((card) => card.assets[0] ? [[card.id, card.assets[0].filename]] : []));
 const INFO: Record<string, { name: string; mark: string }> = {
@@ -127,6 +129,7 @@ export default function AmateurClient() {
   const [help, setHelp] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [review, setReview] = useState<AmateurReview>();
+  const [npcAttack, setNpcAttack] = useState<AmateurAttack>();
   const [selectedStat, setSelectedStat] = useState<Stat>();
   const [attackerId, setAttackerId] = useState<string>();
   const [history, setHistory] = useState<string[]>([]);
@@ -155,6 +158,7 @@ export default function AmateurClient() {
   function chooseHeir(id: string) {
     if (!prepared) return;
     const next = startPreparedAmateurGame(prepared, id);
+    localStorage.removeItem(AMATEUR_NPC_ATTACK_KEY);
     persist(next);
     setState(next);
     setPrepared(undefined);
@@ -165,6 +169,12 @@ export default function AmateurClient() {
   function continueGame() {
     const saved = parseAmateurGame(localStorage.getItem(AMATEUR_SAVE_KEY) ?? "");
     if (!saved) return;
+    try {
+      const pending = JSON.parse(localStorage.getItem(AMATEUR_NPC_ATTACK_KEY) ?? "null");
+      if (pending && typeof pending.attackerId === "string" && typeof pending.targetPlayerId === "string" && typeof pending.targetId === "string" && STATS.includes(pending.stat)) setNpcAttack(pending);
+    } catch {
+      localStorage.removeItem(AMATEUR_NPC_ATTACK_KEY);
+    }
     setState(saved);
     setHistory(["Amateur game restored."]);
     setScreen("game");
@@ -185,6 +195,8 @@ export default function AmateurClient() {
     const currentAttackerId = forced?.attackerId ?? attackerId;
     const stat = forced?.stat ?? selectedStat;
     if (!currentAttackerId || !stat) return;
+    localStorage.removeItem(AMATEUR_NPC_ATTACK_KEY);
+    setNpcAttack(undefined);
     const beforeAttacker = structuredClone(locate(state, activePlayer(state).id, currentAttackerId));
     const beforeTarget = structuredClone(locate(state, targetPlayerId, targetId));
     beforeAttacker.face = "up";
@@ -225,16 +237,19 @@ export default function AmateurClient() {
   }
 
   useEffect(() => {
-    if (!state || review || state.phase !== "attack" || activePlayer(state).controller !== "npc") return;
+    if (!state || review || npcAttack || state.phase !== "attack" || activePlayer(state).controller !== "npc") return;
     setThinking(true);
     const timer = window.setTimeout(() => {
       const actionState = structuredClone(state);
       const action = chooseNpcAttack(actionState);
+      persist(actionState);
+      setState(actionState);
+      localStorage.setItem(AMATEUR_NPC_ATTACK_KEY, JSON.stringify(action));
+      setNpcAttack(action);
       setThinking(false);
-      attack(action.targetPlayerId, action.targetId, { attackerId: action.attackerId, stat: action.stat });
     }, 700);
     return () => window.clearTimeout(timer);
-  }, [state, review]);
+  }, [state, review, npcAttack]);
 
   useEffect(() => {
     if (!state || review || state.phase !== "replenish") return;
@@ -333,17 +348,20 @@ export default function AmateurClient() {
       <section className="statusBar">
         <span className={`turnDot ${thinking ? "thinking" : ""}`} />
         <div>
-          <b>{review ? "Review the attack" : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish` : humanTurn ? !selectedStat ? "Choose a statistic" : !attackerId ? "Choose your attacker" : "Choose an enemy target" : `${INFO[active.factionId].name}'s turn`}</b>
-          <small>{humanTurn ? "Your heir may attack even while protected. Enemy heirs are protected until their armies are empty." : "Every army position may be targeted."}</small>
+          <b>{review ? "Review the attack" : npcAttack ? `${INFO[active.factionId].name} have declared an attack` : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish` : humanTurn ? !selectedStat ? "Choose a statistic" : !attackerId ? "Choose your attacker" : "Choose an enemy target" : `${INFO[active.factionId].name}'s turn`}</b>
+          <small>{npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "Your heir may attack even while protected. Enemy heirs are protected until their armies are empty." : "Every army position may be targeted."}</small>
         </div>
       </section>
 
       {review ? <AmateurReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : (
         <section className="amateurBoard">
-          <AmateurPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} allowedAttackers={allowedAttackers} targetIds={new Set()} onCard={(id) => setAttackerId(id)} />
+          <AmateurPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onCard={(id) => setAttackerId(id)} />
           <div className="amateurOpponents">{state.players.filter((player) => player.controller === "npc").map((player) => {
             const targets = humanTurn && attackerId && selectedStat ? new Set(legalTargets(state, player.id).map((card) => card.id)) : new Set<string>();
-            return <AmateurPlayerArea key={player.id} player={player} active={active.id === player.id} allowedAttackers={new Set()} targetIds={targets} onCard={(id) => attack(player.id, id)} />;
+            const highlights = new Set<string>();
+            if (npcAttack && active.id === player.id) highlights.add(npcAttack.attackerId);
+            if (npcAttack?.targetPlayerId === player.id) highlights.add(npcAttack.targetId);
+            return <AmateurPlayerArea key={player.id} player={player} active={active.id === player.id} highlightIds={highlights} allowedAttackers={new Set()} targetIds={targets} onCard={(id) => attack(player.id, id)} />;
           })}</div>
         </section>
       )}
@@ -352,6 +370,15 @@ export default function AmateurClient() {
         <section className="chooser amateurChooser">
           <p>{!selectedStat ? "Which statistic will decide the attack?" : !attackerId ? "Now choose one of your army cards—or your heir—to attack." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
           <div>{STATS.map((stat) => <button key={stat} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
+        </section>
+      )}
+
+      {!review && npcAttack && (
+        <section className="chooser npcChoicePanel" aria-live="polite">
+          <p className="kicker">ATTACK DECLARED</p>
+          <h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using <b>{npcAttack.stat}</b></h2>
+          <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
+          <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>Resolve Attack</button>
         </section>
       )}
 
@@ -376,6 +403,7 @@ function AmateurPlayerArea({
   player,
   active,
   attackerId,
+  highlightIds = new Set<string>(),
   allowedAttackers,
   targetIds,
   onCard,
@@ -383,6 +411,7 @@ function AmateurPlayerArea({
   player: AmateurPlayer;
   active: boolean;
   attackerId?: string;
+  highlightIds?: Set<string>;
   allowedAttackers: Set<string>;
   targetIds: Set<string>;
   onCard: (id: string) => void;
@@ -391,8 +420,8 @@ function AmateurPlayerArea({
   return (
     <section className={`playerArea amateurPlayer faction-${player.factionId} ${player.controller === "human" ? "humanArea" : "npcArea"} ${player.eliminated ? "eliminated" : ""}`}>
       <header><span className="sigil small">{INFO[player.factionId].mark}</span><div><h2>{label(player)}</h2><small>{player.eliminated ? "Heir eliminated" : `${player.army.length} army · ${player.discard.length} discarded · ${player.unused.length} unused`}</small></div>{active && !player.eliminated && <span className="selectorBadge">Active</span>}</header>
-      <div className="heirRow"><span>Heir</span><AmateurCardView card={player.heir} visible selected={attackerId === player.heir.id} enabled={enabled(player.heir.id)} badge={player.eliminated ? "Eliminated" : "Heir"} onClick={() => onCard(player.heir.id)} /></div>
-      <div className="amateurArmy">{player.army.map((card, index) => <AmateurCardView key={card.id} card={card} selected={attackerId === card.id} enabled={enabled(card.id)} badge={`#${index + 1}`} onClick={() => onCard(card.id)} />)}</div>
+      <div className="heirRow"><span>Heir</span><AmateurCardView card={player.heir} visible selected={attackerId === player.heir.id || highlightIds.has(player.heir.id)} enabled={enabled(player.heir.id)} badge={player.eliminated ? "Eliminated" : "Heir"} onClick={() => onCard(player.heir.id)} /></div>
+      <div className="amateurArmy">{player.army.map((card, index) => <AmateurCardView key={card.id} card={card} selected={attackerId === card.id || highlightIds.has(card.id)} enabled={enabled(card.id)} badge={`#${index + 1}`} onClick={() => onCard(card.id)} />)}</div>
       {player.discard.length > 0 && <details className="discardViewer"><summary>View discard pile ({player.discard.length})</summary><div>{player.discard.map((card) => <AmateurCardView key={card.id} card={card} visible />)}</div></details>}
     </section>
   );
