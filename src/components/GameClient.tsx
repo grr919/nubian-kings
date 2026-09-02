@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
 import { chooseNpcStat, factionProfile } from "@/game/npc";
+import { randomSource } from "@/game/random";
 import { parseGame, SAVE_KEY, serializeGame } from "@/game/save";
 import { createBeginnerGame, FACTIONS } from "@/game/setup";
 import type { BeginnerState, Card, GameEvent, Player, Stat } from "@/game/types";
@@ -88,7 +89,8 @@ export default function GameClient() {
   const [state, setState] = useState<BeginnerState>();
   const [faction, setFaction] = useState<(typeof FACTIONS)[number]>(FACTIONS[0]);
   const [npcCount, setNpcCount] = useState<number | "random">("random");
-  const [openingPlayer, setOpeningPlayer] = useState<"human" | "npc">("human");
+  const [openingPlayer, setOpeningPlayer] = useState<"random" | "human" | "npc">("random");
+  const [seed, setSeed] = useState("");
   const [floods, setFloods] = useState(false);
   const [guide, setGuide] = useState(true);
   const [help, setHelp] = useState(false);
@@ -109,18 +111,19 @@ export default function GameClient() {
   }
 
   function start() {
-    const next = createBeginnerGame({ humanFaction: faction, npcCount: npcCount === "random" ? undefined : npcCount, nileFloods: floods, openingPlayer });
+    const next = createBeginnerGame({ humanFaction: faction, npcCount: npcCount === "random" ? undefined : npcCount, nileFloods: floods, openingPlayer, seed: seed || undefined });
+    setSeed(next.random.seed);
     localStorage.removeItem(REVIEW_KEY); localStorage.removeItem(NPC_CHOICE_KEY); setReview(undefined); setNpcChoice(undefined); persist(next); setState(next); setHistory(["The armies are assembled. The first selector will choose a trait."]); setScreen("game");
   }
 
   function continueGame() {
     const saved = parseGame(localStorage.getItem(SAVE_KEY) ?? "");
-    if (saved) { const savedReview = localStorage.getItem(REVIEW_KEY); const savedChoice = localStorage.getItem(NPC_CHOICE_KEY); setReview(savedReview ? JSON.parse(savedReview) : undefined); setNpcChoice(savedChoice ? JSON.parse(savedChoice) : undefined); setState(saved); setHistory(["Saved game restored."]); setScreen("game"); }
+    if (saved) { const savedReview = localStorage.getItem(REVIEW_KEY); const legacyChoice = localStorage.getItem(NPC_CHOICE_KEY); const choice = saved.pendingNpcChoice ?? (legacyChoice ? JSON.parse(legacyChoice) : undefined); if (choice && !saved.pendingNpcChoice) { saved.pendingNpcChoice = choice; persist(saved); } setReview(savedReview ? JSON.parse(savedReview) : undefined); setNpcChoice(choice); setState(saved); setHistory(["Saved game restored."]); setScreen("game"); }
   }
 
-  function choose(stat: Stat) {
-    if (!state || state.phase === "complete") return;
-    const next = structuredClone(state);
+  function choose(stat: Stat, sourceState = state) {
+    if (!sourceState || sourceState.phase === "complete") return;
+    const next = structuredClone(sourceState);
     const events = playComparison(next, stat);
     const scores = events.filter((event): event is Extract<GameEvent, { type: "score" }> => event.type === "score").map(({ playerId, cardId, base, die, total }) => ({ playerId, cardId, base, die, total }));
     const discarded = events.filter((event): event is Extract<GameEvent, { type: "cards-discarded" }> => event.type === "cards-discarded").flatMap((event) => event.cardIds);
@@ -137,9 +140,10 @@ export default function GameClient() {
   }
 
   function revealNpcChoice() {
-    if (!npcChoice) return;
+    if (!npcChoice || !state) return;
     const stat = npcChoice.stat;
-    localStorage.removeItem(NPC_CHOICE_KEY); setNpcChoice(undefined); choose(stat);
+    const ready = structuredClone(state); delete ready.pendingNpcChoice;
+    localStorage.removeItem(NPC_CHOICE_KEY); setNpcChoice(undefined); choose(stat, ready);
   }
 
   useEffect(() => {
@@ -152,8 +156,11 @@ export default function GameClient() {
       const excluded = state.tie?.usedCardIds[selector.id] ?? [];
       const card = participates ? upcoming(selector, excluded) : undefined;
       const visible = card?.face === "up" ? card : undefined;
-      const choice = { playerId: selector.id, stat: chooseNpcStat(profiles[selector.factionId], visible, Math.random, STATS) };
-      localStorage.setItem(NPC_CHOICE_KEY, JSON.stringify(choice)); setNpcChoice(choice);
+      const next = structuredClone(state);
+      const choice = { playerId: selector.id, stat: chooseNpcStat(profiles[selector.factionId], visible, randomSource(next.random), STATS) };
+      next.pendingNpcChoice = choice;
+      persist(next); setState(next);
+      localStorage.removeItem(NPC_CHOICE_KEY); setNpcChoice(choice);
       setThinking(false);
     }, 700);
     return () => window.clearTimeout(timer);
@@ -177,7 +184,7 @@ export default function GameClient() {
     <main className="setupPage"><section className="setupPanel">
       <button className="backButton" onClick={() => setScreen("home")}>← Back</button><p className="kicker">BEGINNER GAME</p><h1>Assemble your army</h1><p className="lede">Choose your faction. Each army begins with five hidden cards.</p>
       <h2>Choose a faction</h2><div className="factionGrid">{FACTIONS.map((id) => <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}><span className="sigil">{INFO[id].mark}</span><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}</button>)}</div>
-      <div className="settings"><label><span>Computer opponents</span><select value={npcCount} onChange={(e) => setNpcCount(e.target.value === "random" ? "random" : Number(e.target.value))}><option value="random">Random (1–4)</option>{[1,2,3,4].map((n) => <option key={n} value={n}>{n}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(e) => setOpeningPlayer(e.target.value as "human" | "npc")}><option value="human">You</option><option value="npc">Computer opponent</option></select></label><label className="toggle"><input type="checkbox" checked={floods} onChange={(e) => setFloods(e.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label><label className="toggle"><input type="checkbox" checked={guide} onChange={(e) => setGuide(e.target.checked)} /><span><b>Guided play</b><small>Show short prompts during the game.</small></span></label></div>
+      <div className="settings"><label><span>Computer opponents</span><select value={npcCount} onChange={(e) => setNpcCount(e.target.value === "random" ? "random" : Number(e.target.value))}><option value="random">Random (1–4)</option>{[1,2,3,4].map((n) => <option key={n} value={n}>{n}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(e) => setOpeningPlayer(e.target.value as "random" | "human" | "npc")}><option value="random">Random participant</option><option value="human">You</option><option value="npc">Computer opponent</option></select></label><label className="seedSetting"><span><b>Game seed</b><small>Use the same seed and setup choices to reproduce a game.</small></span><input value={seed} maxLength={48} placeholder="Generated automatically" onChange={(e) => setSeed(e.target.value)} /></label><label className="toggle"><input type="checkbox" checked={floods} onChange={(e) => setFloods(e.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label><label className="toggle"><input type="checkbox" checked={guide} onChange={(e) => setGuide(e.target.checked)} /><span><b>Guided play</b><small>Show short prompts during the game.</small></span></label></div>
       <button className="beginButton" onClick={start}>Begin Game</button>
     </section></main>
   );
@@ -188,7 +195,7 @@ export default function GameClient() {
   const winner = state.players.find((p) => p.id === state.winnerId);
   return (
     <main className="gamePage">
-      <header className="gameHeader"><div><span className="miniMark">♜</span><b>Nubian Kings</b><small>Beginner game · Round {state.round}</small></div><div className="toolbar"><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><button className="iconButton" onClick={leaveGame}>Leave</button></div></header>
+      <header className="gameHeader"><div><span className="miniMark">♜</span><b>Nubian Kings</b><small>Beginner game · Round {state.round} · Seed {state.random.seed}</small></div><div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><button className="iconButton" onClick={leaveGame}>Leave</button></div></header>
       <section className="statusBar"><span className={`turnDot ${thinking ? "thinking" : ""}`} /><div><b>{review ? "Review the played cards" : npcChoice ? "Computer trait selected" : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[selector.factionId].name} is choosing…` : humanTurn ? "Choose a trait" : `${INFO[selector.factionId].name}'s turn`}</b><small>{review ? "Select any played card to study it. Continue when you are ready." : npcChoice ? "The cards remain hidden until you are ready." : state.phase === "tie" ? `Tie: choose any trait, including ${state.selectedStat} again.` : guide && humanTurn ? "Choose before the hidden cards are revealed." : ""}</small></div></section>
       <div className="board">{state.players.map((player) => {
         const excluded = state.tie?.usedCardIds[player.id] ?? [];
@@ -197,7 +204,7 @@ export default function GameClient() {
         return <section key={player.id} className={`playerArea faction-${player.factionId} ${player.eliminated && !review ? "eliminated" : ""}`}><header><span className="sigil small">{INFO[player.factionId].mark}</span><div><h2>{playerName(player)}</h2><small>{player.eliminated ? "Eliminated" : tiedOut ? "Out of this tie" : `${surviving(player).length} cards remain`}</small></div>{state.players[state.selectorIndex].id === player.id && !player.eliminated && <span className="selectorBadge">Selector</span>}</header><div className="cards">{player.cards.map((card) => <CardView key={card.id} card={card} active={!review && !tiedOut && card.id === next} reviewed={Boolean(review?.cardIds.includes(card.id))} onInspect={setInspected} />)}</div></section>;
       })}</div>
       {review ? <ReviewPanel review={review} state={state} onContinue={continueAfterReview} /> : npcChoice ? <NpcChoicePanel choice={npcChoice} state={state} onReveal={revealNpcChoice} /> : state.phase !== "complete" && <section className={`chooser ${humanTurn ? "ready" : "waiting"}`}><p>{thinking ? "Your opponent is considering the faction’s strengths…" : humanTurn ? state.phase === "tie" ? "Choose any trait for the tie." : "Which trait will decide this comparison?" : "Waiting for the selector…"}</p><div>{STATS.map((stat) => <button key={stat} disabled={!humanTurn || thinking} onClick={() => choose(stat)}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section>}
-      {winner && !review && <section className="victory"><span>♜</span><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You are victorious" : `${INFO[winner.factionId].name} are victorious`}</h2><button onClick={() => setScreen("setup")}>Play Again</button></section>}
+      {winner && !review && <section className="victory"><span>♜</span><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You are victorious" : `${INFO[winner.factionId].name} are victorious`}</h2><button onClick={() => { setSeed(""); setScreen("setup"); }}>Play Again</button></section>}
       <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, i) => <li key={`${i}-${line}`}>{line}</li>)}</ol> : <p>No comparisons yet.</p>}</aside>
       {inspected && <CardDetail card={inspected} onClose={() => setInspected(undefined)} />}
       {help && <Help onClose={() => setHelp(false)} />}

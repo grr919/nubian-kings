@@ -1,7 +1,7 @@
-import{describe,expect,it}from"vitest";import{playComparison}from"./beginner";import type{BeginnerState,Card,Player}from"./types";
+import{describe,expect,it}from"vitest";import{playComparison}from"./beginner";import{createRandomState}from"./random";import type{BeginnerState,Card,Player}from"./types";
 const c=(id:string,s:number,z:number,w:number):Card=>({id,name:id,factionId:"f",strength:s,zeal:z,wealth:w,face:"down",discarded:false});
 const p=(id:string,cards:Card[]):Player=>({id,factionId:id,controller:"npc",cards,cursor:0,eliminated:false});
-const state=(players:Player[],nileFloods=false):BeginnerState=>({version:1,players,selectorIndex:0,phase:"select",nileFloods,round:1});
+const state=(players:Player[],nileFloods=false):BeginnerState=>({version:2,players,selectorIndex:0,phase:"select",nileFloods,round:1,random:createRandomState("TEST")});
 describe("Beginner comparison state machine",()=>{
 it("retains the winner, discards losers, and advances selection clockwise",()=>{const s=state([p("a",[c("a1",5,1,1),c("a2",1,1,1)]),p("b",[c("b1",2,1,1),c("b2",1,1,1)])]);const e=playComparison(s,"strength");expect(s.players[0].cards[0].discarded).toBe(false);expect(s.players[1].cards[0].discarded).toBe(true);expect(s.selectorIndex).toBe(1);expect(s.phase).toBe("select");expect(e.some(x=>x.type==="comparison-won"&&x.playerId==="a")).toBe(true)});
 it("keeps every tying and winning card for the eventual winner",()=>{const s=state([p("a",[c("a1",2,2,2),c("a2",8,1,1)]),p("b",[c("b1",2,2,2),c("b2",3,1,1)])]);playComparison(s,"wealth");expect(s.phase).toBe("tie");playComparison(s,"strength");expect(s.players[0].cards.every(x=>!x.discarded)).toBe(true);expect(s.players[1].cards.every(x=>x.discarded)).toBe(true);expect(s.winnerId).toBe("a")});
