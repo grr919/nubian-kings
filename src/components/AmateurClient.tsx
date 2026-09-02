@@ -279,7 +279,7 @@ export default function AmateurClient() {
         <button className="backButton" onClick={() => setScreen("home")}>← Back</button>
         <p className="kicker">AMATEUR GAME</p>
         <h1>Assemble your army</h1>
-        <p className="lede">Each faction receives ten hidden army cards and deliberately chooses a Leader as heir.</p>
+        <p className="lede">Each faction receives ten hidden non-Leader army cards and deliberately chooses any Leader as heir.</p>
         <h2>Choose a faction</h2>
         <div className="factionGrid">{FACTIONS.map((id) => (
           <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}>
@@ -304,7 +304,7 @@ export default function AmateurClient() {
         <button className="backButton" onClick={() => { setPrepared(undefined); setScreen("setup"); }}>← Back</button>
         <p className="kicker">CHOOSE YOUR HEIR</p>
         <h1>Select a Leader</h1>
-        <p className="lede">Your ten-card army has been dealt. Choose one remaining Leader to stand face up behind it.</p>
+        <p className="lede">All Leaders were reserved from the initial deal. Choose one to stand face up behind your ten-card army.</p>
         <div className="heirChoices">{setupChoices.map((card) => (
           <div key={card.id}>
             <AmateurCardView card={card} visible enabled onClick={() => chooseHeir(card.id)} />
@@ -419,5 +419,5 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
 }
 
 function AmateurHelp({ onClose }: { onClose: () => void }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Each player begins with ten hidden army cards and one face-up Leader heir.</li><li>On your turn, choose a statistic, one attacker, an opponent, and any card in that opponent’s army.</li><li>Your heir may attack at any time. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an attacking heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol><p className="note">Printed special effects are not used in this Core prototype.</p></section></div>;
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one attacker, an opponent, and any card in that opponent’s army.</li><li>Your heir may attack at any time. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an attacking heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol><p className="note">Printed special effects are not used in this Core prototype.</p></section></div>;
 }

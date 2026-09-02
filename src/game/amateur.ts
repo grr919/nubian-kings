@@ -121,14 +121,14 @@ function factionDeck(factionId: string) {
 }
 
 function dealFaction(factionId: string, random: () => number) {
-  const original = factionDeck(factionId);
-  for (let attempt = 0; attempt < 100; attempt++) {
-    const deck = shuffle(original.map((card) => ({ ...card })), random);
-    const army = deck.slice(0, 10);
-    const unused = deck.slice(10);
-    if (unused.some((card) => card.type === "leader")) return { army, unused };
-  }
-  throw new Error(`Unable to leave an heir candidate for ${factionId}`);
+  const deck = factionDeck(factionId);
+  const leaders = shuffle(deck.filter((card) => card.type === "leader"), random);
+  const nonLeaders = shuffle(deck.filter((card) => card.type !== "leader"), random);
+  if (!leaders.length) throw new Error(`No Leader heir is available for ${factionId}`);
+  if (nonLeaders.length < 10) throw new Error(`Fewer than ten non-Leaders are available for ${factionId}`);
+  const army = nonLeaders.slice(0, 10);
+  const unused = shuffle([...nonLeaders.slice(10), ...leaders], random);
+  return { army, unused };
 }
 
 export function prepareAmateurGame(options: PrepareAmateurOptions): PreparedAmateurGame {

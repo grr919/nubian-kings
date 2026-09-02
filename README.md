@@ -8,7 +8,7 @@ Private playtest prototype for the Core Beginner and Amateur games of *Nubian Ki
 - One human player and one to four computer opponents
 - Strength, zeal, and wealth comparisons
 - Ties, discards, elimination, Nile Floods, victory, and browser autosave
-- Amateur single-line armies, deliberately selected heirs, targeted attacks, and optional replenishment
+- Amateur single-line non-Leader armies, fully available Leader heir choices, targeted attacks, and optional replenishment
 - Standard first-heir and long-game last-heir victory rules
 - Reconciled card artwork with spreadsheet-authoritative statistics
 - Responsive desktop and portable-device interface

@@ -58,21 +58,29 @@ function state(players: AmateurPlayer[], victoryMode: "standard" | "long" = "sta
 }
 
 describe("Amateur setup", () => {
-  it("deals ten hidden army cards and offers remaining Leaders as heirs", () => {
+  it("reserves every Leader for heir selection and deals ten non-Leaders", () => {
     const prepared = prepareAmateurGame({
       humanFaction: "nubian-christians",
-      npcCount: 2,
+      npcCount: 4,
       nileFloods: false,
       seed: "AMATEUR-SETUP",
     });
-    expect(prepared.players).toHaveLength(3);
+    expect(prepared.players).toHaveLength(5);
     expect(prepared.players.every((candidate) => candidate.army.length === 10)).toBe(true);
     expect(prepared.players.flatMap((candidate) => candidate.army).every((candidate) => candidate.face === "down")).toBe(true);
+    expect(prepared.players.flatMap((candidate) => candidate.army).every((candidate) => candidate.type !== "leader")).toBe(true);
     const choices = heirChoices(prepared);
-    expect(choices.length).toBeGreaterThan(0);
-    expect(choices.every((candidate) => candidate.type === "leader")).toBe(true);
+    expect(choices.map((candidate) => candidate.name).sort()).toEqual([
+      "Adama the Eparch",
+      "Gourresi the Eparch",
+      "Mari",
+      "Merkourios",
+      "Moses Giyorgios",
+      "The Ngonnen",
+    ]);
     const game = startPreparedAmateurGame(prepared, choices[0].id);
     expect(game.players.every((candidate) => candidate.heir.face === "up" && candidate.heir.type === "leader")).toBe(true);
+    expect(game.players.flatMap((candidate) => candidate.army).every((candidate) => candidate.type !== "leader")).toBe(true);
   });
 });
 
