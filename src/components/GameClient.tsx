@@ -11,6 +11,7 @@ import type { BeginnerState, Card, GameEvent, Player, Stat } from "@/game/types"
 const STATS: Stat[] = ["strength", "zeal", "wealth"];
 const REVIEW_KEY = "nubian-kings:comparison-review:v1";
 const NPC_CHOICE_KEY = "nubian-kings:npc-choice:v1";
+const ART_BASE_URL = "https://nubian-kings-qtsa6vhio-grr919-6387s-projects.vercel.app";
 const ART_BY_ID = Object.fromEntries(cardData.cards.flatMap((card) => card.assets[0] ? [[card.id, card.assets[0].filename]] : []));
 interface ComparisonReview { stat: Stat; cardIds: string[]; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; outcome: string }
 const INFO: Record<string, { name: string; short: string; mark: string }> = {
@@ -48,7 +49,7 @@ function eventText(event: GameEvent, state: BeginnerState) {
 
 function artwork(card: Card) {
   const filename = ART_BY_ID[card.id.split(":")[0]];
-  return filename ? `/cards/${encodeURIComponent(filename)}` : undefined;
+  return filename ? `${ART_BASE_URL}/cards/${encodeURIComponent(filename)}` : undefined;
 }
 
 function CardView({ card, active, reviewed, onInspect }: { card: Card; active: boolean; reviewed: boolean; onInspect: (card: Card) => void }) {
@@ -132,9 +133,7 @@ export default function GameClient() {
 
   function continueAfterReview() {
     if (!state) return;
-    const tiedStat = state.phase === "tie" ? state.selectedStat : undefined;
     localStorage.removeItem(REVIEW_KEY); setInspected(undefined); setReview(undefined);
-    if (tiedStat) window.setTimeout(() => choose(tiedStat), 150);
   }
 
   function revealNpcChoice() {
@@ -153,7 +152,8 @@ export default function GameClient() {
       const excluded = state.tie?.usedCardIds[selector.id] ?? [];
       const card = participates ? upcoming(selector, excluded) : undefined;
       const visible = card?.face === "up" ? card : undefined;
-      const choice = { playerId: selector.id, stat: chooseNpcStat(profiles[selector.factionId], visible) };
+      const availableStats = state.phase === "tie" ? STATS.filter((stat) => stat !== state.selectedStat) : STATS;
+      const choice = { playerId: selector.id, stat: chooseNpcStat(profiles[selector.factionId], visible, Math.random, availableStats) };
       localStorage.setItem(NPC_CHOICE_KEY, JSON.stringify(choice)); setNpcChoice(choice);
       setThinking(false);
     }, 700);
@@ -190,14 +190,14 @@ export default function GameClient() {
   return (
     <main className="gamePage">
       <header className="gameHeader"><div><span className="miniMark">♜</span><b>Nubian Kings</b><small>Beginner game · Round {state.round}</small></div><div className="toolbar"><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><button className="iconButton" onClick={leaveGame}>Leave</button></div></header>
-      <section className="statusBar"><span className={`turnDot ${thinking ? "thinking" : ""}`} /><div><b>{review ? "Review the played cards" : npcChoice ? "Computer trait selected" : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[selector.factionId].name} is choosing…` : humanTurn ? "Choose a trait" : `${INFO[selector.factionId].name}'s turn`}</b><small>{review ? "Select any played card to study it. Continue when you are ready." : npcChoice ? "The cards remain hidden until you are ready." : state.phase === "tie" ? "Tie: the original trait remains in effect." : guide && humanTurn ? "Choose before the hidden cards are revealed." : ""}</small></div></section>
+      <section className="statusBar"><span className={`turnDot ${thinking ? "thinking" : ""}`} /><div><b>{review ? "Review the played cards" : npcChoice ? "Computer trait selected" : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[selector.factionId].name} is choosing…` : humanTurn ? "Choose a trait" : `${INFO[selector.factionId].name}'s turn`}</b><small>{review ? "Select any played card to study it. Continue when you are ready." : npcChoice ? "The cards remain hidden until you are ready." : state.phase === "tie" ? `Tie: choose a new trait instead of ${state.selectedStat}.` : guide && humanTurn ? "Choose before the hidden cards are revealed." : ""}</small></div></section>
       <div className="board">{state.players.map((player) => {
         const excluded = state.tie?.usedCardIds[player.id] ?? [];
         const next = upcoming(player, excluded)?.id;
         const tiedOut = Boolean(state.tie && !state.tie.participantIds.includes(player.id));
         return <section key={player.id} className={`playerArea faction-${player.factionId} ${player.eliminated && !review ? "eliminated" : ""}`}><header><span className="sigil small">{INFO[player.factionId].mark}</span><div><h2>{playerName(player)}</h2><small>{player.eliminated ? "Eliminated" : tiedOut ? "Out of this tie" : `${surviving(player).length} cards remain`}</small></div>{state.players[state.selectorIndex].id === player.id && !player.eliminated && <span className="selectorBadge">Selector</span>}</header><div className="cards">{player.cards.map((card) => <CardView key={card.id} card={card} active={!review && !tiedOut && card.id === next} reviewed={Boolean(review?.cardIds.includes(card.id))} onInspect={setInspected} />)}</div></section>;
       })}</div>
-      {review ? <ReviewPanel review={review} state={state} onContinue={continueAfterReview} /> : npcChoice ? <NpcChoicePanel choice={npcChoice} state={state} onReveal={revealNpcChoice} /> : state.phase !== "complete" && <section className={`chooser ${humanTurn ? "ready" : "waiting"}`}><p>{thinking ? "Your opponent is considering the faction’s strengths…" : humanTurn ? "Which trait will decide this comparison?" : "Waiting for the selector…"}</p><div>{STATS.map((stat) => <button key={stat} disabled={!humanTurn || thinking} onClick={() => choose(stat)}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section>}
+      {review ? <ReviewPanel review={review} state={state} onContinue={continueAfterReview} /> : npcChoice ? <NpcChoicePanel choice={npcChoice} state={state} onReveal={revealNpcChoice} /> : state.phase !== "complete" && <section className={`chooser ${humanTurn ? "ready" : "waiting"}`}><p>{thinking ? "Your opponent is considering the faction’s strengths…" : humanTurn ? state.phase === "tie" ? "Choose a different trait for the tie." : "Which trait will decide this comparison?" : "Waiting for the selector…"}</p><div>{STATS.map((stat) => <button key={stat} disabled={!humanTurn || thinking || (state.phase === "tie" && stat === state.selectedStat)} onClick={() => choose(stat)}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section>}
       {winner && !review && <section className="victory"><span>♜</span><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You are victorious" : `${INFO[winner.factionId].name} are victorious`}</h2><button onClick={() => setScreen("setup")}>Play Again</button></section>}
       <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, i) => <li key={`${i}-${line}`}>{line}</li>)}</ol> : <p>No comparisons yet.</p>}</aside>
       {inspected && <CardDetail card={inspected} onClose={() => setInspected(undefined)} />}
@@ -207,7 +207,7 @@ export default function GameClient() {
 }
 
 function ReviewPanel({ review, state, onContinue }: { review: ComparisonReview; state: BeginnerState; onContinue: () => void }) {
-  return <section className="chooser reviewPanel"><div className="reviewHeading"><div><p className="kicker">{review.stat} comparison</p><b>{review.outcome}</b></div><button onClick={onContinue}>{state.phase === "complete" ? "See Victory" : state.phase === "tie" ? "Play Tie Card" : "Continue"}</button></div><div className="scoreSummary">{review.scores.map((score) => { const player = state.players.find((item) => item.id === score.playerId)!; const card = player.cards.find((item) => item.id === score.cardId)!; return <span key={score.cardId}><small>{player.controller === "human" ? "You" : INFO[player.factionId].name}</small><b>{card.name}: {score.total}</b>{score.die > 0 && <small>{score.base} + roll {score.die}</small>}</span>; })}</div></section>;
+  return <section className="chooser reviewPanel"><div className="reviewHeading"><div><p className="kicker">{review.stat} comparison</p><b>{review.outcome}</b></div><button onClick={onContinue}>{state.phase === "complete" ? "See Victory" : state.phase === "tie" ? "Choose New Trait" : "Continue"}</button></div><div className="scoreSummary">{review.scores.map((score) => { const player = state.players.find((item) => item.id === score.playerId)!; const card = player.cards.find((item) => item.id === score.cardId)!; return <span key={score.cardId}><small>{player.controller === "human" ? "You" : INFO[player.factionId].name}</small><b>{card.name}: {score.total}</b>{score.die > 0 && <small>{score.base} + roll {score.die}</small>}</span>; })}</div></section>;
 }
 
 function NpcChoicePanel({ choice, state, onReveal }: { choice: { playerId: string; stat: Stat }; state: BeginnerState; onReveal: () => void }) {
@@ -220,5 +220,5 @@ function CardDetail({ card, onClose }: { card: Card; onClose: () => void }) {
 }
 
 function Help({ onClose }: { onClose: () => void }) {
-  return <div className="modalShade" role="presentation" onMouseDown={onClose}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="rules-title" onMouseDown={(e) => e.stopPropagation()}><button className="modalClose" aria-label="Close rules" onClick={onClose}>×</button><p className="kicker">CORE RULES</p><h2 id="rules-title">How to play</h2><ol><li>Each army begins with five hidden cards in a fixed order.</li><li>The selector chooses strength, zeal, or wealth before hidden cards are revealed.</li><li>Every active army plays its next card. The highest statistic wins.</li><li>The winner keeps its card in play. Lower cards are discarded.</li><li>Tied armies play their next card using the same chosen trait.</li><li>The last army with cards remaining wins.</li></ol><p className="note">Nile Floods, if enabled, adds a six-sided die roll to every score. Special card effects are not used in this prototype.</p></section></div>;
+  return <div className="modalShade" role="presentation" onMouseDown={onClose}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="rules-title" onMouseDown={(e) => e.stopPropagation()}><button className="modalClose" aria-label="Close rules" onClick={onClose}>×</button><p className="kicker">CORE RULES</p><h2 id="rules-title">How to play</h2><ol><li>Each army begins with five hidden cards in a fixed order.</li><li>The selector chooses strength, zeal, or wealth before hidden cards are revealed.</li><li>Every active army plays its next card. The highest statistic wins.</li><li>The winner keeps its card in play. Lower cards are discarded.</li><li>After a tie, the original selector chooses a different trait and tied armies play their next card.</li><li>The last army with cards remaining wins.</li></ol><p className="note">Nile Floods, if enabled, adds a six-sided die roll to every score. Special card effects are not used in this prototype.</p></section></div>;
 }
