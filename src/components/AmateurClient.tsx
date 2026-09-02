@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import StelaMark from "@/components/StelaMark";
 import cardData from "@/data/cards.json";
 import {
   activePlayer,
@@ -262,7 +263,7 @@ export default function AmateurClient() {
     <main className="landing amateurLanding">
       <section className="panel titlePanel">
         <p className="kicker">THE CATHEDRAL AT QASR IBRIM</p>
-        <div className="royalMark">♜</div>
+        <StelaMark className="royalMark" />
         <h1>Amateur Game</h1>
         <p className="subtitle">Protected heirs and targeted attacks</p>
         <p>Command a ten-card army, expose an enemy heir, and eliminate it before your own falls.</p>
@@ -331,7 +332,7 @@ export default function AmateurClient() {
   return (
     <main className="gamePage amateurGame">
       <header className="gameHeader">
-        <div><span className="miniMark">♜</span><b>Nubian Kings</b><small>Amateur · Turn {state.round} · {state.victoryMode === "standard" ? "First heir" : "Last heir"} victory</small></div>
+        <div><StelaMark className="miniMark" /><b>Nubian Kings</b><small>Amateur · Turn {state.round} · {state.victoryMode === "standard" ? "First heir" : "Last heir"} victory</small></div>
         <div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><a className="iconButton linkButton" href="/amateur">Leave</a></div>
       </header>
       <section className="statusBar">
@@ -381,7 +382,7 @@ export default function AmateurClient() {
         </section>
       )}
 
-      {winner && !review && <section className="victory"><span>♜</span><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir" : `${INFO[winner.factionId].name} are victorious`}</h2><a className="buttonLink" href="/amateur">Play Again</a></section>}
+      {winner && !review && <section className="victory"><StelaMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir" : `${INFO[winner.factionId].name} are victorious`}</h2><a className="buttonLink" href="/amateur">Play Again</a></section>}
       <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}</aside>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
     </main>

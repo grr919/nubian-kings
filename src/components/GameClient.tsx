@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import StelaMark from "@/components/StelaMark";
 import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
 import { chooseNpcStatForCard, factionProfile } from "@/game/npc";
@@ -56,7 +57,7 @@ function CardView({ card, active, reviewed, onInspect }: { card: Card; active: b
         </>
       ) : visible ? (
         <>
-          <div className="cardCrown">♜</div>
+          <StelaMark className="cardCrown" />
           <h3>{card.name}</h3>
           <div className="cardStats">
             {STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat}</span>)}
@@ -159,7 +160,7 @@ export default function GameClient() {
 
   if (screen === "home") return (
     <main className="landing"><section className="panel titlePanel">
-      <p className="kicker">CORE RULES PROTOTYPE</p><div className="royalMark">♜</div><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
+      <p className="kicker">CORE RULES PROTOTYPE</p><StelaMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
       <p>Lead a medieval African faction through a contest of strength, zeal, and wealth.</p>
       <div className="actions"><button onClick={() => setScreen("setup")}>New Beginner Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Beginner Game</button></div>
       <div className="routeLinks"><a href="/amateur">Play Amateur Level</a><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button></div><small>Core prototype · Special card effects are deferred</small>
@@ -183,11 +184,11 @@ export default function GameClient() {
   const opponents = state.players.filter((player) => player.controller === "npc");
   return (
     <main className="gamePage">
-      <header className="gameHeader"><div><span className="miniMark">♜</span><b>Nubian Kings</b><small>Beginner game · Round {state.round} · Seed {state.random.seed}</small></div><div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><button className="iconButton" onClick={leaveGame}>Leave</button></div></header>
+      <header className="gameHeader"><div><StelaMark className="miniMark" /><b>Nubian Kings</b><small>Beginner game · Round {state.round} · Seed {state.random.seed}</small></div><div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><button className="iconButton" onClick={leaveGame}>Leave</button></div></header>
       <section className="statusBar"><span className={`turnDot ${thinking ? "thinking" : ""}`} /><div><b>{review ? "Review the played cards" : npcChoice ? "Computer trait selected" : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[selector.factionId].name} is choosing…` : humanTurn ? "Choose a trait" : `${INFO[selector.factionId].name}'s turn`}</b><small>{review ? "Select any played card to study it. Continue when you are ready." : npcChoice ? "The cards remain hidden until you are ready." : state.phase === "tie" ? `Tie: choose any trait, including ${state.selectedStat} again.` : guide && humanTurn ? "Choose before the hidden cards are revealed." : ""}</small></div></section>
       {review ? <ComparisonStage review={review} state={state} onInspect={setInspected} /> : <div className="board"><PlayerArea player={humanPlayer} state={state} onInspect={setInspected} /><div className="opponentBoard">{opponents.map((player) => <PlayerArea key={player.id} player={player} state={state} compact onInspect={setInspected} />)}</div></div>}
       {review ? <ReviewPanel review={review} state={state} onContinue={continueAfterReview} /> : npcChoice ? <NpcChoicePanel choice={npcChoice} state={state} onReveal={revealNpcChoice} /> : state.phase !== "complete" && <section className={`chooser ${humanTurn ? "ready" : "waiting"}`}><p>{thinking ? "Your opponent is considering the faction’s strengths…" : humanTurn ? state.phase === "tie" ? "Choose any trait for the tie." : "Which trait will decide this comparison?" : "Waiting for the selector…"}</p><div>{STATS.map((stat) => <button key={stat} disabled={!humanTurn || thinking} onClick={() => choose(stat)}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section>}
-      {winner && !review && <section className="victory"><span>♜</span><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You are victorious" : `${INFO[winner.factionId].name} are victorious`}</h2><button onClick={() => { setSeed(""); setScreen("setup"); }}>Play Again</button></section>}
+      {winner && !review && <section className="victory"><StelaMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You are victorious" : `${INFO[winner.factionId].name} are victorious`}</h2><button onClick={() => { setSeed(""); setScreen("setup"); }}>Play Again</button></section>}
       <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, i) => <li key={`${i}-${line}`}>{line}</li>)}</ol> : <p>No comparisons yet.</p>}</aside>
       {inspected && <CardDetail card={inspected} onClose={() => setInspected(undefined)} />}
       {help && <Help onClose={() => setHelp(false)} />}
