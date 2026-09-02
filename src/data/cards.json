@@ -60,7 +60,7 @@
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-072",
@@ -84,7 +84,7 @@
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-046",
@@ -108,7 +108,7 @@
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-030",
@@ -132,7 +132,7 @@
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-027",
@@ -156,7 +156,7 @@
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-011",
@@ -948,7 +948,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-005",
@@ -972,7 +972,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-053",
@@ -1019,7 +1019,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-056",
@@ -1067,7 +1067,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-043",
@@ -1775,7 +1775,7 @@
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-117",
@@ -1799,7 +1799,7 @@
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-186",
@@ -1823,7 +1823,7 @@
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-093",
@@ -1847,7 +1847,7 @@
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-009",
@@ -1871,7 +1871,7 @@
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-119",
@@ -1895,7 +1895,7 @@
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-170",
@@ -2699,7 +2699,7 @@
       "religion": "M",
       "nation": "Eg",
       "factionId": "egyptian-muslims",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-176",
@@ -2723,7 +2723,7 @@
       "religion": "M",
       "nation": "Eg",
       "factionId": "egyptian-muslims",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-003",
@@ -2747,7 +2747,7 @@
       "religion": "M",
       "nation": "Eg",
       "factionId": "egyptian-muslims",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-150",
@@ -2771,7 +2771,7 @@
       "religion": "M",
       "nation": "Eg",
       "factionId": "egyptian-muslims",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-075",
@@ -2795,7 +2795,7 @@
       "religion": "M",
       "nation": "Eg",
       "factionId": "egyptian-muslims",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-121",
@@ -2819,7 +2819,7 @@
       "religion": "M",
       "nation": "Eg",
       "factionId": "egyptian-muslims",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-141",
@@ -3575,7 +3575,7 @@
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
-      "type": "unknown",
+      "type": "leader",
       "assets": [
         {
           "assetId": "NK-ASSET-068",
