@@ -305,7 +305,7 @@ export default function MasterClient() {
     <p className="kicker">THE ROCK CHURCH OF LALIBELA</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">Armies assembled in hidden formations</p>
     <p>Build twenty cards into legal piles, protect your heir, and defeat opposing formations as complete units.</p>
     <div className="actions"><button onClick={() => setScreen("setup")}>New Master Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Master Game</button></div>
-    <div className="routeLinks"><a href="/">All Game Levels</a><a href="/beginner">Beginner Game</a><a href="/amateur">Amateur Game</a><button className="textButton" onClick={() => setHelp(true)}>Master Rules</button></div>
+    <div className="routeLinks"><button className="textButton" onClick={() => setHelp(true)}>Master Rules</button></div>
     <small>Core profile · Special card effects are not used</small>
   </section>{help && <MasterHelp onClose={() => setHelp(false)} />}</main>;
 
