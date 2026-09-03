@@ -27,7 +27,7 @@ import {
 } from "@/game/amateur";
 import { AMATEUR_SAVE_KEY, parseAmateurGame, serializeAmateurGame } from "@/game/amateur-save";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
-import { amateurEventText, roundOutcomeText } from "@/game/player-language";
+import { amateurEventText, battleTitle, roundOutcomeText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
 
@@ -448,10 +448,10 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
   const targetPlayer = state.players.find((player) => player.id === review.targetPlayerId)!;
   const high = Math.max(...review.scores.map((score) => score.total));
   const winnerId = review.tie ? undefined : review.scores.find((score) => score.total === high)?.playerId;
-  const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.tie);
+  const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
   return (
     <section className="comparisonStage amateurReview" aria-live="polite">
-      <header><p className="kicker">{review.stat} attack</p><h2>{headline}</h2></header>
+      <header><p className="kicker">{battleTitle(review.stat)}</p><h2>{headline}</h2></header>
       <div className="comparisonCards">{[
         { player: attackerPlayer, card: review.attacker, role: "Attacker" },
         { player: targetPlayer, card: review.target, role: "Target" },

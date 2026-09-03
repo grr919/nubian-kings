@@ -32,7 +32,7 @@ import {
 } from "@/game/master";
 import { MASTER_SAVE_KEY, parseMasterGame, serializeMasterGame } from "@/game/master-save";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
-import { roundOutcomeText } from "@/game/player-language";
+import { battleTitle, roundOutcomeText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
 
@@ -416,8 +416,8 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
   const targetPlayer = state.players.find((player) => player.id === review.targetPlayerId)!;
   const high = Math.max(...review.scores.map((score) => score.total));
   const winnerId = review.tie ? undefined : review.scores.find((score) => score.total === high)?.playerId;
-  const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.tie);
-  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><p className="kicker">{review.stat} attack</p><h2>{headline}</h2></header><div className="comparisonCards">{[
+  const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
+  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><p className="kicker">{battleTitle(review.stat)}</p><h2>{headline}</h2></header><div className="comparisonCards">{[
     { player: attackerPlayer, cards: review.attacker, unitId: review.attackerUnitId, role: "Attacker" },
     { player: targetPlayer, cards: review.target, unitId: review.targetUnitId, role: "Target" },
   ].map(({ player, cards, unitId, role }) => {

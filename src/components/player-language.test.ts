@@ -42,8 +42,12 @@ describe("player-facing grammar", () => {
   });
 
   it("states round outcomes from the human player's perspective", () => {
-    expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"])).toBe("You have won this round.");
-    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"])).toBe("You have lost this round.");
-    expect(roundOutcomeText(amateurState.players, undefined, ["human", "npc"], true)).toBe("This round has ended in a tie.");
+    expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"], "strength")).toBe("Your strength brings you victory in battle.");
+    expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"], "zeal")).toBe("Your zeal converts some of the enemy forces.");
+    expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"], "wealth")).toBe("Your wealth wins enemy support.");
+    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "strength")).toBe("Egyptian Christians' strength defeats your forces in battle.");
+    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "zeal")).toBe("Egyptian Christians' zeal converts some of your forces.");
+    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "wealth")).toBe("Egyptian Christians' wealth wins support among your forces.");
+    expect(roundOutcomeText(amateurState.players, undefined, ["human", "npc"], "zeal", true)).toBe("The battle of zeal ends without a victor.");
   });
 });
