@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
+import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import cardData from "@/data/cards.json";
 import {
   activePlayer,
@@ -25,6 +26,7 @@ import {
   type PreparedAmateurGame,
 } from "@/game/amateur";
 import { AMATEUR_SAVE_KEY, parseAmateurGame, serializeAmateurGame } from "@/game/amateur-save";
+import { humanMayEndEliminatedGame } from "@/game/elimination";
 import { amateurEventText, roundOutcomeText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
@@ -123,6 +125,8 @@ export default function AmateurClient() {
   const [selectedStat, setSelectedStat] = useState<Stat>();
   const [attackerId, setAttackerId] = useState<string>();
   const [history, setHistory] = useState<string[]>([]);
+  const [watchAfterElimination, setWatchAfterElimination] = useState(false);
+  const eliminationPending = humanMayEndEliminatedGame(state) && !watchAfterElimination;
 
   useEffect(() => setHasSave(Boolean(parseAmateurGame(localStorage.getItem(AMATEUR_SAVE_KEY) ?? ""))), []);
 
@@ -155,6 +159,7 @@ export default function AmateurClient() {
     localStorage.removeItem(AMATEUR_NPC_ATTACK_KEY);
     persist(next);
     setState(next);
+    setWatchAfterElimination(false);
     setPrepared(undefined);
     setHistory(["Ten hidden cards form each army. The heirs stand ready behind them."]);
     setScreen("game");
@@ -170,6 +175,7 @@ export default function AmateurClient() {
       localStorage.removeItem(AMATEUR_NPC_ATTACK_KEY);
     }
     setState(saved);
+    setWatchAfterElimination(false);
     setHistory(["Amateur game restored."]);
     setScreen("game");
   }
@@ -231,7 +237,7 @@ export default function AmateurClient() {
   }
 
   useEffect(() => {
-    if (!state || review || npcAttack || state.phase !== "attack" || activePlayer(state).controller !== "npc") return;
+    if (!state || review || npcAttack || eliminationPending || state.phase !== "attack" || activePlayer(state).controller !== "npc") return;
     setThinking(true);
     const timer = window.setTimeout(() => {
       const actionState = structuredClone(state);
@@ -243,10 +249,10 @@ export default function AmateurClient() {
       setThinking(false);
     }, 700);
     return () => window.clearTimeout(timer);
-  }, [state, review, npcAttack]);
+  }, [state, review, npcAttack, eliminationPending]);
 
   useEffect(() => {
-    if (!state || review || state.phase !== "replenish") return;
+    if (!state || review || eliminationPending || state.phase !== "replenish") return;
     const pending = state.players.find((player) => player.id === state.pendingReplenishmentPlayerId);
     if (pending?.controller !== "npc") return;
     setThinking(true);
@@ -259,7 +265,22 @@ export default function AmateurClient() {
       setThinking(false);
     }, 500);
     return () => window.clearTimeout(timer);
-  }, [state, review]);
+  }, [state, review, eliminationPending]);
+
+  function endEliminatedGame() {
+    localStorage.removeItem(AMATEUR_SAVE_KEY);
+    localStorage.removeItem(AMATEUR_NPC_ATTACK_KEY);
+    setHasSave(false);
+    setState(undefined);
+    setReview(undefined);
+    setNpcAttack(undefined);
+    setSelectedStat(undefined);
+    setAttackerId(undefined);
+    setThinking(false);
+    setWatchAfterElimination(false);
+    setHistory([]);
+    setScreen("home");
+  }
 
   const setupChoices = useMemo(() => prepared ? heirChoices(prepared) : [], [prepared]);
 
@@ -387,6 +408,7 @@ export default function AmateurClient() {
       )}
 
       {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir" : `${INFO[winner.factionId].name} are victorious`}</h2><a className="buttonLink" href="/amateur">Play Again</a></section>}
+      {eliminationPending && !review && <EliminatedGamePrompt onContinue={() => setWatchAfterElimination(true)} onEnd={endEliminatedGame} />}
       <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}</aside>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
     </main>

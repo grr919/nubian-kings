@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
+import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import cardData from "@/data/cards.json";
 import {
   activeMasterPlayer,
@@ -30,6 +31,7 @@ import {
   type MasterVictoryMode,
 } from "@/game/master";
 import { MASTER_SAVE_KEY, parseMasterGame, serializeMasterGame } from "@/game/master-save";
+import { humanMayEndEliminatedGame } from "@/game/elimination";
 import { roundOutcomeText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
@@ -131,6 +133,8 @@ export default function MasterClient() {
   const [selectedStat, setSelectedStat] = useState<Stat>();
   const [attackerId, setAttackerId] = useState<string>();
   const [history, setHistory] = useState<string[]>([]);
+  const [watchAfterElimination, setWatchAfterElimination] = useState(false);
+  const eliminationPending = humanMayEndEliminatedGame(state) && !watchAfterElimination;
 
   useEffect(() => setHasSave(Boolean(parseMasterGame(localStorage.getItem(MASTER_SAVE_KEY) ?? ""))), []);
   useEffect(() => { if (review) window.scrollTo({ top: 0, left: 0, behavior: "auto" }); }, [review]);
@@ -211,6 +215,7 @@ export default function MasterClient() {
     localStorage.removeItem(MASTER_NPC_ATTACK_KEY);
     persist(next);
     setState(next);
+    setWatchAfterElimination(false);
     setConstruction(undefined);
     setHistory(["The twenty-card armies are locked into hidden piles. The heirs stand ready behind them."]);
     setScreen("game");
@@ -224,6 +229,7 @@ export default function MasterClient() {
       if (pending && typeof pending.attackerUnitId === "string" && typeof pending.targetPlayerId === "string" && typeof pending.targetUnitId === "string" && STATS.includes(pending.stat)) setNpcAttack(pending);
     } catch { localStorage.removeItem(MASTER_NPC_ATTACK_KEY); }
     setState(saved);
+    setWatchAfterElimination(false);
     setHistory(["Master game restored."]);
     setScreen("game");
   }
@@ -269,7 +275,7 @@ export default function MasterClient() {
   }
 
   useEffect(() => {
-    if (!state || review || npcAttack || state.phase !== "attack" || activeMasterPlayer(state).controller !== "npc") return;
+    if (!state || review || npcAttack || eliminationPending || state.phase !== "attack" || activeMasterPlayer(state).controller !== "npc") return;
     setThinking(true);
     const timer = window.setTimeout(() => {
       const actionState = structuredClone(state);
@@ -281,10 +287,10 @@ export default function MasterClient() {
       setThinking(false);
     }, 700);
     return () => window.clearTimeout(timer);
-  }, [state, review, npcAttack]);
+  }, [state, review, npcAttack, eliminationPending]);
 
   useEffect(() => {
-    if (!state || review || state.phase !== "replenish") return;
+    if (!state || review || eliminationPending || state.phase !== "replenish") return;
     const pending = state.players.find((player) => player.id === state.pendingReplenishmentPlayerId);
     if (pending?.controller !== "npc") return;
     setThinking(true);
@@ -297,7 +303,22 @@ export default function MasterClient() {
       setThinking(false);
     }, 500);
     return () => window.clearTimeout(timer);
-  }, [state, review]);
+  }, [state, review, eliminationPending]);
+
+  function endEliminatedGame() {
+    localStorage.removeItem(MASTER_SAVE_KEY);
+    localStorage.removeItem(MASTER_NPC_ATTACK_KEY);
+    setHasSave(false);
+    setState(undefined);
+    setReview(undefined);
+    setNpcAttack(undefined);
+    setSelectedStat(undefined);
+    setAttackerId(undefined);
+    setThinking(false);
+    setWatchAfterElimination(false);
+    setHistory([]);
+    setScreen("home");
+  }
 
   const heirOptions = useMemo(() => prepared ? masterHeirChoices(prepared) : [], [prepared]);
 
@@ -370,6 +391,7 @@ export default function MasterClient() {
     {!review && npcAttack && <section className="chooser npcChoicePanel" aria-live="polite"><p className="kicker">ATTACK DECLARED</p><h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using <b>{npcAttack.stat}</b></h2><p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p><button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetUnitId, { attackerUnitId: npcAttack.attackerUnitId, stat: npcAttack.stat })}>Resolve Attack</button></section>}
     {!review && state.phase === "replenish" && pending?.controller === "human" && <section className="chooser replenishmentPanel"><div className="replenishmentHeading"><div><p className="kicker">VICTORIOUS PLAYER</p><b>Replenish your army?</b></div><button onClick={() => applyReplenishment("skip")}>Skip</button></div><div className="replenishmentChoices">{pending.unused.length > 0 && <button onClick={() => applyReplenishment("draw")}><b>Draw hidden reserve card</b><small>{pending.unused.length} cards remain in reserve</small></button>}</div></section>}
     {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir" : `${INFO[winner.factionId].name} are victorious`}</h2><a className="buttonLink" href="/master">Play Again</a></section>}
+    {eliminationPending && !review && <EliminatedGamePrompt onContinue={() => setWatchAfterElimination(true)} onEnd={endEliminatedGame} />}
     <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}</aside>
     {help && <MasterHelp onClose={() => setHelp(false)} />}
   </main>;

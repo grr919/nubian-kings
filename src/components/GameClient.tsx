@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
+import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
+import { humanMayEndEliminatedGame } from "@/game/elimination";
 import { chooseNpcStatForCard, factionProfile } from "@/game/npc";
 import { beginnerEventText, roundOutcomeText } from "@/game/player-language";
 import { randomSource } from "@/game/random";
@@ -86,8 +88,10 @@ export default function GameClient() {
   const [inspected, setInspected] = useState<Card>();
   const [review, setReview] = useState<ComparisonReview>();
   const [npcChoice, setNpcChoice] = useState<{ playerId: string; stat: Stat }>();
+  const [watchAfterElimination, setWatchAfterElimination] = useState(false);
 
   const profiles = useMemo(() => Object.fromEntries(FACTIONS.map((id) => [id, factionProfile(cardData.cards.filter((c) => c.factionId === id))])), []);
+  const eliminationPending = humanMayEndEliminatedGame(state) && !watchAfterElimination;
 
   useEffect(() => setHasSave(Boolean(parseGame(localStorage.getItem(SAVE_KEY) ?? ""))), []);
 
@@ -103,12 +107,12 @@ export default function GameClient() {
   function start() {
     const next = createBeginnerGame({ humanFaction: faction, npcCount: npcCount === "random" ? undefined : npcCount, nileFloods: floods, openingPlayer, seed: seed || undefined });
     setSeed(next.random.seed);
-    localStorage.removeItem(REVIEW_KEY); localStorage.removeItem(NPC_CHOICE_KEY); setReview(undefined); setNpcChoice(undefined); persist(next); setState(next); setHistory(["The armies are assembled. The first selector will choose a trait."]); setScreen("game");
+    localStorage.removeItem(REVIEW_KEY); localStorage.removeItem(NPC_CHOICE_KEY); setReview(undefined); setNpcChoice(undefined); setWatchAfterElimination(false); persist(next); setState(next); setHistory(["The armies are assembled. The first selector will choose a trait."]); setScreen("game");
   }
 
   function continueGame() {
     const saved = parseGame(localStorage.getItem(SAVE_KEY) ?? "");
-    if (saved) { const savedReview = localStorage.getItem(REVIEW_KEY); const legacyChoice = localStorage.getItem(NPC_CHOICE_KEY); const choice = saved.pendingNpcChoice ?? (legacyChoice ? JSON.parse(legacyChoice) : undefined); if (choice && !saved.pendingNpcChoice) { saved.pendingNpcChoice = choice; persist(saved); } setReview(savedReview ? JSON.parse(savedReview) : undefined); setNpcChoice(choice); setState(saved); setHistory(["Saved game restored."]); setScreen("game"); }
+    if (saved) { const savedReview = localStorage.getItem(REVIEW_KEY); const legacyChoice = localStorage.getItem(NPC_CHOICE_KEY); const choice = saved.pendingNpcChoice ?? (legacyChoice ? JSON.parse(legacyChoice) : undefined); if (choice && !saved.pendingNpcChoice) { saved.pendingNpcChoice = choice; persist(saved); } setReview(savedReview ? JSON.parse(savedReview) : undefined); setNpcChoice(choice); setWatchAfterElimination(false); setState(saved); setHistory(["Saved game restored."]); setScreen("game"); }
   }
 
   function choose(stat: Stat, sourceState = state) {
@@ -139,7 +143,7 @@ export default function GameClient() {
   }
 
   useEffect(() => {
-    if (!state || state.phase === "complete" || review || npcChoice) return;
+    if (!state || state.phase === "complete" || review || npcChoice || eliminationPending) return;
     const selector = state.players[state.selectorIndex];
     if (selector.controller !== "npc") return;
     setThinking(true);
@@ -155,7 +159,22 @@ export default function GameClient() {
       setThinking(false);
     }, 700);
     return () => window.clearTimeout(timer);
-  }, [state, profiles, review, npcChoice]);
+  }, [state, profiles, review, npcChoice, eliminationPending]);
+
+  function endEliminatedGame() {
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(REVIEW_KEY);
+    localStorage.removeItem(NPC_CHOICE_KEY);
+    setHasSave(false);
+    setState(undefined);
+    setReview(undefined);
+    setNpcChoice(undefined);
+    setInspected(undefined);
+    setThinking(false);
+    setWatchAfterElimination(false);
+    setHistory([]);
+    setScreen("home");
+  }
 
   function leaveGame() {
     if (!window.confirm("Leave this game? Your current game will remain saved.")) return;
@@ -193,6 +212,7 @@ export default function GameClient() {
       {review ? <ComparisonStage review={review} state={state} onInspect={setInspected} /> : <div className="board"><PlayerArea player={humanPlayer} state={state} onInspect={setInspected} /><div className="opponentBoard">{opponents.map((player) => <PlayerArea key={player.id} player={player} state={state} compact onInspect={setInspected} />)}</div></div>}
       {review ? <ReviewPanel review={review} state={state} onContinue={continueAfterReview} /> : npcChoice ? <NpcChoicePanel choice={npcChoice} state={state} onReveal={revealNpcChoice} /> : state.phase !== "complete" && <section className={`chooser ${humanTurn ? "ready" : "waiting"}`}><p>{thinking ? "Your opponent is considering the faction’s strengths…" : humanTurn ? state.phase === "tie" ? "Choose any trait for the tie." : "Which trait will decide this comparison?" : "Waiting for the selector…"}</p><div>{STATS.map((stat) => <button key={stat} disabled={!humanTurn || thinking} onClick={() => choose(stat)}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section>}
       {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You are victorious" : `${INFO[winner.factionId].name} are victorious`}</h2><button onClick={() => { setSeed(""); setScreen("setup"); }}>Play Again</button></section>}
+      {eliminationPending && !review && <EliminatedGamePrompt onContinue={() => setWatchAfterElimination(true)} onEnd={endEliminatedGame} />}
       <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, i) => <li key={`${i}-${line}`}>{line}</li>)}</ol> : <p>No comparisons yet.</p>}</aside>
       {inspected && <CardDetail card={inspected} onClose={() => setInspected(undefined)} />}
       {help && <Help onClose={() => setHelp(false)} />}
