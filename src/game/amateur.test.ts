@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   chooseNpcAttack,
   heirChoices,
+  legalAttackers,
   legalTargets,
   prepareAmateurGame,
   replenishFromDiscard,
@@ -85,6 +86,20 @@ describe("Amateur setup", () => {
 });
 
 describe("Amateur attacks", () => {
+  it("allows the heir to attack only after every army card is gone", () => {
+    const human = player("human", "human", [card("human-a", [4, 4, 4])]);
+    const game = state([human, player("npc", "npc", [card("npc-a", [3, 3, 3])])]);
+    expect(legalAttackers(game).map((candidate) => candidate.id)).toEqual(["human-a"]);
+    expect(() => resolveAmateurAttack(game, {
+      attackerId: human.heir.id,
+      targetPlayerId: "npc",
+      targetId: "npc-a",
+      stat: "strength",
+    })).toThrow("Illegal attacker");
+    human.army = [];
+    expect(legalAttackers(game).map((candidate) => candidate.id)).toEqual([human.heir.id]);
+  });
+
   it("allows every army position to be targeted and protects an heir behind an army", () => {
     const game = state([
       player("human", "human", [card("human-a", [4, 2, 1])]),
@@ -148,7 +163,7 @@ describe("Amateur attacks", () => {
   });
 
   it("immediately loses when an attacking heir is defeated in a standard game", () => {
-    const human = player("human", "human", [card("human-a", [1, 1, 1])], [1, 1, 1]);
+    const human = player("human", "human", [], [1, 1, 1]);
     const npc = player("npc", "npc", [card("npc-a", [9, 9, 9], "up")]);
     const game = state([human, npc]);
     resolveAmateurAttack(game, {

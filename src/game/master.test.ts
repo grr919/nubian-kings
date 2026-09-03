@@ -6,6 +6,7 @@ import {
   confirmMasterArmy,
   constructionCards,
   isLegalInitialPile,
+  legalMasterAttackers,
   legalMasterTargets,
   masterArmySize,
   masterHeirChoices,
@@ -86,6 +87,20 @@ describe("Master setup", () => {
 });
 
 describe("Master attacks", () => {
+  it("allows the heir to attack only after every army pile is gone", () => {
+    const human = player("human", "human", [pile("human-pile", [card("human-leader", "leader")])]);
+    const game = state([human, player("npc", "npc", [pile("npc-pile", [card("npc-person", "person")])])]);
+    expect(legalMasterAttackers(game)).toEqual(["human-pile"]);
+    expect(() => resolveMasterAttack(game, {
+      attackerUnitId: human.heir.id,
+      targetPlayerId: "npc",
+      targetUnitId: "npc-pile",
+      stat: "strength",
+    })).toThrow("Illegal attacker");
+    human.army = [];
+    expect(legalMasterAttackers(game)).toEqual([human.heir.id]);
+  });
+
   it("compares summed pile statistics and discards the entire losing pile", () => {
     const human = player("human", "human", [pile("human-pile", [card("human-place", "place", [3, 1, 1]), card("human-person", "person", [4, 1, 1])])]);
     const npc = player("npc", "npc", [pile("npc-pile", [card("npc-person", "person", [2, 8, 8]), card("npc-thing", "thing", [1, 8, 8])])]);

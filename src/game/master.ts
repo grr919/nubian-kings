@@ -304,7 +304,7 @@ export function masterArmySize(player: MasterPlayer) {
 export function legalMasterAttackers(state: MasterState, playerId = activeMasterPlayer(state).id) {
   const player = state.players.find((candidate) => candidate.id === playerId);
   if (!player || player.eliminated || player.id !== activeMasterPlayer(state).id || state.phase !== "attack") return [];
-  return [...player.army.map((pile) => pile.id), player.heir.id];
+  return masterArmySize(player) ? player.army.map((pile) => pile.id) : [player.heir.id];
 }
 
 export function legalMasterTargets(state: MasterState, targetPlayerId: string) {

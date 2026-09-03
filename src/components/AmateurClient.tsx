@@ -364,7 +364,7 @@ export default function AmateurClient() {
         <span className={`turnDot ${thinking ? "thinking" : ""}`} />
         <div>
           <b>{review ? "Review the attack" : npcAttack ? `${INFO[active.factionId].name} have declared an attack` : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish` : humanTurn ? !selectedStat ? "Choose a statistic" : !attackerId ? "Choose your attacker" : "Choose an enemy target" : `${INFO[active.factionId].name}'s turn`}</b>
-          <small>{npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "Your heir may attack even while protected. Enemy heirs are protected until their armies are empty." : "Every army position may be targeted."}</small>
+          <small>{npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}</small>
         </div>
       </section>
 
@@ -383,7 +383,7 @@ export default function AmateurClient() {
 
       {!review && humanTurn && (
         <section className="chooser amateurChooser">
-          <p>{!selectedStat ? "Which statistic will decide the attack?" : !attackerId ? "Now choose one of your army cards—or your heir—to attack." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
+          <p>{!selectedStat ? "Which statistic will decide the attack?" : !attackerId ? human.army.length ? "Now choose one of your army cards to attack." : "Your heir is your last card. Choose it to attack." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
           <div>{STATS.map((stat) => <button key={stat} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
         </section>
       )}
@@ -466,5 +466,5 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
 }
 
 function AmateurHelp({ onClose }: { onClose: () => void }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one attacker, an opponent, and any card in that opponent’s army.</li><li>Your heir may attack at any time. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an attacking heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol><p className="note">Printed special effects are not used in this Core prototype.</p></section></div>;
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one attacker, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot attack until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an attacking heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol><p className="note">Printed special effects are not used in this Core prototype.</p></section></div>;
 }

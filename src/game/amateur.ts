@@ -206,7 +206,7 @@ export function activePlayer(state: AmateurState) {
 export function legalAttackers(state: AmateurState, playerId = activePlayer(state).id) {
   const player = state.players.find((candidate) => candidate.id === playerId);
   if (!player || player.eliminated || player.id !== activePlayer(state).id || state.phase !== "attack") return [];
-  return [...player.army, player.heir];
+  return player.army.length ? [...player.army] : [player.heir];
 }
 
 export function legalTargets(state: AmateurState, targetPlayerId: string) {
