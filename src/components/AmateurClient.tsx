@@ -266,7 +266,6 @@ export default function AmateurClient() {
   if (screen === "home") return (
     <main className="landing amateurLanding">
       <section className="panel titlePanel">
-        <a className="landingBack" href="/">← Main Page</a>
         <p className="kicker">THE CATHEDRAL AT QASR IBRIM</p>
         <EparchCrownMark className="royalMark" />
         <h1>Nubian Kings</h1>
@@ -276,7 +275,7 @@ export default function AmateurClient() {
           <button onClick={() => setScreen("setup")}>New Amateur Game</button>
           <button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Amateur Game</button>
         </div>
-        <div className="routeLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button></div>
+        <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">← Main Page</a></div>
         <small>Core profile · Special card effects are not used</small>
       </section>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
