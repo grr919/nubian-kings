@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { amateurEventText, beginnerEventText } from "../game/player-language";
+import { amateurEventText, beginnerEventText, roundOutcomeText } from "../game/player-language";
 import type { AmateurEvent, AmateurState } from "../game/amateur";
 import type { BeginnerState, GameEvent } from "../game/types";
 
@@ -39,5 +39,11 @@ describe("player-facing grammar", () => {
     const state = { players: [{ id: "human", controller: "human", factionId: "nubian-christians" }] } as BeginnerState;
     const event: GameEvent = { type: "player-eliminated", playerId: "human" };
     expect(beginnerEventText(event, state)).toBe("You were eliminated.");
+  });
+
+  it("states round outcomes from the human player's perspective", () => {
+    expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"])).toBe("You have won this round.");
+    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"])).toBe("You have lost this round.");
+    expect(roundOutcomeText(amateurState.players, undefined, ["human", "npc"], true)).toBe("This round has ended in a tie.");
   });
 });

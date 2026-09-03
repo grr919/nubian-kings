@@ -9,6 +9,22 @@ const NAMES: Record<string, string> = {
   "ethiopian-jews": "Ethiopian Jews",
 };
 
+interface OutcomePlayer {
+  id: string;
+  factionId: string;
+  controller: "human" | "npc";
+}
+
+export function roundOutcomeText(players: OutcomePlayer[], winnerId: string | undefined, participantIds: string[], tied = false) {
+  if (tied) return "This round has ended in a tie.";
+  const winner = players.find((player) => player.id === winnerId);
+  if (!winner) return "This round has ended.";
+  if (winner.controller === "human") return "You have won this round.";
+  const human = players.find((player) => player.controller === "human");
+  if (human && participantIds.includes(human.id)) return "You have lost this round.";
+  return `${NAMES[winner.factionId]} have won this round.`;
+}
+
 export function amateurEventText(event: AmateurEvent, state: AmateurState) {
   const player = "playerId" in event ? state.players.find((item) => item.id === event.playerId) : undefined;
   const human = player?.controller === "human";
