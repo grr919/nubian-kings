@@ -14,6 +14,16 @@ Private playtest prototype for the Core Beginner and Amateur games of *Nubian Ki
 - Responsive desktop and portable-device interface
 - Special card effects deferred
 - The Hunchback's Son retained in canonical data but unavailable in prototype decks because its artwork is missing
+- Anonymous in-game feedback with optional contact email and privacy-limited diagnostics
+
+## Feedback delivery
+
+The feedback form sends reports to `grr919@gmail.com` through Resend. Configure these Vercel environment variables before using it in production:
+
+- `RESEND_API_KEY`: a Resend API key
+- `FEEDBACK_FROM_EMAIL`: a sender on a domain verified in Resend, such as `Nubian Kings Feedback <feedback@example.com>`
+
+The client sends only the game level, seed, round, phase, public settings, human faction, NPC count, recent public history, browser identifier, and viewport when the tester leaves diagnostic sharing enabled. Hidden cards, reserve order, complete saves, and deck contents are excluded by construction.
 
 ## Local verification
 

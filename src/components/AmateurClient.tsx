@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
+import FeedbackButton from "@/components/FeedbackButton";
 import cardData from "@/data/cards.json";
 import {
   activePlayer,
@@ -352,13 +353,14 @@ export default function AmateurClient() {
   const humanTurn = active.controller === "human" && state.phase === "attack";
   const pending = state.players.find((player) => player.id === state.pendingReplenishmentPlayerId);
   const winner = state.players.find((player) => player.id === state.winnerId);
+  const feedbackDiagnostics = { level: "Amateur" as const, seed: state.random.seed, round: state.round, phase: state.phase, humanFaction: INFO[human.factionId].name, npcCount: state.players.filter((player) => player.controller === "npc").length, nileFloods: state.nileFloods, victoryMode: state.victoryMode, recentHistory: history.slice(0, 10) };
   const allowedAttackers = new Set(humanTurn && selectedStat ? legalAttackers(state).map((card) => card.id) : []);
 
   return (
     <main className="gamePage amateurGame">
       <header className="gameHeader">
         <div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b><small>Amateur · Turn {state.round} · {state.victoryMode === "standard" ? "First heir" : "Last heir"} victory</small></div>
-        <div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><a className="iconButton linkButton" href="/amateur">Leave</a></div>
+        <div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/amateur">Leave</a></div>
       </header>
       <section className="statusBar">
         <span className={`turnDot ${thinking ? "thinking" : ""}`} />

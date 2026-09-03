@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
+import FeedbackButton from "@/components/FeedbackButton";
 import cardData from "@/data/cards.json";
 import {
   activeMasterPlayer,
@@ -370,10 +371,11 @@ export default function MasterClient() {
   const humanTurn = active.controller === "human" && state.phase === "attack";
   const pending = state.players.find((player) => player.id === state.pendingReplenishmentPlayerId);
   const winner = state.players.find((player) => player.id === state.winnerId);
+  const feedbackDiagnostics = { level: "Master" as const, seed: state.random.seed, round: state.round, phase: state.phase, humanFaction: INFO[human.factionId].name, npcCount: state.players.filter((player) => player.controller === "npc").length, nileFloods: state.nileFloods, victoryMode: state.victoryMode, recentHistory: history.slice(0, 10) };
   const allowedAttackers = new Set(humanTurn && selectedStat ? legalMasterAttackers(state) : []);
 
   return <main className="gamePage amateurGame masterGame">
-    <header className="gameHeader"><div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b><small>Master · Turn {state.round} · {state.victoryMode === "standard" ? "First heir" : "Last heir"} victory</small></div><div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><a className="iconButton linkButton" href="/master">Leave</a></div></header>
+    <header className="gameHeader"><div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b><small>Master · Turn {state.round} · {state.victoryMode === "standard" ? "First heir" : "Last heir"} victory</small></div><div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/master">Leave</a></div></header>
     <section className="statusBar"><span className={`turnDot ${thinking ? "thinking" : ""}`} /><div><b>{review ? "Review the attack" : npcAttack ? `${INFO[active.factionId].name} have declared an attack` : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish` : humanTurn ? !selectedStat ? "Choose a statistic" : !attackerId ? "Choose your attacker" : "Choose an enemy target" : `${INFO[active.factionId].name}'s turn`}</b><small>{npcAttack ? "The selected units remain hidden until you resolve the attack." : humanTurn ? masterArmySize(human) ? "Choose an army pile. Your heir cannot attack until every army card is gone." : "Your heir is your last card and must attack alone." : "Defeated piles are discarded as complete units."}</small></div></section>
 
     {review ? <MasterReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : <section className="amateurBoard masterBoard">

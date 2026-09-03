@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
+import FeedbackButton from "@/components/FeedbackButton";
 import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
@@ -204,9 +205,10 @@ export default function GameClient() {
   const winner = state.players.find((p) => p.id === state.winnerId);
   const humanPlayer = state.players.find((player) => player.controller === "human")!;
   const opponents = state.players.filter((player) => player.controller === "npc");
+  const feedbackDiagnostics = { level: "Beginner" as const, seed: state.random.seed, round: state.round, phase: state.phase, humanFaction: INFO[humanPlayer.factionId].name, npcCount: opponents.length, nileFloods: state.nileFloods, recentHistory: history.slice(0, 10) };
   return (
     <main className="gamePage">
-      <header className="gameHeader"><div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b><small>Beginner game · Round {state.round} · Seed {state.random.seed}</small></div><div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><button className="iconButton" onClick={leaveGame}>Leave</button></div></header>
+      <header className="gameHeader"><div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b><small>Beginner game · Round {state.round} · Seed {state.random.seed}</small></div><div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><button className="iconButton" onClick={leaveGame}>Leave</button></div></header>
       {review ? <ComparisonStage review={review} state={state} onInspect={setInspected} /> : <div className="board"><PlayerArea player={humanPlayer} state={state} onInspect={setInspected} /><div className="opponentBoard">{opponents.map((player) => <PlayerArea key={player.id} player={player} state={state} compact onInspect={setInspected} />)}</div></div>}
       {review ? <ReviewPanel onContinue={continueAfterReview} /> : npcChoice ? <NpcChoicePanel choice={npcChoice} state={state} onReveal={revealNpcChoice} /> : state.phase !== "complete" && <section className={`chooser ${humanTurn ? "ready" : "waiting"}`}><p>{humanTurn ? state.phase === "tie" ? `It is your turn. Select any trait for the tie, including ${state.selectedStat} again.` : "It is your turn. Select a trait to decide this comparison." : thinking ? `${INFO[selector.factionId].name} are taking their turn. They are considering which trait to select…` : `${INFO[selector.factionId].name} are taking their turn. Waiting for them to select a trait…`}</p><div>{STATS.map((stat) => <button key={stat} disabled={!humanTurn || thinking} onClick={() => choose(stat)}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section>}
       {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You are victorious" : `${INFO[winner.factionId].name} are victorious`}</h2><button onClick={() => { setSeed(""); setScreen("setup"); }}>Play Again</button></section>}

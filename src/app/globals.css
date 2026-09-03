@@ -89,3 +89,7 @@ body{background:#efd49b}
 @media(max-width:600px){.eliminationChoice>div{flex-direction:column}.eliminationChoice>div button{width:100%}}
 
 .chooser.reviewPanel>button{display:block;margin-inline:auto}
+
+/* Anonymous playtest feedback with explicitly approved diagnostics. */
+.feedbackModal{width:min(650px,100%)}.feedbackModal form{display:grid;gap:16px}.feedbackModal label{display:grid;gap:6px;color:#4c3721;font-weight:700}.feedbackModal label>span small{font-weight:400}.feedbackModal select,.feedbackModal input,.feedbackModal textarea{width:100%;padding:10px 12px;border:1px solid #aa7b3c;background:#fff8df;color:#312116;font:inherit}.feedbackModal textarea{min-height:105px;resize:vertical}.feedbackConsent{grid-template-columns:auto 1fr;align-items:start;padding:12px;border:1px solid #c69a5d;background:#f2d99e}.feedbackConsent input{width:auto;margin-top:4px}.feedbackConsent span{display:grid;gap:4px}.feedbackConsent small{line-height:1.4;color:#715b3e}.feedbackTrap{position:absolute;left:-10000px}.feedbackError{margin:0;color:#852d25}.feedbackSuccess{text-align:center}.feedbackSuccess p{font-size:1.1rem}.toolbar{flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:600px){.feedbackModal{padding:28px 20px}.feedbackModal textarea{min-height:90px}}
