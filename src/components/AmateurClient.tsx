@@ -264,7 +264,7 @@ export default function AmateurClient() {
       <section className="panel titlePanel">
         <p className="kicker">THE CATHEDRAL AT QASR IBRIM</p>
         <EparchCrownMark className="royalMark" />
-        <h1>Amateur Game</h1>
+        <h1>Nubian Kings</h1>
         <p className="subtitle">Protected heirs and targeted attacks</p>
         <p>Command a ten-card army, expose an enemy heir, and eliminate it before your own falls.</p>
         <div className="actions">
