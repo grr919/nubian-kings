@@ -46,6 +46,19 @@ export function roundOutcomeText(players: OutcomePlayer[], winnerId: string | un
   return victoryText(stat, "npc", winnerName);
 }
 
+export function multiplayerRoundOutcomeText(stat: Stat, winnerId: string | undefined, participantIds: string[], viewerId: string, winnerName?: string, tied = false) {
+  if (tied) return `The battle of ${stat} ends without a victor.`;
+  if (!winnerId || !winnerName) return `The battle of ${stat} has ended.`;
+  if (winnerId === viewerId) return victoryText(stat, "human");
+  const owner = possessive(winnerName);
+  if (participantIds.includes(viewerId)) {
+    if (stat === "strength") return `${owner} strength defeats your forces in battle.`;
+    if (stat === "zeal") return `${owner} zeal converts some of your forces.`;
+    return `${owner} wealth wins support among your forces.`;
+  }
+  return victoryText(stat, "npc", winnerName);
+}
+
 export function amateurEventText(event: AmateurEvent, state: AmateurState) {
   const player = "playerId" in event ? state.players.find((item) => item.id === event.playerId) : undefined;
   const human = player?.controller === "human";

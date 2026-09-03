@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { amateurEventText, beginnerEventText, roundOutcomeText } from "../game/player-language";
+import { amateurEventText, beginnerEventText, multiplayerRoundOutcomeText, roundOutcomeText } from "../game/player-language";
 import type { AmateurEvent, AmateurState } from "../game/amateur";
 import type { BeginnerState, GameEvent } from "../game/types";
 
@@ -22,6 +22,13 @@ describe("player-facing grammar", () => {
       "Your heir was eliminated.",
       "You begin the next turn.",
     ]);
+  });
+
+  it("uses trait-specific second-person language in multiplayer", () => {
+    expect(multiplayerRoundOutcomeText("strength", "one", ["one", "two"], "one", "Amina")).toBe("Your strength brings you victory in battle.");
+    expect(multiplayerRoundOutcomeText("zeal", "two", ["one", "two"], "one", "Musa")).toBe("Musa's zeal converts some of your forces.");
+    expect(multiplayerRoundOutcomeText("wealth", "two", ["one", "two"], "one", "Musa")).toBe("Musa's wealth wins support among your forces.");
+    expect(multiplayerRoundOutcomeText("strength", undefined, ["one", "two"], "one", undefined, true)).toBe("The battle of strength ends without a victor.");
   });
 
   it("retains third-person Amateur grammar for computer factions", () => {

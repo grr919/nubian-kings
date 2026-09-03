@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
 import cardData from "@/data/cards.json";
+import { battleTitle, multiplayerRoundOutcomeText } from "@/game/player-language";
 import { browserSupabase } from "@/lib/supabase-browser";
 import type { Stat } from "@/game/types";
 
@@ -160,6 +161,7 @@ function PublicCardView({ card, defeated = false }: { card: PublicCard; defeated
 function MultiplayerReviewView({ room }: { room: Room }) {
   const review = room.review!;
   const high = Math.max(...review.scores.map((score) => score.total));
-  const result = review.winnerId ? `${nameForPlayer(room, review.winnerId)} won this round.` : "The round is tied.";
-  return <section className="comparisonStage"><p className="kicker">A BATTLE OF {review.stat.toUpperCase()}</p><h1>{result}</h1><div className="comparisonCards">{review.scores.map((score) => { const card = review.cards[score.cardId]; return <div key={`${score.playerId}-${score.cardId}`} className={`comparisonEntry ${score.total === high ? "roundLeader" : ""}`}><h2>{nameForPlayer(room, score.playerId)}</h2>{card ? <PublicCardView card={card} defeated={Boolean(review.winnerId && score.playerId !== review.winnerId)} /> : <article className="card back"><span>Card unavailable</span></article>}<p className="scoreLine"><b>{score.total}</b><span>{score.base}{score.die ? ` + ${score.die}` : ""}</span></p></div>; })}</div></section>;
+  const viewerId = room.seats.find((seat) => seat.isYou)!.userId!;
+  const result = multiplayerRoundOutcomeText(review.stat, review.winnerId, review.scores.map((score) => score.playerId), viewerId, review.winnerId ? nameForPlayer(room, review.winnerId) : undefined, !review.winnerId);
+  return <section className="comparisonStage"><p className="kicker">{battleTitle(review.stat)}</p><h1>{result}</h1><div className="comparisonCards">{review.scores.map((score) => { const card = review.cards[score.cardId]; return <div key={`${score.playerId}-${score.cardId}`} className={`comparisonEntry ${score.total === high ? "roundLeader" : ""}`}><h2>{nameForPlayer(room, score.playerId)}</h2>{card ? <PublicCardView card={card} defeated={Boolean(review.winnerId && score.playerId !== review.winnerId)} /> : <article className="card back"><span>Card unavailable</span></article>}<p className="scoreLine"><b>{score.total}</b><span>{score.base}{score.die ? ` + ${score.die}` : ""}</span></p></div>; })}</div></section>;
 }
