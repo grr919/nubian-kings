@@ -87,3 +87,5 @@ body{background:#efd49b}
 /* Choice shown when the human has been eliminated but computer play continues. */
 .eliminationShade{position:fixed;z-index:40;inset:0;padding:20px;display:grid;place-items:center;background:#4b2c178f}.eliminationChoice{width:min(540px,100%);padding:clamp(28px,5vw,46px);text-align:center;background:#f8e4ba;color:#382719;border:2px solid #ad7124;box-shadow:0 20px 60px #4f2d175e}.eliminationChoice h2{margin:.25em 0 .45em;font-size:clamp(1.8rem,5vw,2.5rem)}.eliminationChoice>p:not(.kicker){font-size:1rem;line-height:1.55;color:#594126}.eliminationChoice>div{margin-top:25px;display:flex;justify-content:center;gap:10px}.eliminationChoice .secondary{border-color:#9e6d35;color:#50371f}
 @media(max-width:600px){.eliminationChoice>div{flex-direction:column}.eliminationChoice>div button{width:100%}}
+
+.chooser.reviewPanel>button{display:block;margin-inline:auto}
