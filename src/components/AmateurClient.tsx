@@ -266,6 +266,7 @@ export default function AmateurClient() {
   if (screen === "home") return (
     <main className="landing amateurLanding">
       <section className="panel titlePanel">
+        <a className="landingBack" href="/">← Main Page</a>
         <p className="kicker">THE CATHEDRAL AT QASR IBRIM</p>
         <EparchCrownMark className="royalMark" />
         <h1>Nubian Kings</h1>

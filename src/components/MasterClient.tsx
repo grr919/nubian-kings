@@ -302,6 +302,7 @@ export default function MasterClient() {
   const heirOptions = useMemo(() => prepared ? masterHeirChoices(prepared) : [], [prepared]);
 
   if (screen === "home") return <main className="landing masterLanding"><section className="panel titlePanel">
+    <a className="landingBack" href="/">← Main Page</a>
     <p className="kicker">THE ROCK CHURCH OF LALIBELA</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">Armies assembled in hidden formations</p>
     <p>Build twenty cards into legal piles, protect your heir, and defeat opposing formations as complete units.</p>
     <div className="actions"><button onClick={() => setScreen("setup")}>New Master Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Master Game</button></div>

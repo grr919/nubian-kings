@@ -164,6 +164,7 @@ export default function GameClient() {
 
   if (screen === "home") return (
     <main className="landing"><section className="panel titlePanel">
+      <a className="landingBack" href="/">← Main Page</a>
       <p className="kicker">CORE RULES PROTOTYPE</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
       <p>Lead a medieval African faction through a contest of strength, zeal, and wealth.</p>
       <div className="actions"><button onClick={() => setScreen("setup")}>New Beginner Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Beginner Game</button></div>
