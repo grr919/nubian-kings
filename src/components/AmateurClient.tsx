@@ -126,6 +126,10 @@ export default function AmateurClient() {
 
   useEffect(() => setHasSave(Boolean(parseAmateurGame(localStorage.getItem(AMATEUR_SAVE_KEY) ?? ""))), []);
 
+  useEffect(() => {
+    if (review) window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [review]);
+
   function persist(next: AmateurState) {
     localStorage.setItem(AMATEUR_SAVE_KEY, serializeAmateurGame(next));
     setHasSave(true);

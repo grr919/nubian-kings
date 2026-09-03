@@ -91,6 +91,10 @@ export default function GameClient() {
 
   useEffect(() => setHasSave(Boolean(parseGame(localStorage.getItem(SAVE_KEY) ?? ""))), []);
 
+  useEffect(() => {
+    if (review) window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [review]);
+
   function persist(next: BeginnerState) {
     localStorage.setItem(SAVE_KEY, serializeGame(next));
     setHasSave(true);
