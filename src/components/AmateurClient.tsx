@@ -410,7 +410,7 @@ function AmateurPlayerArea({
   return (
     <section className={`playerArea amateurPlayer faction-${player.factionId} ${player.controller === "human" ? "humanArea" : "npcArea"} ${player.eliminated ? "eliminated" : ""}`}>
       <header><span className="sigil small">{INFO[player.factionId].mark}</span><div><h2>{label(player)}</h2><small>{player.eliminated ? "Heir eliminated" : `${player.army.length} army · ${player.discard.length} discarded · ${player.unused.length} unused`}</small></div>{active && !player.eliminated && <span className="selectorBadge">Active</span>}</header>
-      <div className="heirRow"><span>Heir</span><AmateurCardView card={player.heir} visible selected={attackerId === player.heir.id || highlightIds.has(player.heir.id)} enabled={enabled(player.heir.id)} badge={player.eliminated ? "Eliminated" : "Heir"} onClick={() => onCard(player.heir.id)} /></div>
+      <div className="heirRow"><span>Heir</span><AmateurCardView card={player.heir} visible selected={attackerId === player.heir.id || highlightIds.has(player.heir.id)} enabled={enabled(player.heir.id)} badge={player.eliminated ? "Eliminated" : undefined} onClick={() => onCard(player.heir.id)} /></div>
       <div className="amateurArmy">{player.army.map((card, index) => <AmateurCardView key={card.id} card={card} selected={attackerId === card.id || highlightIds.has(card.id)} enabled={enabled(card.id)} badge={`#${index + 1}`} onClick={() => onCard(card.id)} />)}</div>
       {player.discard.length > 0 && <details className="discardViewer"><summary>View discard pile ({player.discard.length})</summary><div>{player.discard.map((card) => <AmateurCardView key={card.id} card={card} visible />)}</div></details>}
     </section>
@@ -430,7 +430,7 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
       ].map(({ player, card, role }) => {
         const score = review.scores.find((entry) => entry.cardId === card.id)!;
         const result = review.tie ? "Tied" : score.total === high ? "Winner" : "Defeated";
-        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><AmateurCardView card={card} visible defeated={result === "Defeated"} badge={card.type === "leader" ? "Heir" : undefined} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
+        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><AmateurCardView card={card} visible defeated={result === "Defeated"} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
       })}</div>
       <button className="reviewContinue" onClick={onContinue}>Continue</button>
     </section>
