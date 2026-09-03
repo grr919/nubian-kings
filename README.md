@@ -15,6 +15,20 @@ Private playtest prototype for the Core Beginner and Amateur games of *Nubian Ki
 - Special card effects deferred
 - The Hunchback's Son retained in canonical data but unavailable in prototype decks because its artwork is missing
 - Anonymous in-game feedback with optional contact email and privacy-limited diagnostics
+- Private Beginner multiplayer rooms for two to five participants, including mixed human and computer games
+- Server-authoritative multiplayer turns, hidden-card filtering, reconnection, and shared result pauses
+
+## Beginner multiplayer
+
+Beginner multiplayer uses anonymous Supabase identities and six-character private room codes. Apply `supabase/migrations/20260903_beginner_multiplayer.sql` to the connected Supabase project before opening multiplayer in production. The database tables have Row Level Security enabled and intentionally expose no direct browser policies; authenticated game actions pass through the server routes.
+
+Configure these Vercel environment variables:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SECRET_KEY`
+
+The secret key is server-only and must never be exposed through a `NEXT_PUBLIC_` variable.
 
 ## Feedback delivery
 
