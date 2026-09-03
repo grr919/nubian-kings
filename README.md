@@ -22,6 +22,8 @@ Private playtest prototype for the Core Beginner and Amateur games of *Nubian Ki
 
 Beginner multiplayer uses anonymous Supabase identities and six-character private room codes. Apply `supabase/migrations/20260903_beginner_multiplayer.sql` to the connected Supabase project before opening multiplayer in production. The database tables have Row Level Security enabled and intentionally expose no direct browser policies; authenticated game actions pass through the server routes.
 
+Amateur multiplayer additionally requires `supabase/migrations/20260904_amateur_multiplayer.sql`.
+
 The authoritative record of implemented, approved, and deferred multiplayer behavior is in [`docs/MULTIPLAYER.md`](docs/MULTIPLAYER.md).
 
 Configure these Vercel environment variables:

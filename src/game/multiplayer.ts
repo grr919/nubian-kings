@@ -13,6 +13,7 @@ export interface MultiplayerRoomSettings {
   npcCount: number;
   nileFloods: boolean;
   openingPlayer: MultiplayerOpeningPlayer;
+  victoryMode?: "standard" | "long";
 }
 
 export interface MultiplayerSeat {

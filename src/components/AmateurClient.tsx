@@ -296,6 +296,7 @@ export default function AmateurClient() {
         <div className="actions">
           <button onClick={() => setScreen("setup")}>New Amateur Game</button>
           <button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Amateur Game</button>
+          <a className="buttonLink" href="/amateur/multiplayer">Multiplayer</a>
         </div>
         <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">← Main Page</a></div>
         <small>Core profile · Special card effects are not used</small>

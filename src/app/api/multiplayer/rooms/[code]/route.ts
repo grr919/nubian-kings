@@ -5,6 +5,7 @@ import type { BeginnerState, Stat } from "@/game/types";
 type RoomRow = {
   code: string;
   host_user_id: string;
+  level: "beginner" | "amateur";
   status: "waiting" | "active" | "complete" | "abandoned";
   settings: MultiplayerRoomSettings;
   game_state?: BeginnerState;
@@ -62,6 +63,7 @@ async function authenticatedRoom(request: Request, rawCode: string) {
   const code = rawCode.toUpperCase();
   const loaded = await loadRoom(code);
   if (!loaded.room) return { error: Response.json({ error: "That multiplayer game no longer exists." }, { status: 404 }) };
+  if (loaded.room.level !== "beginner") return { error: Response.json({ error: "Open this room from the Amateur multiplayer page." }, { status: 409 }) };
   if (!loaded.players.some((player) => player.user_id === user.id)) return { error: Response.json({ error: "You are not a participant in this game." }, { status: 403 }) };
   return { ...loaded, room: loaded.room, user };
 }

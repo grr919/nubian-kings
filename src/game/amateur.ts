@@ -29,7 +29,7 @@ export interface AmateurPlayer {
   eliminated: boolean;
 }
 
-interface PreparedPlayer extends Omit<AmateurPlayer, "heir"> {
+export interface PreparedPlayer extends Omit<AmateurPlayer, "heir"> {
   heir?: AmateurCard;
 }
 
@@ -172,6 +172,10 @@ function chooseNpcHeir(player: PreparedPlayer) {
   return [...choices].sort((a, b) =>
     (b.strength + b.zeal + b.wealth) - (a.strength + a.zeal + a.wealth)
   )[0];
+}
+
+export function chooseBestNpcHeir(player: PreparedPlayer) {
+  return chooseNpcHeir(player);
 }
 
 export function startPreparedAmateurGame(prepared: PreparedAmateurGame, humanHeirId: string): AmateurState {

@@ -26,12 +26,13 @@ export async function POST(request: Request) {
   if (!Number.isInteger(totalSeats) || totalSeats < 2 || totalSeats > 5) return Response.json({ error: "Choose between two and five total players." }, { status: 400 });
   if (!Number.isInteger(npcCount) || npcCount < 0 || npcCount > totalSeats - 2) return Response.json({ error: "A multiplayer game must leave room for at least two people." }, { status: 400 });
   if (openingPlayer === "npc" && npcCount === 0) return Response.json({ error: "A computer cannot open a game without computer opponents." }, { status: 400 });
-  const settings: MultiplayerRoomSettings = { totalSeats, npcCount, nileFloods: Boolean(body.nileFloods), openingPlayer };
+  const level = body.level === "amateur" ? "amateur" : "beginner";
+  const settings: MultiplayerRoomSettings = { totalSeats, npcCount, nileFloods: Boolean(body.nileFloods), openingPlayer, ...(level === "amateur" ? { victoryMode: body.victoryMode === "long" ? "long" : "standard" } : {}) };
   const supabase = adminSupabase();
 
   for (let attempt = 0; attempt < 5; attempt++) {
     const code = roomCode();
-    const { error: roomError } = await supabase.from("nk_multiplayer_rooms").insert({ code, host_user_id: user.id, settings });
+    const { error: roomError } = await supabase.from("nk_multiplayer_rooms").insert({ code, host_user_id: user.id, level, settings });
     if (roomError) {
       if (roomError.code === "23505") continue;
       return Response.json({ error: "The room could not be created." }, { status: 500 });
