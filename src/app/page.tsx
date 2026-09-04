@@ -30,6 +30,7 @@ export default function Home() {
           </Link>
         </div>
         <small className="profileNote">Core profile · Special card effects are not used</small>
+        <footer className="landingFooter">© 2026 Nile South Games</footer>
       </section>
     </main>
   );
