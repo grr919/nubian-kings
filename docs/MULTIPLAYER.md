@@ -233,7 +233,7 @@ The following design is approved for implementation.
 | Disconnect replacement and voluntary transfer | Yes | No | No |
 | Eliminated-player observer choice | Yes | No | No |
 | Same-room rematch | Yes | Yes | Yes |
-| Seven-day cleanup | Yes | No | No |
+| Seven-day cleanup | Yes | Yes | Yes |
 | CAPTCHA or equivalent abuse protection | Yes | No | No |
 | Concurrent-game load testing | Yes | No | No |
 | Amateur multiplayer setup and private heir selection | Yes | Yes | Yes |
@@ -264,5 +264,6 @@ Required Vercel environment variables:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY`
+- `CRON_SECRET`
 
 No secret values belong in this document, the repository, browser-visible code, or screenshots.
