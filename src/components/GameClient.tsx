@@ -183,10 +183,10 @@ export default function GameClient() {
 
   if (screen === "home") return (
     <main className="landing"><section className="panel titlePanel">
-      <p className="kicker">CORE RULES PROTOTYPE</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
+      <p className="kicker">BEGINNER LEVEL: THE AL-AZHAR MOSQUE</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
       <p>Lead a medieval African faction through a contest of strength, zeal, and wealth.</p>
       <div className="actions"><button onClick={() => setScreen("setup")}>New Solo Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Solo Game</button><a className="buttonLink" href="/beginner/multiplayer">Multiplayer</a></div>
-      <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">← Main Page</a></div><small>Core prototype · Special card effects are deferred</small>
+      <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><small>Core prototype · Special card effects are deferred</small><footer className="landingFooter">© 2026 Nile South Games</footer>
     </section>{help && <Help onClose={() => setHelp(false)} />}</main>
   );
 
