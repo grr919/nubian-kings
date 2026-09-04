@@ -288,7 +288,7 @@ export default function AmateurClient() {
   if (screen === "home") return (
     <main className="landing amateurLanding">
       <section className="panel titlePanel">
-        <p className="kicker">THE CATHEDRAL AT QASR IBRIM</p>
+        <p className="kicker">AMATEUR LEVEL: THE CATHEDRAL AT QASR IBRIM</p>
         <EparchCrownMark className="royalMark" />
         <h1>Nubian Kings</h1>
         <p className="subtitle">Protected heirs and targeted attacks</p>
@@ -298,8 +298,9 @@ export default function AmateurClient() {
           <button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Amateur Game</button>
           <a className="buttonLink" href="/amateur/multiplayer">Multiplayer</a>
         </div>
-        <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">← Main Page</a></div>
+        <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">Return to Main</a></div>
         <small>Core profile · Special card effects are not used</small>
+        <footer className="landingFooter">© 2026 Nile South Games</footer>
       </section>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
     </main>
