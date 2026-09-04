@@ -241,12 +241,12 @@ The following design is approved for implementation.
 | Amateur synchronized result acknowledgement | Yes | Yes | Yes |
 | Amateur replenishment | Yes | Yes | Yes |
 | Amateur standard and long-game victory | Yes | Yes | Yes |
-| Master multiplayer shared lobby and setup | Yes | No | No |
-| Master private heir selection and twenty-card deal | Yes | No | No |
-| Master server-managed private pile construction | Yes | No | No |
-| Master hidden-information filtering | Yes | No | No |
-| Master pile combat and synchronized resolution | Yes | No | No |
-| Master replenishment and victory | Yes | No | No |
+| Master multiplayer shared lobby and setup | Yes | Yes | Yes |
+| Master private heir selection and twenty-card deal | Yes | Yes | Yes |
+| Master server-managed private pile construction | Yes | Yes | Yes |
+| Master hidden-information filtering | Yes | Yes | Yes |
+| Master pile combat and synchronized resolution | Yes | Yes | Yes |
+| Master replenishment and victory | Yes | Yes | Yes |
 
 ## Deployment dependencies
 
@@ -257,6 +257,7 @@ Multiplayer currently depends on:
 - Supabase Postgres for rooms, participants, authoritative game state, reviews, and revision control
 - The migration in `supabase/migrations/20260903_beginner_multiplayer.sql`
 - The migration in `supabase/migrations/20260904_amateur_multiplayer.sql`
+- The migration in `supabase/migrations/20260905_master_multiplayer.sql`
 
 Required Vercel environment variables:
 
