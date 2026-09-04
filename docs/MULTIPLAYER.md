@@ -232,7 +232,7 @@ The following design is approved for implementation.
 | Beginner persistent final matchup | Yes | Yes | Yes |
 | Disconnect replacement and voluntary transfer | Yes | No | No |
 | Eliminated-player observer choice | Yes | No | No |
-| Same-room rematch | Yes | No | No |
+| Same-room rematch | Yes | Yes | Yes |
 | Seven-day cleanup | Yes | No | No |
 | CAPTCHA or equivalent abuse protection | Yes | No | No |
 | Concurrent-game load testing | Yes | No | No |

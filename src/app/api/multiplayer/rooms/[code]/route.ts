@@ -83,7 +83,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ co
   const body = await request.json().catch(() => ({}));
   const action = body.action;
 
-  if (action === "choose-faction") {
+  if (action === "rematch") {
+    if (room.host_user_id !== user.id) return Response.json({ error: "Only the host can start a rematch." }, { status: 403 });
+    if (room.status !== "complete") return Response.json({ error: "The current game must be complete before a rematch." }, { status: 409 });
+    if (players.some((player) => !player.faction_id)) return Response.json({ error: "Every participant must retain a faction." }, { status: 409 });
+    const rematchSeats: MultiplayerSeat[] = players.map((player) => ({ id: player.id, userId: player.user_id ?? undefined, displayName: player.display_name, controller: player.controller, factionId: player.faction_id!, seatOrder: player.seat_order }));
+    const state = createMultiplayerBeginnerGame(rematchSeats, room.settings);
+    const { data, error } = await supabase.from("nk_multiplayer_rooms").update({ status: "active", game_state: state, review: null, review_acks: [], revision: room.revision + 1, updated_at: new Date().toISOString() }).eq("code", room.code).eq("revision", room.revision).select().maybeSingle();
+    if (error || !data) return Response.json({ error: "The room changed while the rematch was starting." }, { status: 409 });
+  } else if (action === "choose-faction") {
     if (room.status !== "waiting") return Response.json({ error: "Factions cannot be changed after the game begins." }, { status: 409 });
     if (!MULTIPLAYER_FACTIONS.includes(body.factionId)) return Response.json({ error: "Choose an available faction." }, { status: 400 });
     const taken = players.some((player) => player.faction_id === body.factionId && player.user_id !== user.id);
