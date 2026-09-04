@@ -9,7 +9,7 @@ const data = JSON.parse(fs.readFileSync(cardsPath, "utf8"));
 // - matched Christian cards: JPEG statistics are authoritative
 // - Ethiopian Jewish cards: JPEG statistics remain authoritative
 // - Egyptian Muslim cards: spreadsheet statistics remain authoritative
-// - John of Phanijoit (NK-ROW-041) remains unreconciled because its two JPEGs conflict
+// - John of Phanijoit: preserve the lower-stat JPEG (51 Blue.jpg, 2/7/3) and remove the higher-stat duplicate (50 Blue.jpg, 5/9/3)
 const christianJpegOverrides = {
   "NK-ROW-002": { strength: 5, zeal: 2, wealth: 5 },
   "NK-ROW-004": { strength: 3, zeal: 6, wealth: 6 },
@@ -23,6 +23,7 @@ const christianJpegOverrides = {
   "NK-ROW-026": { strength: 7, zeal: 4, wealth: 9 },
 
   "NK-ROW-040": { strength: 3, zeal: 7, wealth: 9 },
+  "NK-ROW-041": { strength: 2, zeal: 7, wealth: 3 },
   "NK-ROW-043": { strength: 2, zeal: 7, wealth: 3 },
   "NK-ROW-044": { strength: 4, zeal: 9, wealth: 3 },
   "NK-ROW-045": { strength: 3, zeal: 7, wealth: 7 },
@@ -50,6 +51,7 @@ const christianJpegOverrides = {
 
 let changedStats = 0;
 let christianJpegAuthority = 0;
+let removedHigherPhanijoitAsset = false;
 
 for (const card of data.cards) {
   const override = christianJpegOverrides[card.id];
@@ -58,19 +60,25 @@ for (const card of data.cards) {
     changedStats++;
   }
 
+  if (card.id === "NK-ROW-041" && Array.isArray(card.assets)) {
+    const before = card.assets.length;
+    card.assets = card.assets.filter((asset) => asset.filename !== "50 Blue.jpg");
+    removedHigherPhanijoitAsset = card.assets.length < before;
+  }
+
   const matchedChristian = card.religion === "Ch" && Array.isArray(card.assets) && card.assets.length > 0;
-  if (matchedChristian && card.id !== "NK-ROW-041") {
+  if (matchedChristian) {
     card.source = { ...card.source, statisticsAuthority: "JPEG" };
     christianJpegAuthority++;
   }
 }
 
-data.statisticsAuthority = "JPEG for matched Christian cards except unresolved John of Phanijoit; JPEG for Ethiopian Jewish cards; spreadsheet for Egyptian Muslim cards";
+data.statisticsAuthority = "JPEG for matched Christian cards including lower-stat John of Phanijoit; JPEG for Ethiopian Jewish cards; spreadsheet for Egyptian Muslim cards";
 data.reconciliation = {
   approved: "2026-09-04",
   christianJpegStatOverrides: Object.keys(christianJpegOverrides).length,
-  unresolvedChristianException: "NK-ROW-041 John of Phanijoit — conflicting JPEG statistics"
+  resolvedChristianException: "NK-ROW-041 John of Phanijoit — higher-stat 50 Blue.jpg removed; lower-stat 51 Blue.jpg (2/7/3) preserved"
 };
 
 fs.writeFileSync(cardsPath, JSON.stringify(data, null, 2) + "\n");
-console.log(JSON.stringify({ changedStats, christianJpegAuthority, unresolved: ["NK-ROW-041"] }, null, 2));
+console.log(JSON.stringify({ changedStats, christianJpegAuthority, removedHigherPhanijoitAsset, johnOfPhanijoit: { strength: 2, zeal: 7, wealth: 3, preservedAsset: "51 Blue.jpg" } }, null, 2));
