@@ -360,10 +360,7 @@ export default function AmateurClient() {
 
   return (
     <main className="gamePage amateurGame">
-      <header className="gameHeader">
-        <div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b><small>Amateur · Turn {state.round} · {state.victoryMode === "standard" ? "First heir" : "Last heir"} victory</small></div>
-        <div className="toolbar"><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/amateur">Leave</a></div>
-      </header>
+      <header className="gameHeader"><div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b></div></header>
       <section className="statusBar">
         <span className={`turnDot ${thinking ? "thinking" : ""}`} />
         <div>
@@ -413,7 +410,7 @@ export default function AmateurClient() {
 
       {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir" : `${INFO[winner.factionId].name} are victorious`}</h2><a className="buttonLink" href="/amateur">Play Again</a></section>}
       {eliminationPending && !review && <EliminatedGamePrompt onContinue={() => setWatchAfterElimination(true)} onEnd={endEliminatedGame} />}
-      <aside className="history"><h2>Game record</h2>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}</aside>
+      <aside className="history"><h2>Game record</h2><small style={{display:"block",color:"var(--muted)",marginTop:-6,marginBottom:12}}>Amateur · Round {state.round} · Seed {state.random.seed}</small>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}<div className="toolbar" style={{justifyContent:"flex-start",flexWrap:"nowrap",overflowX:"auto",marginTop:16}}><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/amateur">Leave</a></div></aside>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
     </main>
   );
