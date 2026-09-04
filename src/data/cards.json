@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "source": "NK DB.xls",
-  "statisticsAuthority": "spreadsheet",
+  "source": "NK DB.xls + Nubian Kings Reconciliation.csv",
+  "statisticsAuthority": "JPEG for Ethiopian Jewish cards; spreadsheet for all other factions",
   "cards": [
     {
       "id": "NK-ROW-002",
@@ -24,7 +24,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 2
+        "spreadsheetRow": 2,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -48,7 +49,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 3
+        "spreadsheetRow": 3,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -72,7 +74,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 4
+        "spreadsheetRow": 4,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -96,7 +99,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 5
+        "spreadsheetRow": 5,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -120,7 +124,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 6
+        "spreadsheetRow": 6,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -144,7 +149,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 7
+        "spreadsheetRow": 7,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -168,7 +174,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 8
+        "spreadsheetRow": 8,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -198,7 +205,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 9
+        "spreadsheetRow": 9,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -228,7 +236,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 10
+        "spreadsheetRow": 10,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -258,7 +267,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 11
+        "spreadsheetRow": 11,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -288,7 +298,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 12
+        "spreadsheetRow": 12,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -312,7 +323,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 13
+        "spreadsheetRow": 13,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -336,7 +348,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 14
+        "spreadsheetRow": 14,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -360,7 +373,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 15
+        "spreadsheetRow": 15,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -384,7 +398,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 16
+        "spreadsheetRow": 16,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -408,7 +423,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 17
+        "spreadsheetRow": 17,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -432,7 +448,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 18
+        "spreadsheetRow": 18,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -456,7 +473,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 19
+        "spreadsheetRow": 19,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -480,7 +498,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 20
+        "spreadsheetRow": 20,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -504,7 +523,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 21
+        "spreadsheetRow": 21,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -528,7 +548,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 22
+        "spreadsheetRow": 22,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -552,7 +573,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 23
+        "spreadsheetRow": 23,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -576,7 +598,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 24
+        "spreadsheetRow": 24,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -600,7 +623,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 25
+        "spreadsheetRow": 25,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -624,7 +648,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 26
+        "spreadsheetRow": 26,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -648,7 +673,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 27
+        "spreadsheetRow": 27,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -672,7 +698,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 28
+        "spreadsheetRow": 28,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -696,7 +723,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 29
+        "spreadsheetRow": 29,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -720,7 +748,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 30
+        "spreadsheetRow": 30,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -744,7 +773,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 31
+        "spreadsheetRow": 31,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -768,7 +798,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 32
+        "spreadsheetRow": 32,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -792,7 +823,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 33
+        "spreadsheetRow": 33,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -816,7 +848,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 34
+        "spreadsheetRow": 34,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -840,7 +873,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 35
+        "spreadsheetRow": 35,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -864,7 +898,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 36
+        "spreadsheetRow": 36,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -888,7 +923,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 37
+        "spreadsheetRow": 37,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -912,7 +948,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 38
+        "spreadsheetRow": 38,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -936,7 +973,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 39
+        "spreadsheetRow": 39,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -960,7 +998,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 40
+        "spreadsheetRow": 40,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -990,7 +1029,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 41
+        "spreadsheetRow": 41,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1007,7 +1047,8 @@
       "deckCopies": 0,
       "availableInPrototype": false,
       "source": {
-        "spreadsheetRow": 42
+        "spreadsheetRow": 42,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1031,7 +1072,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 43
+        "spreadsheetRow": 43,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1055,7 +1097,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 44
+        "spreadsheetRow": 44,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1079,7 +1122,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 45
+        "spreadsheetRow": 45,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1103,7 +1147,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 46
+        "spreadsheetRow": 46,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1127,7 +1172,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 47
+        "spreadsheetRow": 47,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1151,7 +1197,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 48
+        "spreadsheetRow": 48,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1175,7 +1222,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 49
+        "spreadsheetRow": 49,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1199,7 +1247,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 50
+        "spreadsheetRow": 50,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1223,7 +1272,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 51
+        "spreadsheetRow": 51,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1247,7 +1297,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 52
+        "spreadsheetRow": 52,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1271,7 +1322,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 53
+        "spreadsheetRow": 53,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1295,7 +1347,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 54
+        "spreadsheetRow": 54,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1319,7 +1372,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 55
+        "spreadsheetRow": 55,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1343,7 +1397,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 56
+        "spreadsheetRow": 56,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1373,7 +1428,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 57
+        "spreadsheetRow": 57,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1403,7 +1459,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 58
+        "spreadsheetRow": 58,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1427,7 +1484,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 59
+        "spreadsheetRow": 59,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1451,7 +1509,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 60
+        "spreadsheetRow": 60,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1475,7 +1534,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 61
+        "spreadsheetRow": 61,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1499,7 +1559,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 62
+        "spreadsheetRow": 62,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1523,7 +1584,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 63
+        "spreadsheetRow": 63,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1547,7 +1609,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 64
+        "spreadsheetRow": 64,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1571,7 +1634,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 65
+        "spreadsheetRow": 65,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1595,7 +1659,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 66
+        "spreadsheetRow": 66,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1619,7 +1684,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 67
+        "spreadsheetRow": 67,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1643,7 +1709,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 68
+        "spreadsheetRow": 68,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1667,7 +1734,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 69
+        "spreadsheetRow": 69,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1691,7 +1759,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 70
+        "spreadsheetRow": 70,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1715,7 +1784,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 71
+        "spreadsheetRow": 71,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1739,7 +1809,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 72
+        "spreadsheetRow": 72,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1763,7 +1834,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 73
+        "spreadsheetRow": 73,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1787,7 +1859,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 74
+        "spreadsheetRow": 74,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1811,7 +1884,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 75
+        "spreadsheetRow": 75,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1835,7 +1909,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 76
+        "spreadsheetRow": 76,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1859,7 +1934,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 77
+        "spreadsheetRow": 77,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1883,7 +1959,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 78
+        "spreadsheetRow": 78,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1907,7 +1984,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 79
+        "spreadsheetRow": 79,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1931,7 +2009,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 80
+        "spreadsheetRow": 80,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1955,7 +2034,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 81
+        "spreadsheetRow": 81,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -1979,7 +2059,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 82
+        "spreadsheetRow": 82,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2003,7 +2084,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 83
+        "spreadsheetRow": 83,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2027,7 +2109,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 84
+        "spreadsheetRow": 84,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2051,7 +2134,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 85
+        "spreadsheetRow": 85,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2075,7 +2159,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 86
+        "spreadsheetRow": 86,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2099,7 +2184,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 87
+        "spreadsheetRow": 87,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2123,7 +2209,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 88
+        "spreadsheetRow": 88,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2147,7 +2234,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 89
+        "spreadsheetRow": 89,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2171,7 +2259,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 90
+        "spreadsheetRow": 90,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2195,7 +2284,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 91
+        "spreadsheetRow": 91,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2225,7 +2315,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 92
+        "spreadsheetRow": 92,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2249,7 +2340,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 93
+        "spreadsheetRow": 93,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2273,7 +2365,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 94
+        "spreadsheetRow": 94,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2297,7 +2390,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 95
+        "spreadsheetRow": 95,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2321,7 +2415,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 96
+        "spreadsheetRow": 96,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2345,7 +2440,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 97
+        "spreadsheetRow": 97,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2375,7 +2471,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 98
+        "spreadsheetRow": 98,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2399,7 +2496,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 99
+        "spreadsheetRow": 99,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2423,7 +2521,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 100
+        "spreadsheetRow": 100,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2447,7 +2546,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 101
+        "spreadsheetRow": 101,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2471,7 +2571,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 102
+        "spreadsheetRow": 102,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2495,7 +2596,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 103
+        "spreadsheetRow": 103,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2519,7 +2621,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 104
+        "spreadsheetRow": 104,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2543,7 +2646,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 105
+        "spreadsheetRow": 105,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2567,7 +2671,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 106
+        "spreadsheetRow": 106,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2591,7 +2696,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 107
+        "spreadsheetRow": 107,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2615,7 +2721,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 108
+        "spreadsheetRow": 108,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2639,7 +2746,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 109
+        "spreadsheetRow": 109,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2663,7 +2771,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 110
+        "spreadsheetRow": 110,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2687,7 +2796,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 111
+        "spreadsheetRow": 111,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2711,7 +2821,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 112
+        "spreadsheetRow": 112,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2735,7 +2846,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 113
+        "spreadsheetRow": 113,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2759,7 +2871,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 114
+        "spreadsheetRow": 114,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2783,7 +2896,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 115
+        "spreadsheetRow": 115,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2807,7 +2921,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 116
+        "spreadsheetRow": 116,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2831,7 +2946,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 117
+        "spreadsheetRow": 117,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2855,7 +2971,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 118
+        "spreadsheetRow": 118,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2879,7 +2996,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 119
+        "spreadsheetRow": 119,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2903,7 +3021,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 120
+        "spreadsheetRow": 120,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2927,7 +3046,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 121
+        "spreadsheetRow": 121,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2951,7 +3071,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 122
+        "spreadsheetRow": 122,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2975,7 +3096,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 123
+        "spreadsheetRow": 123,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -2999,7 +3121,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 124
+        "spreadsheetRow": 124,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3023,7 +3146,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 125
+        "spreadsheetRow": 125,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3047,7 +3171,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 126
+        "spreadsheetRow": 126,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3077,7 +3202,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 127
+        "spreadsheetRow": 127,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3101,7 +3227,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 128
+        "spreadsheetRow": 128,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3125,7 +3252,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 129
+        "spreadsheetRow": 129,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3149,7 +3277,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 130
+        "spreadsheetRow": 130,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3173,7 +3302,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 131
+        "spreadsheetRow": 131,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3197,7 +3327,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 132
+        "spreadsheetRow": 132,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3221,7 +3352,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 133
+        "spreadsheetRow": 133,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3245,7 +3377,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 134
+        "spreadsheetRow": 134,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3269,7 +3402,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 135
+        "spreadsheetRow": 135,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3293,7 +3427,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 136
+        "spreadsheetRow": 136,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3317,7 +3452,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 137
+        "spreadsheetRow": 137,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3341,7 +3477,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 138
+        "spreadsheetRow": 138,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3371,7 +3508,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 139
+        "spreadsheetRow": 139,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3395,7 +3533,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 140
+        "spreadsheetRow": 140,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3419,7 +3558,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 141
+        "spreadsheetRow": 141,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3443,7 +3583,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 142
+        "spreadsheetRow": 142,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3467,7 +3608,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 143
+        "spreadsheetRow": 143,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3491,7 +3633,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 144
+        "spreadsheetRow": 144,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3515,7 +3658,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 145
+        "spreadsheetRow": 145,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3539,7 +3683,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 146
+        "spreadsheetRow": 146,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
@@ -3563,15 +3708,16 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 147
+        "spreadsheetRow": 147,
+        "statisticsAuthority": "spreadsheet"
       }
     },
     {
       "id": "NK-ROW-148",
       "name": "Yodit the Beta Israel Queen",
-      "strength": 9,
+      "strength": 6,
       "zeal": 9,
-      "wealth": 9,
+      "wealth": 6,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -3587,13 +3733,14 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 148
+        "spreadsheetRow": 148,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-149",
       "name": "Beta Israel Tribesmen",
-      "strength": 6,
+      "strength": 3,
       "zeal": 5,
       "wealth": 2,
       "religion": "J",
@@ -3617,13 +3764,14 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 149
+        "spreadsheetRow": 149,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-150",
       "name": "Beta Israel Warrior",
-      "strength": 7,
+      "strength": 5,
       "zeal": 7,
       "wealth": 3,
       "religion": "J",
@@ -3647,13 +3795,14 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 150
+        "spreadsheetRow": 150,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-151",
       "name": "Beta Israel Ironworker",
-      "strength": 6,
+      "strength": 4,
       "zeal": 5,
       "wealth": 5,
       "religion": "J",
@@ -3671,14 +3820,15 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 151
+        "spreadsheetRow": 151,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-152",
       "name": "Jewish Merchant",
-      "strength": 2,
-      "zeal": 4,
+      "strength": 1,
+      "zeal": 3,
       "wealth": 6,
       "religion": "J",
       "nation": "Et",
@@ -3695,14 +3845,15 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 152
+        "spreadsheetRow": 152,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-153",
       "name": "Jewish Traveler",
-      "strength": 3,
-      "zeal": 4,
+      "strength": 2,
+      "zeal": 3,
       "wealth": 5,
       "religion": "J",
       "nation": "Et",
@@ -3719,14 +3870,15 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 153
+        "spreadsheetRow": 153,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-154",
       "name": "Kahen",
       "strength": 1,
-      "zeal": 7,
+      "zeal": 6,
       "wealth": 4,
       "religion": "J",
       "nation": "Et",
@@ -3743,14 +3895,15 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 154
+        "spreadsheetRow": 154,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-155",
       "name": "Haymanot Scholar",
       "strength": 1,
-      "zeal": 6,
+      "zeal": 5,
       "wealth": 4,
       "religion": "J",
       "nation": "Et",
@@ -3773,14 +3926,15 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 155
+        "spreadsheetRow": 155,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-156",
       "name": "Beta Israel Priest",
       "strength": 1,
-      "zeal": 8,
+      "zeal": 7,
       "wealth": 4,
       "religion": "J",
       "nation": "Et",
@@ -3803,14 +3957,15 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 156
+        "spreadsheetRow": 156,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-157",
       "name": "A Farmer",
       "strength": 2,
-      "zeal": 4,
+      "zeal": 3,
       "wealth": 2,
       "religion": "J",
       "nation": "Et",
@@ -3827,15 +3982,16 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 157
+        "spreadsheetRow": 157,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-158",
       "name": "Mashafah Kedus",
       "strength": 0,
-      "zeal": 3,
-      "wealth": 2,
+      "zeal": 0,
+      "wealth": 1,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -3851,15 +4007,16 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 158
+        "spreadsheetRow": 158,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-159",
       "name": "The Sacred Geniza",
       "strength": 0,
-      "zeal": 3,
-      "wealth": 2,
+      "zeal": 0,
+      "wealth": 1,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -3875,15 +4032,16 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 159
+        "spreadsheetRow": 159,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-160",
       "name": "A Tabot",
       "strength": 0,
-      "zeal": 7,
-      "wealth": 3,
+      "zeal": 0,
+      "wealth": 1,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -3899,7 +4057,8 @@
       "deckCopies": 2,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 160
+        "spreadsheetRow": 160,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -3907,7 +4066,7 @@
       "name": "Shalot Bet",
       "strength": 3,
       "zeal": 3,
-      "wealth": 4,
+      "wealth": 3,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -3923,7 +4082,8 @@
       "deckCopies": 4,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 161
+        "spreadsheetRow": 161,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -3931,7 +4091,7 @@
       "name": "Nile Trading Post",
       "strength": 2,
       "zeal": 0,
-      "wealth": 4,
+      "wealth": 3,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -3947,7 +4107,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 162
+        "spreadsheetRow": 162,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -3955,7 +4116,7 @@
       "name": "Ore Deposit",
       "strength": 1,
       "zeal": 0,
-      "wealth": 5,
+      "wealth": 4,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -3971,7 +4132,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 163
+        "spreadsheetRow": 163,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -3995,7 +4157,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 164
+        "spreadsheetRow": 164,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -4003,7 +4166,7 @@
       "name": "Farmland",
       "strength": 1,
       "zeal": 0,
-      "wealth": 3,
+      "wealth": 2,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -4019,7 +4182,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 165
+        "spreadsheetRow": 165,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -4027,7 +4191,7 @@
       "name": "Grain Warehouse",
       "strength": 2,
       "zeal": 0,
-      "wealth": 4,
+      "wealth": 3,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -4043,7 +4207,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 166
+        "spreadsheetRow": 166,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -4051,7 +4216,7 @@
       "name": "Palm Groves",
       "strength": 1,
       "zeal": 0,
-      "wealth": 3,
+      "wealth": 2,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -4067,7 +4232,8 @@
       "deckCopies": 1,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 167
+        "spreadsheetRow": 167,
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -4075,7 +4241,7 @@
       "name": "Vineyard",
       "strength": 1,
       "zeal": 0,
-      "wealth": 3,
+      "wealth": 2,
       "religion": "J",
       "nation": "Et",
       "factionId": "ethiopian-jews",
@@ -4091,7 +4257,8 @@
       "deckCopies": 3,
       "availableInPrototype": true,
       "source": {
-        "spreadsheetRow": 168
+        "spreadsheetRow": 168,
+        "statisticsAuthority": "JPEG"
       }
     }
   ]
