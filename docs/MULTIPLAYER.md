@@ -34,6 +34,8 @@ This document is the authoritative record of multiplayer decisions for *Nubian K
 - During that period, reconnecting from the same browser restores control automatically.
 - After two minutes, the host may permanently replace the disconnected human with a computer opponent.
 - A player may deliberately leave and permanently transfer control to a computer after confirming the choice.
+- If the host transfers control voluntarily, host authority passes to another human.
+- If the host is disconnected for two minutes, another human may replace the host and inherit host authority.
 - An eliminated human may leave the game or remain as an observer.
 - Active games are saved automatically on the server.
 - Inactive games may be deleted after seven days.
@@ -230,7 +232,7 @@ The following design is approved for implementation.
 | Beginner hidden-information filtering | Yes | Yes | Yes |
 | Beginner trait-specific results | Yes | Yes | Yes |
 | Beginner persistent final matchup | Yes | Yes | Yes |
-| Disconnect replacement and voluntary transfer | Yes | No | No |
+| Disconnect replacement and voluntary transfer | Yes | Yes | Yes |
 | Eliminated-player observer choice | Yes | No | No |
 | Same-room rematch | Yes | Yes | Yes |
 | Seven-day cleanup | Yes | Yes | Yes |
@@ -258,6 +260,7 @@ Multiplayer currently depends on:
 - The migration in `supabase/migrations/20260903_beginner_multiplayer.sql`
 - The migration in `supabase/migrations/20260904_amateur_multiplayer.sql`
 - The migration in `supabase/migrations/20260905_master_multiplayer.sql`
+- The migration in `supabase/migrations/20260904_player_presence.sql`
 
 Required Vercel environment variables:
 

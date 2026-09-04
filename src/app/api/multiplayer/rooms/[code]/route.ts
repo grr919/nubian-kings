@@ -1,6 +1,7 @@
 import { adminSupabase, multiplayerConfigured, requestUser } from "@/lib/supabase-server";
 import { chooseMultiplayerNpcStat, createMultiplayerBeginnerGame, MULTIPLAYER_FACTIONS, playMultiplayerComparison, publicBeginnerState, publicReview, type MultiplayerReview, type MultiplayerRoomSettings, type MultiplayerSeat } from "@/game/multiplayer";
 import type { BeginnerState, Stat } from "@/game/types";
+import { disconnectedPlayerMayBeReplaced } from "@/game/multiplayer-presence";
 
 type RoomRow = {
   code: string;
@@ -18,10 +19,12 @@ type PlayerRow = {
   id: string;
   room_code: string;
   user_id: string | null;
+  former_user_id: string | null;
   display_name: string;
   controller: "human" | "npc";
   faction_id: string | null;
   seat_order: number;
+  last_seen_at: string;
 };
 
 async function loadRoom(code: string) {
@@ -44,12 +47,13 @@ function responseRoom(room: RoomRow, players: PlayerRow[], userId: string) {
     acknowledged: room.review_acks?.includes(userId) ?? false,
     seats: players.map((player) => ({
       id: player.id,
-      userId: player.user_id ?? undefined,
+      userId: player.user_id ?? player.former_user_id ?? undefined,
       displayName: player.display_name,
       controller: player.controller,
       factionId: player.faction_id ?? undefined,
       seatOrder: player.seat_order,
       isYou: player.user_id === userId,
+      replaceable: player.controller === "human" && player.user_id !== userId && disconnectedPlayerMayBeReplaced(player.last_seen_at),
     })),
     state: state ? publicBeginnerState(state) : undefined,
     review: state ? publicReview(room.review, state) : undefined,
@@ -72,7 +76,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
   const { code } = await params;
   const result = await authenticatedRoom(request, code);
   if ("error" in result) return result.error;
-  return Response.json(responseRoom(result.room, result.players, result.user.id));
+  await result.supabase.from("nk_multiplayer_players").update({ last_seen_at: new Date().toISOString() }).eq("room_code", result.room.code).eq("user_id", result.user.id);
+  const refreshed = await loadRoom(result.room.code);
+  return Response.json(responseRoom(refreshed.room!, refreshed.players, result.user.id));
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ code: string }> }) {
@@ -83,7 +89,23 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ co
   const body = await request.json().catch(() => ({}));
   const action = body.action;
 
-  if (action === "rematch") {
+  if (action === "transfer-self" || action === "replace-player") {
+    const targetUserId = action === "transfer-self" ? user.id : body.userId;
+    const target = players.find((player) => player.user_id === targetUserId && player.controller === "human");
+    if (!target) return Response.json({ error: "That human seat is no longer available." }, { status: 409 });
+    const replacingHost = targetUserId === room.host_user_id;
+    if (action === "replace-player" && room.host_user_id !== user.id && !replacingHost) return Response.json({ error: "Only the host can replace a disconnected player." }, { status: 403 });
+    if (action === "replace-player" && !disconnectedPlayerMayBeReplaced(target.last_seen_at)) return Response.json({ error: "That player still has time to reconnect." }, { status: 409 });
+    const successorHost = replacingHost ? (action === "replace-player" ? user.id : players.find((player) => player.controller === "human" && player.user_id !== targetUserId)?.user_id) : room.host_user_id;
+    const state = room.game_state ? structuredClone(room.game_state) : undefined;
+    const gamePlayer = state?.players.find((player) => player.id === targetUserId);
+    if (gamePlayer) (gamePlayer as { controller: "human" | "npc" }).controller = "npc";
+    const { error: playerError } = await supabase.from("nk_multiplayer_players").update({ controller: "npc", former_user_id: targetUserId, user_id: null, display_name: `${target.display_name} (Computer)` }).eq("id", target.id).eq("user_id", targetUserId);
+    if (playerError) return Response.json({ error: "The seat could not be transferred." }, { status: 409 });
+    const { data, error } = await supabase.from("nk_multiplayer_rooms").update({ host_user_id: successorHost ?? room.host_user_id, settings: { ...room.settings, npcCount: room.settings.npcCount + 1 }, game_state: state, revision: room.revision + 1, updated_at: new Date().toISOString() }).eq("code", room.code).eq("revision", room.revision).select().maybeSingle();
+    if (error || !data) return Response.json({ error: "The room changed while the seat was transferring." }, { status: 409 });
+    if (action === "transfer-self") return Response.json({ transferred: true });
+  } else if (action === "rematch") {
     if (room.host_user_id !== user.id) return Response.json({ error: "Only the host can start a rematch." }, { status: 403 });
     if (room.status !== "complete") return Response.json({ error: "The current game must be complete before a rematch." }, { status: 409 });
     if (players.some((player) => !player.faction_id)) return Response.json({ error: "Every participant must retain a faction." }, { status: 409 });
