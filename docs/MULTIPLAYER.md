@@ -1,9 +1,9 @@
 # Nubian Kings Multiplayer Specification
 
 Status: active design document  
-Last updated: September 3, 2026
+Last updated: September 4, 2026
 
-This document is the authoritative record of multiplayer decisions for *Nubian Kings: The Battle for Africa*. It distinguishes behavior already implemented for Beginner from approved work for Amateur and deferred work for Master.
+This document is the authoritative record of multiplayer decisions for *Nubian Kings: The Battle for Africa*. It distinguishes implemented behavior for Beginner and Amateur from approved work for Master.
 
 ## Shared multiplayer model
 
@@ -98,7 +98,7 @@ This document is the authoritative record of multiplayer decisions for *Nubian K
 
 ## Amateur multiplayer
 
-The following behavior is approved for implementation.
+The following behavior is implemented.
 
 ### Setup and heirs
 
@@ -144,7 +144,71 @@ The following behavior is approved for implementation.
 
 ## Master multiplayer
 
-Master multiplayer is deferred. Its implementation must not be inferred automatically from Beginner or Amateur because hidden army construction, multi-card fighting units, and other Master-specific decisions require a separate design review.
+The following design is approved for implementation.
+
+### Shared room behavior
+
+- Master reuses the private six-character room-code system.
+- Games contain two to five total participants and at least two humans; remaining seats may be assigned to computer opponents.
+- The host selects participant count, computer opponents, Nile Floods, opening initiative, and standard or long-game victory.
+- Every human selects a unique available faction.
+- Anonymous Supabase identities, same-browser reconnection, server authority, deliberate result pacing, and the established multiplayer language and presentation rules apply unchanged.
+
+### Private heir selection and deal
+
+- Each human privately selects any eligible Leader from that faction.
+- A confirmed heir choice is locked.
+- Unchosen Leaders return to that player's deck before the twenty-card army is dealt.
+- All heirs are revealed simultaneously only after every human has confirmed an heir.
+- The server chooses computer heirs.
+- The server privately deals each human twenty cards. No participant may inspect another player's cards.
+
+### Private army construction
+
+- Each human independently arranges all twenty cards into legal Place–Person–Thing piles.
+- A Leader may occupy the Person position.
+- A Thing may not stand alone in the initial army.
+- The interface provides Undo, Reset, and Auto-arrange.
+- The server stores each construction action, validates pile legality, and permits same-browser reconnection without losing the draft.
+- A player presses **Confirm Army** when every card belongs to a legal pile. Confirmation is irreversible.
+- Play begins only after every human has confirmed.
+- During construction, opponents see only whether each participant is arranging or ready. They never receive that participant's cards, types, pile structure, or selections.
+- Computer armies are legally arranged on the server without using knowledge unavailable under the rules.
+
+### Public information and attacks
+
+- When play begins, each participant may see every faction, revealed heir, number of army piles, and number of cards in each pile.
+- The identities, types, statistics, and internal order of face-down cards remain hidden.
+- On the active player's turn, that player selects a statistic, an attacking pile, an opponent, and a target pile, then confirms the complete attack.
+- An heir cannot attack until every card in its army is gone.
+- An enemy heir cannot be targeted until every card in its army is gone.
+- Every human sees the declared units and statistic while their cards remain hidden.
+- The attacker deliberately chooses **Resolve Attack** after the declaration pause.
+
+### Resolution and acknowledgement
+
+- Resolution reveals every card in the attacking and defending units.
+- Each unit's score is the selected statistic's combined card total plus any Nile Floods die roll.
+- A defeated pile is discarded in full.
+- A tie defeats neither unit and provides no replenishment.
+- Every non-eliminated human acknowledges an ordinary result before play advances.
+- The decisive final battle remains visible until each human deliberately selects **View Final Result**.
+
+### Replenishment
+
+- After a non-tied battle, the winning player receives any available replenishment decision.
+- A human winner may draw one hidden reserve card as a new standalone unit, up to the twenty-card army limit, or skip.
+- The replenishment card does not join or reopen an existing pile.
+- The server makes computer replenishment decisions.
+- Play remains paused until replenishment is completed or skipped.
+
+### Victory, elimination, and recovery
+
+- Standard victory ends when the first heir is eliminated.
+- Long-game victory continues until only one heir remains.
+- Eliminated humans may leave or remain as observers.
+- Final victory or defeat appears only after the decisive matchup has been reviewed.
+- Active game state and private construction drafts are stored on the server for reconnection.
 
 ## Deferred shared features
 
@@ -155,7 +219,6 @@ Master multiplayer is deferred. Its implementation must not be inferred automati
 - Multiple remembered rooms in one browser
 - Spectators who were not original participants
 - Rankings, statistics, or persistent player profiles
-- Master multiplayer
 
 ## Implementation checklist
 
@@ -173,12 +236,17 @@ Master multiplayer is deferred. Its implementation must not be inferred automati
 | Seven-day cleanup | Yes | No | No |
 | CAPTCHA or equivalent abuse protection | Yes | No | No |
 | Concurrent-game load testing | Yes | No | No |
-| Amateur multiplayer setup and private heir selection | Yes | No | No |
-| Amateur declared attacks and resolution pause | Yes | No | No |
-| Amateur synchronized result acknowledgement | Yes | No | No |
-| Amateur replenishment | Yes | No | No |
-| Amateur standard and long-game victory | Yes | No | No |
-| Master multiplayer | No | No | No |
+| Amateur multiplayer setup and private heir selection | Yes | Yes | Yes |
+| Amateur declared attacks and resolution pause | Yes | Yes | Yes |
+| Amateur synchronized result acknowledgement | Yes | Yes | Yes |
+| Amateur replenishment | Yes | Yes | Yes |
+| Amateur standard and long-game victory | Yes | Yes | Yes |
+| Master multiplayer shared lobby and setup | Yes | No | No |
+| Master private heir selection and twenty-card deal | Yes | No | No |
+| Master server-managed private pile construction | Yes | No | No |
+| Master hidden-information filtering | Yes | No | No |
+| Master pile combat and synchronized resolution | Yes | No | No |
+| Master replenishment and victory | Yes | No | No |
 
 ## Deployment dependencies
 
@@ -188,6 +256,7 @@ Multiplayer currently depends on:
 - Supabase Auth for anonymous player identities
 - Supabase Postgres for rooms, participants, authoritative game state, reviews, and revision control
 - The migration in `supabase/migrations/20260903_beginner_multiplayer.sql`
+- The migration in `supabase/migrations/20260904_amateur_multiplayer.sql`
 
 Required Vercel environment variables:
 
