@@ -392,7 +392,7 @@ export default function AmateurClient() {
       {!review && npcAttack && (
         <section className="chooser npcChoicePanel" aria-live="polite">
           <p className="kicker">ATTACK DECLARED</p>
-          <h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using <b>{npcAttack.stat}</b></h2>
+          <h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using {npcAttack.stat}</h2>
           <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
           <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>What happens next?</button>
         </section>

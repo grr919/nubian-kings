@@ -250,7 +250,7 @@ function ReviewPanel({ onContinue }: { onContinue: () => void }) {
 
 function NpcChoicePanel({ choice, state, onReveal }: { choice: { playerId: string; stat: Stat }; state: BeginnerState; onReveal: () => void }) {
   const player = state.players.find((item) => item.id === choice.playerId)!;
-  return <section className="chooser npcChoicePanel"><p className="kicker">TRAIT SELECTED</p><h2>{INFO[player.factionId].name} chose <b>{choice.stat}</b></h2><p>Take a moment to note the chosen trait. No cards have been revealed.</p><button onClick={onReveal}>Reveal Cards</button></section>;
+  return <section className="chooser npcChoicePanel"><p className="kicker">TRAIT SELECTED</p><h2>{INFO[player.factionId].name} chose {choice.stat}</h2><p>Take a moment to note the chosen trait. No cards have been revealed.</p><button onClick={onReveal}>Reveal Cards</button></section>;
 }
 
 function CardDetail({ card, onClose }: { card: Card; onClose: () => void }) {
