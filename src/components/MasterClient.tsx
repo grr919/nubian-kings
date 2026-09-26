@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
+import MasterArmyBoard, { moveArmyCard } from "@/components/MasterArmyBoard";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import FeedbackButton from "@/components/FeedbackButton";
 import cardData from "@/data/cards.json";
@@ -129,13 +130,6 @@ function clonePiles(piles: MasterPile[]) {
   return piles.map((pile) => ({ ...pile, cards: [...pile.cards] }));
 }
 
-function orderedAddition(cards: MasterCard[], card: MasterCard) {
-  const candidates = cards.length === 1
-    ? [[...cards, card], [card, ...cards]]
-    : [[card, ...cards], [...cards, card]];
-  return candidates.find((candidate) => isLegalInitialPile(candidate));
-}
-
 export default function MasterClient() {
   const [screen, setScreen] = useState<"home" | "setup" | "heir" | "arrange" | "game">("home");
   const [state, setState] = useState<MasterState>();
@@ -143,7 +137,6 @@ export default function MasterClient() {
   const [construction, setConstruction] = useState<MasterConstruction>();
   const [draftPiles, setDraftPiles] = useState<MasterPile[]>([]);
   const [undo, setUndo] = useState<MasterPile[][]>([]);
-  const [selectedCardId, setSelectedCardId] = useState<string>();
   const [faction, setFaction] = useState<(typeof FACTIONS)[number]>(FACTIONS[0]);
   const [npcCount, setNpcCount] = useState<number | "random">("random");
   const [openingPlayer, setOpeningPlayer] = useState<"random" | "human" | "npc">("random");
@@ -191,28 +184,14 @@ export default function MasterClient() {
   const allSetupCards = useMemo(() => construction ? constructionCards(construction) : [], [construction]);
   const assignedIds = useMemo(() => new Set(draftPiles.flatMap((pile) => pile.cards.map((card) => card.id))), [draftPiles]);
   const unassigned = allSetupCards.filter((card) => !assignedIds.has(card.id));
-  const selectedCard = allSetupCards.find((card) => card.id === selectedCardId);
 
-  function moveSelected(targetPileId?: string) {
-    if (!selectedCard) return;
-    const source = draftPiles.find((pile) => pile.cards.some((card) => card.id === selectedCard.id));
-    const withoutSource = draftPiles.map((pile) => pile.id === source?.id ? { ...pile, cards: pile.cards.filter((card) => card.id !== selectedCard.id) } : { ...pile, cards: [...pile.cards] });
-    const remaining = withoutSource.find((pile) => pile.id === source?.id)?.cards ?? [];
-    if (source && remaining.length && !isLegalInitialPile(remaining)) return;
-    let next = withoutSource.filter((pile) => pile.cards.length);
-    if (targetPileId) {
-      const target = next.find((pile) => pile.id === targetPileId);
-      if (!target || target.id === source?.id) return;
-      const ordered = orderedAddition(target.cards, selectedCard);
-      if (!ordered) return;
-      next = next.map((pile) => pile.id === targetPileId ? { ...pile, cards: ordered } : pile);
-    } else {
-      if (!isLegalInitialPile([selectedCard])) return;
-      next.push({ id: `human-pile-${Date.now()}-${selectedCard.id}`, cards: [selectedCard] });
-    }
+  function moveCard(cardId: string, targetPileId?: string) {
+    const card = allSetupCards.find((item) => item.id === cardId);
+    if (!card) return;
+    const next = moveArmyCard(draftPiles, card, targetPileId);
+    if (!next) return;
     setUndo((prior) => [...prior, clonePiles(draftPiles)]);
     setDraftPiles(next);
-    setSelectedCardId(undefined);
   }
 
   function resetArrangement() {
@@ -460,15 +439,8 @@ export default function MasterClient() {
   if (screen === "arrange" && construction) {
     const complete = unassigned.length === 0 && draftPiles.length > 0 && draftPiles.every((pile) => isLegalInitialPile(pile.cards));
     return <main className="setupPage masterArrangePage"><section className="masterArrangePanel">
-      <header><div><p className="kicker">BUILD YOUR ARMY</p><h1>Arrange twenty cards</h1><p>Tap a card, then place it in a legal pile. Pile order runs from bottom to top: Place–Person–Thing.</p></div><div className="arrangeActions"><button className="secondary" disabled={!undo.length} onClick={undoArrangement}>Undo</button><button className="secondary" onClick={resetArrangement}>Reset</button><button onClick={autoArrange}>Auto-arrange</button></div></header>
-      <section className="unassignedTray"><h2>Unassigned cards <span>{unassigned.length}</span></h2><div>{unassigned.map((card) => <button key={card.id} className={`setupCardButton ${selectedCardId === card.id ? "selectedSetupCard" : ""}`} onClick={() => setSelectedCardId(card.id)}><MasterCardView card={card} visible badge={card.type} /></button>)}</div></section>
-      <section className="pileWorkshop"><div className="workshopHeading"><h2>Your piles <span>{draftPiles.length}</span></h2>{selectedCard && <p>Selected: <b>{selectedCard.name}</b></p>}</div>
-        <div className="draftPileGrid">{draftPiles.map((pile, index) => {
-          const canAdd = selectedCard && !pile.cards.some((card) => card.id === selectedCard.id) && Boolean(orderedAddition(pile.cards, selectedCard));
-          return <article key={pile.id} className="draftPile"><header><b>Pile {index + 1}</b><small>{pile.cards.map((card) => card.type).join(" → ")}</small></header><div>{pile.cards.map((card) => <button key={card.id} className={selectedCardId === card.id ? "selectedSetupCard" : ""} onClick={() => setSelectedCardId(card.id)}><MasterCardView card={card} visible /></button>)}</div>{selectedCard && <button className="pileDestination" disabled={!canAdd} onClick={() => moveSelected(pile.id)}>{canAdd ? "Place here" : "Not legal here"}</button>}</article>;
-        })}</div>
-        {selectedCard && <button className="newPileButton" disabled={!isLegalInitialPile([selectedCard])} onClick={() => moveSelected()}>Create New Pile</button>}
-      </section>
+      <header><div><p className="kicker">BUILD YOUR ARMY</p><h1>Arrange twenty cards</h1><p>Drag cards together to build your piles. Pile order runs from bottom to top: Place–Person–Thing.</p></div><div className="arrangeActions"><button className="secondary" disabled={!undo.length} onClick={undoArrangement}>Undo</button><button className="secondary" onClick={resetArrangement}>Reset</button><button onClick={autoArrange}>Auto-arrange</button></div></header>
+      <MasterArmyBoard cards={allSetupCards} piles={draftPiles} onMove={moveCard} renderCard={(card) => <MasterCardView card={card} visible badge={card.type} />} />
       <footer className="arrangeFooter"><span>{complete ? "All twenty cards are in legal piles." : `${unassigned.length} unassigned · Finish every legal pile to continue.`}</span><button disabled={!complete} onClick={confirmArmy}>Confirm Army</button></footer>
     </section></main>;
   }
