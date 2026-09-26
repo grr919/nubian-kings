@@ -27,7 +27,8 @@ export async function POST(request: Request) {
   if (!Number.isInteger(npcCount) || npcCount < 0 || npcCount > totalSeats - 2) return Response.json({ error: "A multiplayer game must leave room for at least two people." }, { status: 400 });
   if (openingPlayer === "npc" && npcCount === 0) return Response.json({ error: "A computer cannot open a game without computer opponents." }, { status: 400 });
   const level = body.level === "master" ? "master" : body.level === "amateur" ? "amateur" : "beginner";
-  const settings: MultiplayerRoomSettings = { totalSeats, npcCount, nileFloods: Boolean(body.nileFloods), openingPlayer, ...(level !== "beginner" ? { victoryMode: body.victoryMode === "long" ? "long" : "standard" } : {}) };
+  if (level === "master" && body.effectsMode === "on") return Response.json({ error: "Master card effects are not ready for play yet." }, { status: 400 });
+  const settings: MultiplayerRoomSettings = { totalSeats, npcCount, nileFloods: Boolean(body.nileFloods), openingPlayer, ...(level !== "beginner" ? { victoryMode: body.victoryMode === "long" ? "long" : "standard" } : {}), ...(level === "master" ? { effectsMode: body.effectsMode === "on" ? "on" : "off" } : {}) };
   const supabase = adminSupabase();
 
   for (let attempt = 0; attempt < 5; attempt++) {

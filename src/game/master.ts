@@ -1,10 +1,13 @@
 import data from "../data/cards.json";
+import effectText from "../data/card-effects.json";
+import mercenaryData from "../data/mercenaries.json";
 import { createRandomState, randomSource } from "./random";
 import { FACTIONS } from "./setup";
 import type { Face, RandomState, Stat } from "./types";
 
 export type MasterVictoryMode = "standard" | "long";
 export type MasterController = "human" | "npc";
+export type MasterEffectsMode = "off" | "on";
 
 export interface MasterCard {
   id: string;
@@ -16,6 +19,11 @@ export interface MasterCard {
   zeal: number;
   wealth: number;
   face: Face;
+  effectText?: string;
+  effectSpent?: boolean;
+  revealedRound?: number;
+  mercenary?: boolean;
+  artFile?: string;
 }
 
 export interface MasterPile {
@@ -32,6 +40,7 @@ export interface MasterPlayer {
   unused: MasterCard[];
   discard: MasterCard[];
   eliminated: boolean;
+  armyLimit?: number;
 }
 
 interface PreparedMasterPlayer {
@@ -47,6 +56,7 @@ export interface PreparedMasterGame {
   activePlayerIndex: number;
   nileFloods: boolean;
   victoryMode: MasterVictoryMode;
+  effectsMode?: MasterEffectsMode;
   random: RandomState;
 }
 
@@ -55,6 +65,7 @@ export interface MasterConstruction {
   activePlayerIndex: number;
   nileFloods: boolean;
   victoryMode: MasterVictoryMode;
+  effectsMode?: MasterEffectsMode;
   random: RandomState;
 }
 
@@ -66,6 +77,8 @@ export interface MasterState {
   phase: "attack" | "replenish" | "complete";
   nileFloods: boolean;
   victoryMode: MasterVictoryMode;
+  effectsMode?: MasterEffectsMode;
+  mercenaryReserve?: MasterCard[];
   round: number;
   random: RandomState;
   pendingReplenishmentPlayerId?: string;
@@ -77,6 +90,7 @@ export interface PrepareMasterOptions {
   npcCount?: number;
   nileFloods: boolean;
   victoryMode?: MasterVictoryMode;
+  effectsMode?: MasterEffectsMode;
   seed?: string;
   openingPlayer?: "random" | "human" | "npc";
 }
@@ -111,7 +125,10 @@ const canonical = data.cards as Array<{
   wealth: number;
   deckCopies: number;
   availableInPrototype: boolean;
+  assets: Array<{ filename: string; copyCount: number }>;
 }>;
+
+const effects = effectText as Record<string, { name: string; text: string }>;
 
 const personLike = (card: MasterCard) => card.type === "person" || card.type === "leader";
 const value = (card: MasterCard) => card.strength + card.zeal + card.wealth;
@@ -127,8 +144,8 @@ function shuffle<T>(items: T[], random: () => number) {
 function factionDeck(factionId: string) {
   return canonical
     .filter((card) => card.factionId === factionId && card.availableInPrototype)
-    .flatMap((card) => Array.from({ length: card.deckCopies }, (_, copy): MasterCard => ({
-      id: `${card.id}:${copy + 1}`,
+    .flatMap((card) => card.assets.flatMap((asset) => Array.from({ length: asset.copyCount }, (_, copy): MasterCard => ({
+      id: `${card.id}:${asset.filename.match(/^\d+/)?.[0] ?? "image"}:${copy + 1}`,
       definitionId: card.id,
       name: card.name,
       factionId: card.factionId,
@@ -137,10 +154,30 @@ function factionDeck(factionId: string) {
       zeal: card.zeal,
       wealth: card.wealth,
       face: "down",
-    })));
+      effectText: effects[asset.filename.match(/^\d+/)?.[0] ?? ""]?.text ?? "",
+      artFile: asset.filename,
+    }))));
+}
+
+export function createMasterMercenaryReserve(): MasterCard[] {
+  return mercenaryData.cards.flatMap((card, kind) => Array.from({ length: card.copies }, (_, copy): MasterCard => ({
+    id: `mercenary-${kind + 1}-${copy + 1}`,
+    definitionId: `mercenary-${kind + 1}`,
+    name: card.name,
+    factionId: "mercenary",
+    type: "person",
+    strength: card.strength,
+    zeal: 0,
+    wealth: card.wealth,
+    face: "up",
+    mercenary: true,
+    effectText: "Immune to conversion.",
+    artFile: card.image.split("/").at(-1),
+  })));
 }
 
 export function prepareMasterGame(options: PrepareMasterOptions): PreparedMasterGame {
+  if (options.effectsMode === "on") throw new Error("Master card effects are not ready for play yet");
   const random = createRandomState(options.seed);
   const rng = randomSource(random);
   const npcCount = options.npcCount ?? Math.floor(rng() * 4) + 1;
@@ -170,6 +207,7 @@ export function prepareMasterGame(options: PrepareMasterOptions): PreparedMaster
     activePlayerIndex,
     nileFloods: options.nileFloods,
     victoryMode: options.victoryMode ?? "standard",
+    effectsMode: options.effectsMode ?? "off",
     random,
   };
 }
@@ -262,10 +300,11 @@ export function beginMasterConstruction(prepared: PreparedMasterGame, humanHeirI
       unused: dealt.unused.map((card) => ({ ...card, face: "down" })),
       discard: [],
       eliminated: false,
+      armyLimit: 20,
       ...(source.controller === "human" ? { army: [{ id: "human-unassigned", cards: setupCards }] } : {}),
     };
   });
-  return { players, activePlayerIndex: prepared.activePlayerIndex, nileFloods: prepared.nileFloods, victoryMode: prepared.victoryMode, random: prepared.random };
+  return { players, activePlayerIndex: prepared.activePlayerIndex, nileFloods: prepared.nileFloods, victoryMode: prepared.victoryMode, effectsMode: prepared.effectsMode, random: prepared.random };
 }
 
 export function constructionCards(construction: MasterConstruction, playerId = "human") {
@@ -288,6 +327,8 @@ export function confirmMasterArmy(construction: MasterConstruction, humanPiles: 
     phase: "attack",
     nileFloods: construction.nileFloods,
     victoryMode: construction.victoryMode,
+    effectsMode: construction.effectsMode ?? "off",
+    mercenaryReserve: construction.effectsMode === "on" ? createMasterMercenaryReserve() : undefined,
     round: 1,
     random: construction.random,
   };
@@ -404,7 +445,7 @@ export function resolveMasterAttack(state: MasterState, action: MasterAttack): M
     loser.army = loser.army.filter((pile) => pile.id !== losingUnit.id);
     loser.discard.push(...losingUnit.cards.map((card) => ({ ...card, face: "up" as const })));
   }
-  if (!winner.eliminated && masterArmySize(winner) < 20 && winner.unused.length) {
+  if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && winner.unused.length) {
     state.phase = "replenish";
     state.pendingReplenishmentPlayerId = winner.id;
     events.push({ type: "replenishment-available", playerId: winner.id });
@@ -421,7 +462,7 @@ function pendingPlayer(state: MasterState) {
 
 export function replenishMasterArmy(state: MasterState): MasterEvent[] {
   const player = pendingPlayer(state);
-  if (masterArmySize(player) >= 20) throw new Error("Army is already full");
+  if (masterArmySize(player) >= (player.armyLimit ?? 20)) throw new Error("Army is already full");
   const card = player.unused.shift();
   if (!card) throw new Error("Unused deck is empty");
   card.face = "down";

@@ -1,0 +1,786 @@
+{
+  "1": {
+    "name": "The Ngonnen",
+    "text": "Can retreat the game clock once; this action can be used immediately. +1 wealth if in Ibrim, Faras, Meinarti or Dongola."
+  },
+  "2": {
+    "name": "Eparch of Nobadia",
+    "text": "Has a one-time guarantee of success for another card's defense against attack; employ this effect after the end of combat."
+  },
+  "3": {
+    "name": "Mari",
+    "text": "Can advance the game clock once; this action can be used immediately. +2 wealth if in Ibrim, Faras, Meinarti or Dongola."
+  },
+  "4": {
+    "name": "Moses Giyorgios",
+    "text": "Has a one-time guarantee of success for another card's defense against attack; employ this effect after the end of combat."
+  },
+  "5": {
+    "name": "Merkourios",
+    "text": "Has a one-time guarantee of success for another card's conversion attempt; employ this effect after the end of the attempt."
+  },
+  "6": {
+    "name": "Adama the Eparch",
+    "text": "Has a one-time guaranteed defense against any attack by a Muslim against a Christian; employ this effect after the end of combat."
+  },
+  "7": {
+    "name": "Gourresi the Eparch",
+    "text": "Has a one-time guarantee of success in attack against a Muslim person not in a place; employ this effect after the end of combat."
+  },
+  "8": {
+    "name": "A Choiak-Eikshil",
+    "text": "A palace coup brings a new ruler to the throne. Pick any one card from your discard pile without looking at it and put it in your hand immediately. +2 to any conversion attempt by your Christians."
+  },
+  "9": {
+    "name": "A Choiak-Eikshil",
+    "text": "+2 to any conversion attempt by your Christians."
+  },
+  "10": {
+    "name": "The Telones",
+    "text": "A purge of corrupt ministers improves your treasury.  Take and deploy a mercenary, and add that mercenary's strength to any attack in progress at any time. +1 wealth for all of your Nubian places."
+  },
+  "11": {
+    "name": "The Telones",
+    "text": "+1 wealth for all of your Nubian places."
+  },
+  "12": {
+    "name": "The Pupil-Smiters",
+    "text": "You suppress a minor revolt. Take and deploy a mercenary, and add that mercenary's strength to any attack at any time."
+  },
+  "13": {
+    "name": "The Pupil-Smiters",
+    "text": ""
+  },
+  "14": {
+    "name": "Nubian Infantry",
+    "text": "You pacify the Beja tribes of the eastern desert. Add any person's strength to defend any card under attack at any time."
+  },
+  "15": {
+    "name": "Nubian Infantry",
+    "text": ""
+  },
+  "16": {
+    "name": "Nubian Bishop",
+    "text": "Foreign travelers spread news of your rule far and wide. Use this card to interrupt any conversion attempt in progress at any time. +2 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "17": {
+    "name": "Nubian Priest",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "18": {
+    "name": "Nubian Deacon",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "19": {
+    "name": "Nubian Monk",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "20": {
+    "name": "Mountain Hermit",
+    "text": "+2 wealth if in a monastery or shrine."
+  },
+  "21": {
+    "name": "A Farmer",
+    "text": "+2 wealth if in a saqiya, flood plain, orchard, palm grove, vineyard, farmland or unirrigated plot."
+  },
+  "22": {
+    "name": "Merchant",
+    "text": "+3 wealth if in Ibrim, Faras, Meinarti, Dongola, a castle, fort, trading post or grain warehouse."
+  },
+  "23": {
+    "name": "Camel Caravan",
+    "text": "+2 wealth if in an oasis, orchard, palm grove, vineyard, farmland, gold mine or emerald mine."
+  },
+  "24": {
+    "name": "Emerald Mine",
+    "text": "+2 wealth if you have any merchant, camel caravan or Nile trading post."
+  },
+  "25": {
+    "name": "Castle",
+    "text": "+2 defense if anyone is inside."
+  },
+  "26": {
+    "name": "Cathedral",
+    "text": "+1 to any Christian conversion defense."
+  },
+  "27": {
+    "name": "Ibrim",
+    "text": "+1 to the defense of all of your Nubian cards."
+  },
+  "28": {
+    "name": "Faras",
+    "text": "+1 wealth to all Nubian bishops, priests, deacons and monks located inside."
+  },
+  "29": {
+    "name": "Meinarti",
+    "text": "+1 wealth to all of your merchants and camel caravans."
+  },
+  "30": {
+    "name": "Dongola",
+    "text": "+2 wealth to either Mari, Moses Giyorgis or Merkourios if they are inside."
+  },
+  "31": {
+    "name": "Fort",
+    "text": "+1 defense if anyone is inside."
+  },
+  "32": {
+    "name": "Vineyard",
+    "text": ""
+  },
+  "33": {
+    "name": "Palm Groves",
+    "text": "+1 wealth if you have a farmer or a camel caravan."
+  },
+  "34": {
+    "name": "Orchard",
+    "text": "+1 wealth if you have a farmer."
+  },
+  "35": {
+    "name": "Saqiya",
+    "text": "+1 wealth if you have a flood plain, orchard, palm grove, vineyard, farmland or unirrigated plot."
+  },
+  "36": {
+    "name": "Flood Plain",
+    "text": "+1 wealth if you have a farmer."
+  },
+  "37": {
+    "name": "Farmland",
+    "text": ""
+  },
+  "38": {
+    "name": "Unirrigated Plot",
+    "text": "+1 wealth if you have a flood plain or saqiya."
+  },
+  "39": {
+    "name": "Grain Warehouse",
+    "text": "+3 wealth if you have farmland."
+  },
+  "40": {
+    "name": "Shrine",
+    "text": "+1 to any conversion you attempt."
+  },
+  "41": {
+    "name": "Nile Trading Post",
+    "text": "+2 wealth if you have deployed two or more other places."
+  },
+  "42": {
+    "name": "Oasis",
+    "text": "+1 wealth if you have a merchant or camel caravan."
+  },
+  "43": {
+    "name": "Monastery",
+    "text": ""
+  },
+  "44": {
+    "name": "Ore Deposit",
+    "text": ""
+  },
+  "45": {
+    "name": "Marble Quarry",
+    "text": "+2 wealth if you have Ibrim, Faras, Meinarti, Dongola, a cathedral or a castle."
+  },
+  "46": {
+    "name": "Dam",
+    "text": "+2 wealth if you have a saqiya, flood plain, orchard, palm grove, vineyard, farmland or unirrigated plot."
+  },
+  "47": {
+    "name": "Church",
+    "text": ""
+  },
+  "48": {
+    "name": "a Nubian Gospel",
+    "text": "+2 to any conversion attempt by your Christians."
+  },
+  "49": {
+    "name": "Cyril",
+    "text": "Has a one-time guarantee of success for another card's attack against a Nubian or Ethiopian card; employ this effect after the end of combat. +3 wealth if in a cathedral."
+  },
+  "50": {
+    "name": "John of Phanijoit",
+    "text": "+2 to any Christian conversion defense."
+  },
+  "51": {
+    "name": "The Hunchback's Son",
+    "text": "Can retreat the game clock once; this action can be used immediately."
+  },
+  "52": {
+    "name": "Mawhub ibn Mansur",
+    "text": "Can retreat the game clock once; this action can be used immediately."
+  },
+  "53": {
+    "name": "Forty-Nine Martyrs",
+    "text": "+2 to any Christian conversion defense."
+  },
+  "54": {
+    "name": "Gabriel II",
+    "text": "+2 wealth if in a cathedral or church."
+  },
+  "55": {
+    "name": "Coptic Banker",
+    "text": "+1 wealth if in a Nile trading post."
+  },
+  "56": {
+    "name": "Coptic Vizier",
+    "text": ""
+  },
+  "57": {
+    "name": "Coptic Patriarch",
+    "text": "Has a one-time guarantee of success for another card's attack against any Nubian or Ethiopian card; employ this effect after the end of combat."
+  },
+  "58": {
+    "name": "Coptic Bishop",
+    "text": "+2 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "59": {
+    "name": "Coptic Priest",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "60": {
+    "name": "Coptic Deacon",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "61": {
+    "name": "Coptic Monk",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "62": {
+    "name": "Ascetic Holy Man",
+    "text": "+2 wealth if in a cathedral, church, monastery or shrine."
+  },
+  "63": {
+    "name": "Mountain Hermit",
+    "text": "+2 wealth if in a monastery or shrine."
+  },
+  "64": {
+    "name": "Merchant",
+    "text": "+3 wealth if in a Nile trading post, oasis or grain warehouse."
+  },
+  "65": {
+    "name": "Camel Caravan",
+    "text": "+2 wealth if in an oasis, orchard, farmland, marble quarry or Nile trading post."
+  },
+  "66": {
+    "name": "Farmer",
+    "text": "Egypt's Christians riot against fiscal oppression. Eliminate one Egyptian Muslim card of your choosing at any time. +2 wealth if in a saqiya, flood plain, orchard, farmland or unirrigated plot."
+  },
+  "67": {
+    "name": "Farmer",
+    "text": "+2 wealth if in a farmland or oasis."
+  },
+  "68": {
+    "name": "Nile Trading Post",
+    "text": "Tax riots disrupt travel and trade. Eliminate any mercenary in play at any time. +2 wealth if you have deployed two or more other places."
+  },
+  "69": {
+    "name": "Nile Trading Post",
+    "text": "+2 wealth if you have deployed two or more other places."
+  },
+  "70": {
+    "name": "Ore Deposit",
+    "text": ""
+  },
+  "71": {
+    "name": "Cathedral",
+    "text": "+1 to any Christian conversion defense."
+  },
+  "72": {
+    "name": "Farmland",
+    "text": ""
+  },
+  "73": {
+    "name": "Unirrigated Plot",
+    "text": "+1 wealth if you have a flood plain or saqiya."
+  },
+  "74": {
+    "name": "Dam",
+    "text": "+2 wealth if you have a saqiya, flood plain, orchard, farmland or unirrigated plot."
+  },
+  "75": {
+    "name": "Flood Plain",
+    "text": "Rains in Ethiopia are strong, and the floods bring great harvest further down the Nile. Permanently increase your hand size by one card, and draw two cards immediately. +1 wealth if you have a farmer."
+  },
+  "76": {
+    "name": "Orchard",
+    "text": "+1 wealth if you have a farmer."
+  },
+  "77": {
+    "name": "Saqiya",
+    "text": "+1 wealth if you have an orchard, palm grove, farmland or unirrigated plot."
+  },
+  "78": {
+    "name": "Grain Warehouse",
+    "text": "+3 wealth if you have farmland."
+  },
+  "79": {
+    "name": "Oasis",
+    "text": "+1 wealth if you have a merchant or camel caravan."
+  },
+  "80": {
+    "name": "Church",
+    "text": ""
+  },
+  "81": {
+    "name": "Monastery",
+    "text": ""
+  },
+  "82": {
+    "name": "Shrine",
+    "text": "Miraculous visions appear at shrines throughout the Nile Valley. Use this card to interrupt any conversion attempt in progress at any time. +1 to any conversion you attempt."
+  },
+  "83": {
+    "name": "Coptic Gospel",
+    "text": "+2 to any conversion attempt by your Christians."
+  },
+  "84": {
+    "name": "The Wizard's Hoard",
+    "text": "Government interference decreases under weak Muslim caliphs. Pick any card from your discard pile without looking at it and put it in your hand immediately.+2 to the conversion defense of your Christian cards."
+  },
+  "85": {
+    "name": "Amda Tseyon",
+    "text": "Can advance the game clock once; this action can be used immediately."
+  },
+  "86": {
+    "name": "Yekuno Amlak",
+    "text": "Has a one-time guarantee of success in attack against any Ethiopian person; employ this effect after the end of combat."
+  },
+  "87": {
+    "name": "Gebre Meskel",
+    "text": "Has a one-time guarantee of success in a conversion attempt; employ this effect after the end of the attempt."
+  },
+  "88": {
+    "name": "Kedus Harbe",
+    "text": "Has a one-time guarantee of success for any card's attack against a Muslim person not in a place; employ this effect after the end of combat."
+  },
+  "89": {
+    "name": "Zara Yaqob",
+    "text": "Can retreat the game clock once; this action can be used immediately. +3 wealth if in Axum, Lalibela or Gondar."
+  },
+  "90": {
+    "name": "Dawit",
+    "text": "+2 to any of his attacks against Egyptian Muslim cards."
+  },
+  "91": {
+    "name": "Habesha Spearmen",
+    "text": ""
+  },
+  "92": {
+    "name": "Habesha Swordsmen",
+    "text": "A border raid returns home victorious. Pick any one card from any opponent's hand at any time without looking at it and discard it immediately."
+  },
+  "93": {
+    "name": "Habesha Archers",
+    "text": ""
+  },
+  "94": {
+    "name": "Habesha Shield-Men",
+    "text": ""
+  },
+  "95": {
+    "name": "Habesha Dart-Men",
+    "text": ""
+  },
+  "96": {
+    "name": "Habesha Bishop",
+    "text": "+2 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "97": {
+    "name": "Habesha Priest",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "98": {
+    "name": "Habesha Deacon",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "99": {
+    "name": "Habesha Monk",
+    "text": "+1 wealth if in a church, cathedral, monastery or shrine."
+  },
+  "100": {
+    "name": "Mountain Hermit",
+    "text": "+2 wealth if in a monastery or shrine."
+  },
+  "101": {
+    "name": "Ascetic Holy Man",
+    "text": "+2 wealth if in a cathedral, church, monastery or shrine."
+  },
+  "102": {
+    "name": "A Negus",
+    "text": "+2 to his attacks against other Ethiopian cards."
+  },
+  "103": {
+    "name": "The Negusa Negast",
+    "text": "A border raid returns home victorious. Pick any one card from any opponent's hand at any time without looking at it and discard it immediately. +2 to his attacks against cards of a different religion."
+  },
+  "104": {
+    "name": "Ras",
+    "text": "+3 to his attacks against cards of a different religion."
+  },
+  "105": {
+    "name": "Le'ul",
+    "text": "Construction of a new bridge is complete. Add any person's strength to defend any card under attack at any time. +2 to his attacks against cards of a different religion."
+  },
+  "106": {
+    "name": "Le'ul",
+    "text": "+2 to his attacks against cards of a different religion."
+  },
+  "107": {
+    "name": "Merchant",
+    "text": "+3 wealth if in Axum, Lalibela, Gondar, a castle, Nile trading post, oasis or grain warehouse."
+  },
+  "108": {
+    "name": "Farmer",
+    "text": "+2 wealth if in a flood plain, orchard, palm grove, vineyard, farmland or unirrigated plot."
+  },
+  "109": {
+    "name": "The Kebra Negast",
+    "text": "News of a royal marriage brings peace. Use this card to interrupt any attack in progress at any time.  +3 wealth if you deploy the Negusa Negast."
+  },
+  "110": {
+    "name": "The Fetha Negast",
+    "text": "You recover long-lost wealth. Pick any card from your discard pile at any time without looking at it and put it in your hand.+2 wealth if in Axum, Lalibela or Gondar."
+  },
+  "111": {
+    "name": "A Gadl of a Saint",
+    "text": "+1 to any conversion attempt by your Christians."
+  },
+  "112": {
+    "name": "A Tabot",
+    "text": "An architectural renaissance invigorates your kingdom. Use this card to interrupt any conversion attempt in progress at any time.+2 to any conversion attempt by your Christians."
+  },
+  "113": {
+    "name": "A Tabot",
+    "text": "+2 to any conversion attempt by your Christians."
+  },
+  "114": {
+    "name": "Castle",
+    "text": "+2 defense if anyone is inside."
+  },
+  "115": {
+    "name": "Monastery",
+    "text": ""
+  },
+  "116": {
+    "name": "Shrine",
+    "text": "+1 to any conversion you attempt."
+  },
+  "117": {
+    "name": "Church",
+    "text": ""
+  },
+  "118": {
+    "name": "Dam",
+    "text": "+2 wealth if you have a flood plain, orchard, palm grove, vineyard, farmland or unirrigated plot."
+  },
+  "119": {
+    "name": "Farmland",
+    "text": ""
+  },
+  "120": {
+    "name": "Flood Plain",
+    "text": "+1 wealth if you have a farmer."
+  },
+  "121": {
+    "name": "Unirrigated Plot",
+    "text": "+1 wealth if you have a flood plain."
+  },
+  "122": {
+    "name": "Palm Groves",
+    "text": "+1 wealth if you have a farmer or a camel caravan."
+  },
+  "123": {
+    "name": "Orchard",
+    "text": "+1 wealth if you have a farmer."
+  },
+  "124": {
+    "name": "Oasis",
+    "text": "+1 wealth if you have a merchant or camel caravan."
+  },
+  "125": {
+    "name": "Axum",
+    "text": "+3 wealth if either the Negusa Negast, Dawit, Gebre Meskel, Yekuno Amlak, Kedus Harbe or Amda Tseyon is inside."
+  },
+  "126": {
+    "name": "Gondar",
+    "text": "+1 wealth to all of your flood plains, orchards, palm groves, vineyards, farmland and unirrigated plots."
+  },
+  "127": {
+    "name": "Lalibela",
+    "text": "+1 wealth to all of your cathedrals, churches, monasteries and shrines."
+  },
+  "128": {
+    "name": "Cathedral",
+    "text": "+1 to any Christian conversion defense."
+  },
+  "129": {
+    "name": "Saladin",
+    "text": "Can advance the game clock once; this action can be used immediately. +3 to his attacks against Ibrim, Faras, Meinarti, Dongola, Axum, Lalibela and Gondar."
+  },
+  "130": {
+    "name": "al-Hakim",
+    "text": "Has a one-time guaranteed success in attack against a Christian person; employ this effect after the end of combat."
+  },
+  "131": {
+    "name": "Sitt al-Mulk",
+    "text": "+3 wealth if in Alexandria, al-Kahira or al-Uqsor."
+  },
+  "132": {
+    "name": "al-Mustansir",
+    "text": "Can retreat the game clock once; this action can be used immediately. +2 defense if in Alexandria, al-Kahira or al-Uqsor."
+  },
+  "133": {
+    "name": "Baybars",
+    "text": "Has an automatic one-time success for any card's attack against a non-Egyptian person; employ this effect after the end of combat."
+  },
+  "134": {
+    "name": "Qalawun",
+    "text": "Has an automatic one-time success for any card's attack against a non-Egyptian person; employ this effect after the end of combat."
+  },
+  "135": {
+    "name": "One of the Hamil",
+    "text": "Has a one-time guaranteed success for another Muslim card to resist conversion; employ this effect after the attempt."
+  },
+  "136": {
+    "name": "One of the Hafiz",
+    "text": "The blood-libel incites pogroms throughout the land. Eliminate one Jewish card of your choosing at any time. +2 wealth if in a mosque or a shrine."
+  },
+  "137": {
+    "name": "A Qadi",
+    "text": "+2 wealth if in Alexandria, al-Kahira or al-Uqsor."
+  },
+  "138": {
+    "name": "The Ulema",
+    "text": "Pilgrims in this season's Hajj bring added wealth to your kingdom. Permanently increase your hand size by one card, and draw two cards immediately. +2 wealth if in a mosque or a shrine."
+  },
+  "139": {
+    "name": "An Imam",
+    "text": "+2 wealth if in a mosque or a shrine."
+  },
+  "140": {
+    "name": "A Muezzin",
+    "text": "Has a one-time guarantee of success at conversion; employ this effect after the attempt."
+  },
+  "141": {
+    "name": "Mamluk Lancemen",
+    "text": "Frankish ambassadors come seeking your favor.  Take and deploy a mercenary, and add that mercenary's strength to defend any card under attack at any time."
+  },
+  "142": {
+    "name": "Mamluk Crossbows",
+    "text": ""
+  },
+  "143": {
+    "name": "Mamluk Horsemen",
+    "text": ""
+  },
+  "144": {
+    "name": "Mamluk Haleka",
+    "text": "Conflict in the royal family leads to a Nubian civil war. Eliminate one Nubian Christian card of your choosing at any time."
+  },
+  "145": {
+    "name": "Bedouin Trader",
+    "text": "+2 wealth if in an orchard, palm grove, farmland, ore deposit or Nile trading post."
+  },
+  "146": {
+    "name": "Bedouin Warlord",
+    "text": ""
+  },
+  "147": {
+    "name": "Sufi Holy-Man",
+    "text": "+2 wealth if in a mosque or shrine."
+  },
+  "148": {
+    "name": "Ascetic Holy Man",
+    "text": "+2 wealth if in a mosque or shrine."
+  },
+  "149": {
+    "name": "Camel Caravan",
+    "text": "+2 wealth if in an oasis, farmland, quarry or gold mine."
+  },
+  "150": {
+    "name": "Merchant",
+    "text": "+3 wealth if in Alexandria, al-Kahira, al-Uqsor, a castle or a fort."
+  },
+  "151": {
+    "name": "A Farmer",
+    "text": "+2 wealth if in a farmland or oasis."
+  },
+  "152": {
+    "name": "A Book of Hadith",
+    "text": "+1 to any conversion attempt by your Muslims."
+  },
+  "153": {
+    "name": "The Holy Quran",
+    "text": "+2 to any conversion attempt by your Muslims."
+  },
+  "154": {
+    "name": "The Kaffir Tax Declaration",
+    "text": "+2 wealth if anyone is playing Egyptian Christians."
+  },
+  "155": {
+    "name": "Oasis",
+    "text": "+1 wealth if you have a merchant or camel caravan."
+  },
+  "156": {
+    "name": "Farmland",
+    "text": "A generation of rich harvests increases your prestige. Add zeal from any of your people to any conversion attempt or resistance in progress at any time."
+  },
+  "157": {
+    "name": "Farmland",
+    "text": ""
+  },
+  "158": {
+    "name": "Marble Quarry",
+    "text": "+2 wealth if you have a cathedral or church."
+  },
+  "159": {
+    "name": "Gold Mine",
+    "text": "+2 wealth if you have any merchant or camel caravan."
+  },
+  "160": {
+    "name": "Fort",
+    "text": "+1 defense if anyone is inside."
+  },
+  "161": {
+    "name": "Castle",
+    "text": "+2 defense if anyone is inside."
+  },
+  "162": {
+    "name": "Mosque",
+    "text": ""
+  },
+  "163": {
+    "name": "Alexandria",
+    "text": "+1 wealth to all of your merchants and camel caravans."
+  },
+  "164": {
+    "name": "Al-Kahira",
+    "text": "+1 wealth to any Hamil, Hafiz, imam, qadi, ulema or muezzin."
+  },
+  "165": {
+    "name": "Al-Uqsor",
+    "text": "+1 to the defense of all of your Egyptian places."
+  },
+  "166": {
+    "name": "Yodit the Beta Israel Queen",
+    "text": "Has a one-time guarantee of success in attack against any person; employ this effect after the end of combat."
+  },
+  "167": {
+    "name": "Beta Israel Tribesmen",
+    "text": "+2 wealth if you have a tabot in play."
+  },
+  "168": {
+    "name": "Beta Israel Warrior",
+    "text": "You have tamed the warlords on the borders of your kingdom. Eliminate any mercenary in play at any time. +2 wealth if you have a tabot in play."
+  },
+  "169": {
+    "name": "Beta Israel Warrior",
+    "text": "+2 wealth if you have a tabot in play."
+  },
+  "170": {
+    "name": "Beta Israel Ironworker",
+    "text": "+2 wealth from all of your ore deposits."
+  },
+  "171": {
+    "name": "Jewish Merchant",
+    "text": "+1 wealth if in a place."
+  },
+  "172": {
+    "name": "Jewish Traveler",
+    "text": "+2 wealth if you have 2 or more places in play."
+  },
+  "173": {
+    "name": "Kahen",
+    "text": "Immune to conversion.   +2 wealth from all Shalot Bets you have in play."
+  },
+  "174": {
+    "name": "Haymanot Scholar",
+    "text": "The Beta Israel queen sacks the city of Axum. Eliminate one Ethiopian Christian card of your choosing. Immune to conversion.   +2 wealth from all Shalot Bets you have in play."
+  },
+  "175": {
+    "name": "Haymanot Scholar",
+    "text": "Immune to conversion.   +2 wealth from all Shalot Bets you have in play."
+  },
+  "176": {
+    "name": "Beta Israel Priest",
+    "text": "Major theological controversies end under your guidance.  Designate any one of your cards as immune to conversion at any time. Immune to conversion."
+  },
+  "177": {
+    "name": "Beta Israel Priest",
+    "text": "Immune to conversion."
+  },
+  "178": {
+    "name": "A Farmer",
+    "text": "+2 wealth if in a vineyard, farmland or palm groves."
+  },
+  "179": {
+    "name": "Mashafah Kedus",
+    "text": "+3 to any conversion attempt by your Jews."
+  },
+  "180": {
+    "name": "The Sacred Geniza",
+    "text": "Makes all of your Jewish cards immune to conversion."
+  },
+  "181": {
+    "name": "A Tabot",
+    "text": "+2 to any conversion attempt by your Jews."
+  },
+  "182": {
+    "name": "Shalot Bet",
+    "text": "+1 wealth to all Kahen, Haymanot scholars and Beta Israel priests inside."
+  },
+  "183": {
+    "name": "Nile Trading Post",
+    "text": "Rains fail in Ethiopia this year, and the Lower Nile starves in drought. Eliminate one card of your choosing at any time. +2 wealth if you have deployed two or more other places."
+  },
+  "184": {
+    "name": "Ore Deposit",
+    "text": ""
+  },
+  "185": {
+    "name": "Marble Quarry",
+    "text": "+2 wealth if you have a castle or shalot bet."
+  },
+  "186": {
+    "name": "Farmland",
+    "text": ""
+  },
+  "187": {
+    "name": "Grain Warehouse",
+    "text": "+3 wealth if you have farmland."
+  },
+  "188": {
+    "name": "Palm Groves",
+    "text": "+1 wealth if you have a farmer or a camel caravan."
+  },
+  "189": {
+    "name": "Vineyard",
+    "text": ""
+  },
+  "190": {
+    "name": "Beja Nomad",
+    "text": "Immune to conversion."
+  },
+  "191": {
+    "name": "Beja Warrior",
+    "text": "Immune to conversion."
+  },
+  "192": {
+    "name": "Frankish Knights",
+    "text": "Immune to conversion."
+  },
+  "193": {
+    "name": "Frankish Infantry",
+    "text": "Immune to conversion."
+  },
+  "194": {
+    "name": "Nuba Tribe",
+    "text": "Immune to conversion."
+  },
+  "195": {
+    "name": "Nuba Herder",
+    "text": "Immune to conversion."
+  },
+  "196": {
+    "name": "Nuba Warrior",
+    "text": "Immune to conversion."
+  }
+}

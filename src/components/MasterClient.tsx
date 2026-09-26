@@ -30,6 +30,7 @@ import {
   type MasterPlayer,
   type MasterState,
   type MasterVictoryMode,
+  type MasterEffectsMode,
 } from "@/game/master";
 import { MASTER_SAVE_KEY, parseMasterGame, serializeMasterGame } from "@/game/master-save";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
@@ -62,8 +63,8 @@ interface MasterReview {
 }
 
 function artwork(card: MasterCard) {
-  const filename = ART_BY_ID[card.definitionId];
-  return filename ? `${ART_BASE_URL}/cards/${encodeURIComponent(filename)}` : undefined;
+  const filename = card.artFile ?? ART_BY_ID[card.definitionId];
+  return filename ? `${card.mercenary ? "" : ART_BASE_URL}/cards/${encodeURIComponent(filename)}` : undefined;
 }
 
 function playerLabel(player: MasterPlayer) {
@@ -124,6 +125,7 @@ export default function MasterClient() {
   const [npcCount, setNpcCount] = useState<number | "random">("random");
   const [openingPlayer, setOpeningPlayer] = useState<"random" | "human" | "npc">("random");
   const [victoryMode, setVictoryMode] = useState<MasterVictoryMode>("standard");
+  const [effectsMode, setEffectsMode] = useState<MasterEffectsMode>("off");
   const [seed, setSeed] = useState("");
   const [floods, setFloods] = useState(false);
   const [hasSave, setHasSave] = useState(false);
@@ -146,7 +148,7 @@ export default function MasterClient() {
   }
 
   function assemble() {
-    const next = prepareMasterGame({ humanFaction: faction, npcCount: npcCount === "random" ? undefined : npcCount, nileFloods: floods, victoryMode, openingPlayer, seed: seed || undefined });
+    const next = prepareMasterGame({ humanFaction: faction, npcCount: npcCount === "random" ? undefined : npcCount, nileFloods: floods, victoryMode, effectsMode, openingPlayer, seed: seed || undefined });
     setSeed(next.random.seed);
     setPrepared(next);
     setScreen("heir");
@@ -328,7 +330,7 @@ export default function MasterClient() {
     <p>Build twenty cards into legal piles, protect your heir, and defeat opposing formations as complete units.</p>
     <div className="actions"><button onClick={() => setScreen("setup")}>New Master Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Master Game</button><a className="buttonLink secondary" href="/master/multiplayer">Multiplayer</a></div>
     <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Master Rules</button><a className="landingBack" href="/">Return to Main</a></div>
-    <small>Core profile · Special card effects are not used</small>
+    <small>Build your army and challenge the other kingdoms.</small>
     <footer className="landingFooter">© 2026 Nile South Games</footer>
   </section>{help && <MasterHelp onClose={() => setHelp(false)} />}</main>;
 
@@ -339,6 +341,7 @@ export default function MasterClient() {
       <label><span>Computer opponents</span><select value={npcCount} onChange={(event) => setNpcCount(event.target.value === "random" ? "random" : Number(event.target.value))}><option value="random">Random (1–4)</option>{[1,2,3,4].map((count) => <option key={count} value={count}>{count}</option>)}</select></label>
       <label><span>Opening initiative</span><select value={openingPlayer} onChange={(event) => setOpeningPlayer(event.target.value as "random" | "human" | "npc")}><option value="random">Random participant</option><option value="human">You</option><option value="npc">Computer opponent</option></select></label>
       <label><span>Victory rule</span><select value={victoryMode} onChange={(event) => setVictoryMode(event.target.value as MasterVictoryMode)}><option value="standard">First heir eliminated</option><option value="long">Last heir standing</option></select></label>
+      <label><span>Special effects</span><select value={effectsMode} onChange={(event) => setEffectsMode(event.target.value as MasterEffectsMode)}><option value="off">Effects Off · Core rules</option><option value="on" disabled>Effects On · in development</option></select></label>
       <label className="toggle"><input type="checkbox" checked={floods} onChange={(event) => setFloods(event.target.checked)} /><span><b>Nile Floods</b><small>Add one d6 to each competing unit.</small></span></label>
       <label className="seedSetting"><span><b>Game seed</b><small>Use identical settings and a seed to reproduce setup.</small></span><input value={seed} maxLength={48} placeholder="Generated automatically" onChange={(event) => setSeed(event.target.value)} /></label>
     </div><button className="beginButton" onClick={assemble}>Choose Heir</button>
