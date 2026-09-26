@@ -176,7 +176,6 @@ export default function MasterClient() {
     setConstruction(next);
     setDraftPiles([]);
     setUndo([]);
-    setSelectedCardId(undefined);
     setPrepared(undefined);
     setScreen("arrange");
   }
@@ -197,13 +196,11 @@ export default function MasterClient() {
   function resetArrangement() {
     if (draftPiles.length) setUndo((prior) => [...prior, clonePiles(draftPiles)]);
     setDraftPiles([]);
-    setSelectedCardId(undefined);
   }
 
   function autoArrange() {
     setUndo((prior) => [...prior, clonePiles(draftPiles)]);
     setDraftPiles(autoArrangeMasterCards(allSetupCards, "human-pile"));
-    setSelectedCardId(undefined);
   }
 
   function undoArrangement() {
@@ -211,7 +208,6 @@ export default function MasterClient() {
     if (!prior) return;
     setDraftPiles(clonePiles(prior));
     setUndo((items) => items.slice(0, -1));
-    setSelectedCardId(undefined);
   }
 
   function confirmArmy() {
@@ -440,7 +436,7 @@ export default function MasterClient() {
     const complete = unassigned.length === 0 && draftPiles.length > 0 && draftPiles.every((pile) => isLegalInitialPile(pile.cards));
     return <main className="setupPage masterArrangePage"><section className="masterArrangePanel">
       <header><div><p className="kicker">BUILD YOUR ARMY</p><h1>Arrange twenty cards</h1><p>Drag cards together to build your piles. Pile order runs from bottom to top: Place–Person–Thing.</p></div><div className="arrangeActions"><button className="secondary" disabled={!undo.length} onClick={undoArrangement}>Undo</button><button className="secondary" onClick={resetArrangement}>Reset</button><button onClick={autoArrange}>Auto-arrange</button></div></header>
-      <MasterArmyBoard cards={allSetupCards} piles={draftPiles} onMove={moveCard} renderCard={(card) => <MasterCardView card={card} visible badge={card.type} />} />
+      <MasterArmyBoard cards={allSetupCards} piles={draftPiles} onMove={moveCard} renderCard={(card) => <MasterCardView card={card} visible badge={card.type === "leader" ? "person" : card.type} />} />
       <footer className="arrangeFooter"><span>{complete ? "All twenty cards are in legal piles." : `${unassigned.length} unassigned · Finish every legal pile to continue.`}</span><button disabled={!complete} onClick={confirmArmy}>Confirm Army</button></footer>
     </section></main>;
   }
@@ -512,5 +508,5 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
 }
 
 function MasterHelp({ onClose, effectsMode }: { onClose: () => void; effectsMode: MasterEffectsMode }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE ROCK CHURCH OF LALIBELA</p><h2>Master Rules</h2><ol><li>Choose a Leader heir before the deal. Unchosen Leaders return to the deck and may appear in your twenty-card army.</li><li>Arrange the army into Place–Person–Thing piles. A Leader may occupy the Person position. A Thing cannot stand alone during initial setup.</li><li>Choose an army pile to attack an opposing pile using Strength, Zeal, or Wealth. Your chosen heir may attack only after every army card is gone.</li><li>Every pile uses the combined statistic of all its cards. The losing pile is discarded in full; tied piles survive face up.</li><li>An enemy heir is protected until every army pile is gone.</li><li>After a non-tied win, the victorious player may draw one random face-down reserve card as a new standalone unit, up to your army limit.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol>{effectsMode === "on" ? <p className="note">Revealed cards may grant printed bonuses and one-time actions. Most actions become available on your next turn. When a comparison pauses, the active player gets the first effect opportunity and play proceeds clockwise. With Nile Floods, roll the Flood dice before choosing a guarantee.</p> : <p className="note">Effects Off uses the Core rules without printed card powers.</p>}</section></div>;
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE ROCK CHURCH OF LALIBELA</p><h2>Master Rules</h2><ol><li>Choose a Leader heir before the deal. Unchosen Leader cards return to the deck as People and may appear in your twenty-card army.</li><li>Arrange the army into Place–Person–Thing piles. A Thing cannot stand alone during initial setup.</li><li>Choose an army pile to attack an opposing pile using Strength, Zeal, or Wealth. Your chosen heir may attack only after every army card is gone.</li><li>Every pile uses the combined statistic of all its cards. The losing pile is discarded in full; tied piles survive face up.</li><li>An enemy heir is protected until every army pile is gone.</li><li>After a non-tied win, the victorious player may draw one random face-down reserve card as a new standalone unit, up to your army limit.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol>{effectsMode === "on" ? <p className="note">Revealed cards may grant printed bonuses and one-time actions. Most actions become available on your next turn. When a comparison pauses, the active player gets the first effect opportunity and play proceeds clockwise. With Nile Floods, roll the Flood dice before choosing a guarantee.</p> : <p className="note">Effects Off uses the Core rules without printed card powers.</p>}</section></div>;
 }

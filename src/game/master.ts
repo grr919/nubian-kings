@@ -319,7 +319,7 @@ export function beginMasterConstruction(prepared: PreparedMasterGame, humanHeirI
       ? source.leaders.find((card) => card.id === humanHeirId)
       : chooseNpcHeir(source);
     if (!heir) throw new Error(`A valid Leader heir is required for ${source.id}`);
-    const eligibleDeck = [...source.deck, ...source.leaders.filter((card) => card.id !== heir.id)];
+    const eligibleDeck = [...source.deck, ...source.leaders.filter((card) => card.id !== heir.id).map((card) => ({ ...card, type: "person" as const }))];
     const dealt = dealTwenty(eligibleDeck, rng);
     const setupCards = dealt.army.map((card) => ({ ...card, face: source.controller === "human" ? "up" as const : "down" as const }));
     return {

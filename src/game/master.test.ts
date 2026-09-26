@@ -77,7 +77,10 @@ describe("Master setup", () => {
     const humanCards = constructionCards(construction);
     expect(humanCards).toHaveLength(20);
     expect(humanCards.every((candidate) => candidate.face === "up")).toBe(true);
-    expect([...humanCards, ...construction.players[0].unused].filter((candidate) => candidate.type === "leader")).toHaveLength(choices.length - 1);
+    const formerLeaders = [...humanCards, ...construction.players[0].unused].filter((candidate) => choices.some((choice) => choice.id === candidate.id));
+    expect(formerLeaders).toHaveLength(choices.length - 1);
+    expect(formerLeaders.every((candidate) => candidate.type === "person")).toBe(true);
+    expect(construction.players[0].heir.type).toBe("leader");
     expect(construction.players.filter((candidate) => candidate.controller === "npc").every((candidate) => candidate.army.every((candidatePile) => isLegalInitialPile(candidatePile.cards)))).toBe(true);
     const arranged = autoArrangeMasterCards(humanCards, "human-pile");
     const game = confirmMasterArmy(construction, arranged);

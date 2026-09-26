@@ -53,7 +53,7 @@ export default function MasterArmyBoard({ cards, piles, busy = false, renderCard
 
   function cardButton(card: MasterCard) {
     return <button key={card.id} type="button" className={`armyBoardCard ${selected === card.id ? "selectedSetupCard" : ""}`} draggable={!busy}
-      aria-label={`Select ${card.name} (${card.type})`} aria-pressed={selected === card.id}
+      aria-label={`Select ${card.name} (${card.type === "leader" ? "person" : card.type})`} aria-pressed={selected === card.id}
       onClick={(event) => { event.stopPropagation(); if (ignoreClick.current) { ignoreClick.current = false; return; } if (!busy) setSelected((old) => old === card.id ? undefined : card.id); }}
       onDragStart={(event) => { event.dataTransfer.setData("text/plain", card.id); event.dataTransfer.effectAllowed = "move"; setDragging(card.id); }}
       onDragEnd={() => setDragging(undefined)}
@@ -82,7 +82,7 @@ export default function MasterArmyBoard({ cards, piles, busy = false, renderCard
     <div className="armyBoardGrid">
       {piles.map((pile, index) => <div key={pile.id} className={`armyBoardSlot ${chosen && canMoveArmyCard(piles, chosen, pile.id) ? "armyBoardAccepts" : ""}`} data-army-target={pile.id} {...destination(pile.id)}>
         <strong>Pile {index + 1}</strong><div className="armyBoardStack">{pile.cards.map(cardButton)}</div>
-        <small>{pile.cards.map((card) => card.type).join(" · ")}</small>
+        <small>{pile.cards.map((card) => card.type === "leader" ? "person" : card.type).join(" · ")}</small>
       </div>)}
       {loose.map((card) => <div key={card.id} className="armyBoardSlot armyBoardLoose"><span className="armyBoardLooseLabel">Unassigned</span>{cardButton(card)}</div>)}
       <div className={`armyBoardSlot armyBoardEmpty ${chosen && canMoveArmyCard(piles, chosen) ? "armyBoardAccepts" : ""}`} data-army-target="" {...destination()}><span>+ New pile</span></div>
