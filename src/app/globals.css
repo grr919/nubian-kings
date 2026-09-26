@@ -107,3 +107,12 @@ body{background:#efd49b}
 .masterBoard .masterUnit{width:clamp(184px,20vw,290px);padding:30px 8px 10px}.masterBoard .masterHeir{grid-template-columns:55px minmax(0,290px)}.masterBoard .masterArmy{gap:16px}.masterReview .masterComparison{width:min(100%,650px)}.masterReview .reviewPileCards .masterCard{width:min(55%,280px)}@media(min-width:901px){.masterBoard .amateurOpponents{grid-template-columns:1fr}.masterBoard .masterArmy{flex-wrap:wrap;overflow-x:visible}}@media(max-width:600px){.masterBoard .masterUnit{width:216px}.masterBoard .masterHeir{grid-template-columns:45px minmax(0,216px)}.masterBoard .masterArmy{gap:12px;scroll-snap-type:x proximity}.masterBoard .masterArmy .masterUnit{scroll-snap-align:start}}
 .masterBoard .unitOverflow{display:block;margin-top:7px;color:#674116;font:700 .72rem Arial,sans-serif}.masterReview .reviewPileCards{flex-wrap:wrap;gap:12px;align-items:flex-start}.masterReview .reviewPileCards .masterCard{flex:0 0 min(45%,280px);width:min(45%,280px);margin-left:0}
 .armyBoardStack{max-height:365px;overflow-y:auto;overscroll-behavior:contain;padding:2px 2px 18px}.armyBoardStack .armyBoardCard{flex-shrink:0}@media(max-width:600px){.armyBoardStack{max-height:310px}}
+
+/* Center the in-game identity across all levels and keep the exit action at the bottom. */
+.gameHeader{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.gameHeader>div:first-child{grid-column:2;justify-self:center}
+.gameHeader>div:first-child b{font-size:1.35rem;line-height:1.15}
+.gameHeader>.toolbar,.gameHeader>.iconButton{grid-column:3;justify-self:end}
+.abandonGameFooter{display:flex;justify-content:center;margin:32px auto 0;padding:22px 16px 28px;max-width:1460px}
+.abandonGameFooter button{font-size:.85rem}
+@media(max-width:600px){.gameHeader{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);padding-inline:8px}.gameHeader>div:first-child b{font-size:1.22rem}.gameHeader>.toolbar{max-width:110px;justify-content:flex-end;flex-wrap:wrap}}
