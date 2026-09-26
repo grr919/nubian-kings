@@ -25,7 +25,8 @@ describe("Master effect source data", () => {
     expect(new Set(reserve.map((card) => card.id)).size).toBe(reserve.length);
   });
 
-  it("keeps gameplay on Core rules until optional comparison windows exist", () => {
-    expect(() => prepareMasterGame({ humanFaction: "nubian-christians", npcCount: 1, nileFloods: false, effectsMode: "on" })).toThrow(/not ready/);
+  it("offers Effects On only when selected and keeps Core rules as the default", () => {
+    expect(prepareMasterGame({ humanFaction: "nubian-christians", npcCount: 1, nileFloods: false }).effectsMode).toBe("off");
+    expect(prepareMasterGame({ humanFaction: "nubian-christians", npcCount: 1, nileFloods: false, effectsMode: "on" }).effectsMode).toBe("on");
   });
 });
