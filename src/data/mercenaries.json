@@ -1,0 +1,13 @@
+{
+  "mode": "master-effects-on",
+  "reserve": "shared",
+  "cards": [
+    { "name": "Beja Nomad", "strength": 4, "zeal": null, "wealth": 0, "religion": "P", "nation": "X", "copies": 4, "image": "/cards/190 4x Black.jpg", "immuneToConversion": true },
+    { "name": "Beja Warrior", "strength": 6, "zeal": null, "wealth": 0, "religion": "P", "nation": "X", "copies": 4, "image": "/cards/191 4x Black.jpg", "immuneToConversion": true },
+    { "name": "Frankish Knights", "strength": 10, "zeal": null, "wealth": 0, "religion": "Ch", "nation": "F", "copies": 6, "image": "/cards/192 6x Black.jpg", "immuneToConversion": true },
+    { "name": "Frankish Infantry", "strength": 8, "zeal": null, "wealth": 0, "religion": "Ch", "nation": "F", "copies": 6, "image": "/cards/193 6x Black.jpg", "immuneToConversion": true },
+    { "name": "Nuba Tribe", "strength": 4, "zeal": null, "wealth": 0, "religion": "P", "nation": "N", "copies": 4, "image": "/cards/194 4x Black.jpg", "immuneToConversion": true },
+    { "name": "Nuba Herder", "strength": 3, "zeal": null, "wealth": 0, "religion": "P", "nation": "N", "copies": 4, "image": "/cards/195 4x Black.jpg", "immuneToConversion": true },
+    { "name": "Nuba Warrior", "strength": 5, "zeal": null, "wealth": 0, "religion": "P", "nation": "N", "copies": 4, "image": "/cards/196 4x Black.jpg", "immuneToConversion": true }
+  ]
+}
