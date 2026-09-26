@@ -116,3 +116,9 @@ body{background:#efd49b}
 .abandonGameFooter{display:flex;justify-content:center;margin:32px auto 0;padding:22px 16px 28px;max-width:1460px}
 .abandonGameFooter button{font-size:.85rem}
 @media(max-width:600px){.gameHeader{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);padding-inline:8px}.gameHeader>div:first-child b{font-size:1.22rem}.gameHeader>.toolbar{max-width:110px;justify-content:flex-end;flex-wrap:wrap}}
+
+/* Sebastian Münster, Cosmographia (1545), public domain: Wikimedia Commons.
+   Keep the map behind opaque card and control surfaces for legibility. */
+.landing{background:linear-gradient(#fff1c7a8,#eac58ea8),url('/munster-africa-1545.jpg') center center / cover fixed}
+.gamePage{background:linear-gradient(#fff2c5d9,#eac786e6),url('/munster-africa-1545.jpg') center top / cover fixed}
+@media(max-width:600px){.landing,.gamePage{background-attachment:scroll}}
