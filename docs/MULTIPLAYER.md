@@ -167,7 +167,7 @@ The following design is approved for implementation.
 
 ### Private army construction
 
-- Each human independently arranges all twenty cards into legal Place–Person–Thing piles.
+- Each human independently arranges all twenty cards into legal piles. A pile may contain one Place, any number of People, and any number of Things in that order; Things require at least one Person. The pile itself has no card limit.
 - A Leader may occupy the Person position.
 - A Thing may not stand alone in the initial army.
 - The interface provides Undo, Reset, and Auto-arrange.

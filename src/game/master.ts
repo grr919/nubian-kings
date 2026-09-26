@@ -248,9 +248,7 @@ function chooseNpcHeir(player: PreparedMasterPlayer) {
 }
 
 function dealCanBeArranged(cards: readonly MasterCard[]) {
-  const things = cards.filter((card) => card.type === "thing").length;
-  const holders = cards.filter(personLike).length;
-  return things <= holders;
+  return !cards.some((card) => card.type === "thing") || cards.some(personLike);
 }
 
 function dealTwenty(deck: MasterCard[], random: () => number) {
@@ -264,15 +262,23 @@ function dealTwenty(deck: MasterCard[], random: () => number) {
 }
 
 export function isLegalInitialPile(cards: readonly MasterCard[]) {
-  if (cards.length === 1) return cards[0].type !== "thing";
-  if (cards.length === 2) {
-    return (cards[0].type === "place" && personLike(cards[1]))
-      || (personLike(cards[0]) && cards[1].type === "thing");
+  if (!cards.length) return false;
+  let placeCount = 0;
+  let personCount = 0;
+  let stage = 0;
+  for (const card of cards) {
+    if (card.type === "place") {
+      if (stage !== 0 || ++placeCount > 1) return false;
+    } else if (personLike(card)) {
+      if (stage === 2) return false;
+      stage = 1;
+      personCount++;
+    } else if (card.type === "thing") {
+      if (!personCount) return false;
+      stage = 2;
+    } else return false;
   }
-  return cards.length === 3
-    && cards[0].type === "place"
-    && personLike(cards[1])
-    && cards[2].type === "thing";
+  return true;
 }
 
 export function legalMasterPileAddition(cards: readonly MasterCard[], card: MasterCard): MasterCard[] | undefined {
@@ -295,18 +301,14 @@ export function autoArrangeMasterCards(cards: readonly MasterCard[], prefix = "p
   const places = cards.filter((card) => card.type === "place").sort((a, b) => value(b) - value(a));
   const holders = cards.filter(personLike).sort((a, b) => value(b) - value(a));
   const things = cards.filter((card) => card.type === "thing").sort((a, b) => value(b) - value(a));
-  const composed: MasterCard[][] = things.map((thing) => [holders.shift()!, thing]);
-  const singles: MasterCard[][] = holders.map((holder) => [holder]);
+  const composed: MasterCard[][] = holders.map((holder) => [holder]);
+  things.forEach((thing, index) => composed[index % composed.length].push(thing));
   for (const place of places) {
-    const withThing = composed.find((pile) => pile.length === 2 && personLike(pile[0]));
-    if (withThing) withThing.unshift(place);
-    else {
-      const withPerson = singles.find((pile) => pile.length === 1 && personLike(pile[0]));
-      if (withPerson) withPerson.unshift(place);
-      else singles.push([place]);
-    }
+    const withoutPlace = composed.find((pile) => personLike(pile[0]));
+    if (withoutPlace) withoutPlace.unshift(place);
+    else composed.push([place]);
   }
-  return [...composed, ...singles].map((pileCards, index): MasterPile => ({
+  return composed.map((pileCards, index): MasterPile => ({
     id: `${prefix}-${index + 1}`,
     cards: pileCards,
   }));

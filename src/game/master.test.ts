@@ -50,8 +50,12 @@ describe("Master pile rules", () => {
     expect(isLegalInitialPile([place, person])).toBe(true);
     expect(isLegalInitialPile([leader, thing])).toBe(true);
     expect(isLegalInitialPile([place, leader, thing])).toBe(true);
+    expect(isLegalInitialPile([place, person, leader, thing, thing, thing])).toBe(true);
+    expect(isLegalInitialPile([person, person, thing, thing])).toBe(true);
     expect(isLegalInitialPile([place, thing])).toBe(false);
     expect(isLegalInitialPile([person, place])).toBe(false);
+    expect(isLegalInitialPile([place, place, person])).toBe(false);
+    expect(isLegalInitialPile([person, thing, leader])).toBe(false);
   });
 
   it("auto-arranges every card into legal piles", () => {
@@ -63,6 +67,14 @@ describe("Master pile rules", () => {
     const piles = autoArrangeMasterCards(cards);
     expect(piles.every((candidate) => isLegalInitialPile(candidate.cards))).toBe(true);
     expect(piles.flatMap((candidate) => candidate.cards).map((item) => item.id).sort()).toEqual(cards.map((item) => item.id).sort());
+  });
+
+  it("auto-arranges more Things than People without limiting the pile to three cards", () => {
+    const cards = [card("place", "place"), card("person", "person"), ...Array.from({ length: 8 }, (_, index) => card(`thing-${index}`, "thing"))];
+    const piles = autoArrangeMasterCards(cards);
+    expect(piles).toHaveLength(1);
+    expect(piles[0].cards).toHaveLength(10);
+    expect(isLegalInitialPile(piles[0].cards)).toBe(true);
   });
 });
 

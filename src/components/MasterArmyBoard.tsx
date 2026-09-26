@@ -84,7 +84,7 @@ export default function MasterArmyBoard({ cards, piles, busy = false, renderCard
   }
 
   return <section className="armyBoard" aria-label="Arrange your army">
-    <div className="armyBoardHeading"><h2>Your cards · {piles.length} piles</h2><p>Drag one card onto another to make a pile. Select two cards to do the same by tapping. You can also move cards onto a pile or into an empty slot.</p></div>
+    <div className="armyBoardHeading"><h2>Your cards · {piles.length} piles</h2><p>Drag one card onto another to make a pile, or select two cards by tapping. A pile may have one Place, any number of People, and any number of Things.</p></div>
     <div className="armyBoardGrid">
       {piles.map((pile, index) => <div key={pile.id} className={`armyBoardSlot ${chosen && canMoveArmyCard(cards, piles, chosen, pile.id) ? "armyBoardAccepts" : ""}`} data-army-target={pile.id} {...destination(pile.id)}>
         <strong>Pile {index + 1}</strong><div className="armyBoardStack">{pile.cards.map(cardButton)}</div>
