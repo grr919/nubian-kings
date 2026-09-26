@@ -13,7 +13,7 @@ type Props = {
 
 export function canMoveArmyCard(cards: MasterCard[], piles: MasterPile[], card: MasterCard, targetId?: string) {
   const source = piles.find((pile) => pile.cards.some((item) => item.id === card.id));
-  if (source?.id === targetId || card.id === targetId) return false;
+  if ((source && source.id === targetId) || card.id === targetId) return false;
   const remainder = source?.cards.filter((item) => item.id !== card.id) ?? [];
   if (remainder.length && !isLegalInitialPile(remainder)) return false;
   if (!targetId) return isLegalInitialPile([card]);

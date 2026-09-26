@@ -15,5 +15,8 @@ describe("Master army board moves", () => {
     const triple = moveArmyCard(cards, pair, cards[2], pair[0].id)!;
     expect(triple[0].cards.map((item) => item.id)).toEqual(["place", "person", "thing"]);
     expect(canMoveArmyCard(cards, [], cards[2], cards[0].id)).toBe(false);
+    const standalone = moveArmyCard(cards, [], cards[1]);
+    expect(standalone?.[0].cards.map((item) => item.id)).toEqual(["person"]);
+    expect(moveArmyCard(cards, standalone!, cards[0], standalone![0].id)?.[0].cards.map((item) => item.id)).toEqual(["place", "person"]);
   });
 });
