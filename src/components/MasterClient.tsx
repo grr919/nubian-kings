@@ -187,7 +187,7 @@ export default function MasterClient() {
   function moveCard(cardId: string, targetPileId?: string) {
     const card = allSetupCards.find((item) => item.id === cardId);
     if (!card) return;
-    const next = moveArmyCard(draftPiles, card, targetPileId);
+    const next = moveArmyCard(allSetupCards, draftPiles, card, targetPileId);
     if (!next) return;
     setUndo((prior) => [...prior, clonePiles(draftPiles)]);
     setDraftPiles(next);

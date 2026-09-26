@@ -1,0 +1,19 @@
+import { describe, expect, it } from "vitest";
+import { canMoveArmyCard, moveArmyCard } from "./MasterArmyBoard";
+import type { MasterCard } from "@/game/master";
+
+const card = (id: string, type: MasterCard["type"]): MasterCard => ({
+  id, definitionId: id, name: id, factionId: "test", type,
+  strength: 1, zeal: 1, wealth: 1, face: "up",
+});
+
+describe("Master army board moves", () => {
+  it("combines two loose cards and then adds a third to the same pile", () => {
+    const cards = [card("place", "place"), card("person", "person"), card("thing", "thing")];
+    const pair = moveArmyCard(cards, [], cards[1], cards[0].id)!;
+    expect(pair[0].cards.map((item) => item.id)).toEqual(["place", "person"]);
+    const triple = moveArmyCard(cards, pair, cards[2], pair[0].id)!;
+    expect(triple[0].cards.map((item) => item.id)).toEqual(["place", "person", "thing"]);
+    expect(canMoveArmyCard(cards, [], cards[2], cards[0].id)).toBe(false);
+  });
+});
