@@ -7,21 +7,40 @@ import FeedbackButton from "@/components/FeedbackButton";
 import cardData from "@/data/cards.json";
 import {
   activeMasterPlayer,
+  activateMasterArmyEffect,
+  activateMasterClockBackward,
+  activateMasterClockForward,
+  activateMasterRandomDiscard,
+  activateMasterSupport,
+  applyMasterNileFlood,
+  availableMasterGuarantees,
+  availableMasterSupporters,
+  beginMasterEffectComparison,
   autoArrangeMasterCards,
   beginMasterConstruction,
   chooseMasterNpcAttack,
+  chooseMasterNpcArmyEffect,
+  chooseMasterNpcEffect,
   confirmMasterArmy,
   constructionCards,
+  designateMasterPriestProtection,
+  eligibleMasterEliminationTargets,
+  eliminateWithMasterEffect,
+  finishMasterEffectComparison,
+  interruptMasterComparison,
   isLegalInitialPile,
+  legalMasterPileAddition,
   legalMasterAttackers,
   legalMasterTargets,
   masterArmySize,
   masterHeirChoices,
+  passMasterEffectOpportunity,
   prepareMasterGame,
   replenishMasterArmy,
   resolveMasterAttack,
   resolveMasterNpcReplenishment,
   skipMasterReplenishment,
+  spendMasterGuarantee,
   type MasterAttack,
   type MasterCard,
   type MasterConstruction,
@@ -30,6 +49,7 @@ import {
   type MasterPlayer,
   type MasterState,
   type MasterVictoryMode,
+  type MasterEffectsMode,
 } from "@/game/master";
 import { MASTER_SAVE_KEY, parseMasterGame, serializeMasterGame } from "@/game/master-save";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
@@ -59,11 +79,14 @@ interface MasterReview {
   targetPlayerId: string;
   scores: Array<{ playerId: string; unitId: string; base: number; die: number; total: number }>;
   tie: boolean;
+  winnerId?: string;
+  cancelReason?: "interrupt" | "immunity";
+  guarantees?: string[];
 }
 
 function artwork(card: MasterCard) {
-  const filename = ART_BY_ID[card.definitionId];
-  return filename ? `${ART_BASE_URL}/cards/${encodeURIComponent(filename)}` : undefined;
+  const filename = card.artFile ?? ART_BY_ID[card.definitionId];
+  return filename ? `${card.mercenary ? "" : ART_BASE_URL}/cards/${encodeURIComponent(filename)}` : undefined;
 }
 
 function playerLabel(player: MasterPlayer) {
@@ -80,6 +103,7 @@ function eventText(event: MasterEvent, state: MasterState) {
   const player = "playerId" in event ? state.players.find((candidate) => candidate.id === event.playerId) : undefined;
   const who = player?.controller === "human" ? "You" : player ? INFO[player.factionId].name : "A player";
   if (event.type === "tie") return "The attack ended in a tie. Neither unit was defeated.";
+  if (event.type === "cancelled") return event.reason === "immunity" ? "Conversion cancelled: the revealed target is immune." : "An effect interrupted the comparison. Neither unit was defeated.";
   if (event.type === "defeated") return `${player ? possessive(player) : "A player's"} ${event.heir ? "heir" : event.cardIds.length === 1 ? "card" : "pile"} was defeated.`;
   if (event.type === "replenishment-available") return `${who} may replenish the army.`;
   if (event.type === "replenished") return `${who} drew a hidden reserve card.`;
@@ -124,6 +148,7 @@ export default function MasterClient() {
   const [npcCount, setNpcCount] = useState<number | "random">("random");
   const [openingPlayer, setOpeningPlayer] = useState<"random" | "human" | "npc">("random");
   const [victoryMode, setVictoryMode] = useState<MasterVictoryMode>("standard");
+  const [effectsMode, setEffectsMode] = useState<MasterEffectsMode>("off");
   const [seed, setSeed] = useState("");
   const [floods, setFloods] = useState(false);
   const [hasSave, setHasSave] = useState(false);
@@ -146,7 +171,7 @@ export default function MasterClient() {
   }
 
   function assemble() {
-    const next = prepareMasterGame({ humanFaction: faction, npcCount: npcCount === "random" ? undefined : npcCount, nileFloods: floods, victoryMode, openingPlayer, seed: seed || undefined });
+    const next = prepareMasterGame({ humanFaction: faction, npcCount: npcCount === "random" ? undefined : npcCount, nileFloods: floods, victoryMode, effectsMode, openingPlayer, seed: seed || undefined });
     setSeed(next.random.seed);
     setPrepared(next);
     setScreen("heir");
@@ -256,6 +281,21 @@ export default function MasterClient() {
     const beforeAttacker = structuredClone(locateUnit(state, attackerPlayerId, currentAttackerId)).map((card) => ({ ...card, face: "up" as const }));
     const beforeTarget = structuredClone(locateUnit(state, targetPlayerId, targetUnitId)).map((card) => ({ ...card, face: "up" as const }));
     const next = structuredClone(state);
+    if (next.effectsMode === "on") {
+      const pending = beginMasterEffectComparison(next, { attackerUnitId: currentAttackerId, targetPlayerId, targetUnitId, stat });
+      if (pending.cancelled) {
+        const before = structuredClone(pending);
+        const events = finishMasterEffectComparison(next);
+        const scores = events.filter((event): event is Extract<MasterEvent, { type: "score" }> => event.type === "score").map(({ playerId, unitId, base, die, total }) => ({ playerId, unitId, base, die, total }));
+        setReview({ stat, attacker: before.attackerCards, target: before.defenderCards, attackerUnitId: currentAttackerId, targetUnitId, attackerPlayerId, targetPlayerId, scores, tie: true, cancelReason: before.cancelReason });
+        addEvents(events, next);
+      }
+      setSelectedStat(undefined);
+      setAttackerId(undefined);
+      persist(next);
+      setState(next);
+      return;
+    }
     const events = resolveMasterAttack(next, { attackerUnitId: currentAttackerId, targetPlayerId, targetUnitId, stat });
     const scores = events.filter((event): event is Extract<MasterEvent, { type: "score" }> => event.type === "score").map(({ playerId, unitId, base, die, total }) => ({ playerId, unitId, base, die, total }));
     setReview({ stat, attacker: beforeAttacker, target: beforeTarget, attackerUnitId: currentAttackerId, targetUnitId, attackerPlayerId, targetPlayerId, scores, tie: events.some((event) => event.type === "tie") });
@@ -264,6 +304,46 @@ export default function MasterClient() {
     persist(next);
     setState(next);
     addEvents(events, next);
+  }
+
+  function decideEffect(kind: "pass" | "flood" | "guarantee" | "interrupt" | "eliminate" | "clock-forward" | "clock-backward" | "support" | "priest" | "recruit", cardId?: string, targetPlayerId?: string, targetCardId?: string, supporterId?: string, side?: "attacker" | "defender", destinationPileId?: string) {
+    if (!state?.pendingEffectComparison) return;
+    const next = structuredClone(state);
+    const pendingComparison = next.pendingEffectComparison!;
+    const before = structuredClone(pendingComparison);
+    const playerId = next.players[pendingComparison.priorityIndex].id;
+    let events: MasterEvent[] | undefined;
+    if (kind === "flood") applyMasterNileFlood(next, playerId);
+    else if (kind === "guarantee") spendMasterGuarantee(next, playerId, cardId!);
+    else if (kind === "interrupt") events = interruptMasterComparison(next, playerId, cardId!);
+    else if (kind === "eliminate") eliminateWithMasterEffect(next, playerId, cardId!, targetPlayerId!, targetCardId!);
+    else if (kind === "clock-forward") activateMasterClockForward(next, playerId, cardId!);
+    else if (kind === "clock-backward") activateMasterClockBackward(next, playerId, cardId!);
+    else if (kind === "support") activateMasterSupport(next, playerId, cardId!, supporterId!, side!);
+    else if (kind === "priest") designateMasterPriestProtection(next, playerId, cardId!, targetCardId!);
+    else if (kind === "recruit") activateMasterArmyEffect(next, playerId, cardId!, destinationPileId);
+    else if (passMasterEffectOpportunity(next, playerId)) events = finishMasterEffectComparison(next);
+    if (events) {
+      const scores = events.filter((event): event is Extract<MasterEvent, { type: "score" }> => event.type === "score").map(({ playerId: id, unitId, base, die, total }) => ({ playerId: id, unitId, base, die, total }));
+      const loser = events.find((event): event is Extract<MasterEvent, { type: "defeated" }> => event.type === "defeated")?.playerId;
+      setReview({ stat: before.attack.stat, attacker: before.attackerCards, target: before.defenderCards, attackerUnitId: before.attack.attackerUnitId, targetUnitId: before.attack.targetUnitId, attackerPlayerId: before.attackerPlayerId, targetPlayerId: before.defenderPlayerId, scores, tie: events.some((event) => event.type === "tie" || event.type === "cancelled"), winnerId: loser ? loser === before.attackerPlayerId ? before.defenderPlayerId : before.attackerPlayerId : undefined, cancelReason: before.cancelReason, guarantees: before.guarantees });
+      addEvents(events, next);
+    }
+    persist(next);
+    setState(next);
+  }
+
+  function useArmyEffect(sourceId: string, targetPlayerId?: string, destinationPileId?: string, targetCardId?: string, clock?: "forward" | "backward") {
+    if (!state) return;
+    const next = structuredClone(state);
+    if (clock === "forward") activateMasterClockForward(next, activeMasterPlayer(next).id, sourceId);
+    else if (clock === "backward") activateMasterClockBackward(next, activeMasterPlayer(next).id, sourceId);
+    else if (targetCardId && Number([activeMasterPlayer(next).heir, ...activeMasterPlayer(next).army.flatMap((pile) => pile.cards)].find((card) => card.id === sourceId)?.artFile?.match(/^\d+/)?.[0] ?? 0) === 176) designateMasterPriestProtection(next, activeMasterPlayer(next).id, sourceId, targetCardId);
+    else if (targetCardId) eliminateWithMasterEffect(next, activeMasterPlayer(next).id, sourceId, targetPlayerId!, targetCardId);
+    else if (targetPlayerId) activateMasterRandomDiscard(next, activeMasterPlayer(next).id, sourceId, targetPlayerId);
+    else activateMasterArmyEffect(next, activeMasterPlayer(next).id, sourceId, destinationPileId);
+    persist(next);
+    setState(next);
   }
 
   function applyReplenishment(kind: "draw" | "skip") {
@@ -280,6 +360,19 @@ export default function MasterClient() {
     setThinking(true);
     const timer = window.setTimeout(() => {
       const actionState = structuredClone(state);
+      const effect = chooseMasterNpcArmyEffect(actionState);
+      if (effect) {
+        const playerId = activeMasterPlayer(actionState).id;
+        if (effect.kind === "army") activateMasterArmyEffect(actionState, playerId, effect.cardId);
+        else if (effect.kind === "clock-forward") activateMasterClockForward(actionState, playerId, effect.cardId);
+        else if (effect.kind === "random-discard") activateMasterRandomDiscard(actionState, playerId, effect.cardId, effect.targetPlayerId);
+        else if (effect.kind === "eliminate") eliminateWithMasterEffect(actionState, playerId, effect.cardId, effect.targetPlayerId, effect.targetCardId);
+        else designateMasterPriestProtection(actionState, playerId, effect.cardId, effect.targetCardId);
+        persist(actionState);
+        setState(actionState);
+        setThinking(false);
+        return;
+      }
       const action = chooseMasterNpcAttack(actionState);
       persist(actionState);
       setState(actionState);
@@ -306,6 +399,19 @@ export default function MasterClient() {
     return () => window.clearTimeout(timer);
   }, [state, review, eliminationPending]);
 
+  useEffect(() => {
+    if (state?.phase !== "effects" || !state.pendingEffectComparison || review || state.players[state.pendingEffectComparison.priorityIndex].controller !== "npc") return;
+    const timer = window.setTimeout(() => {
+      const choice = chooseMasterNpcEffect(state);
+      if (choice.kind === "flood") decideEffect("flood");
+      else if (choice.kind === "guarantee" || choice.kind === "interrupt") decideEffect(choice.kind, choice.cardId);
+      else if (choice.kind === "eliminate") decideEffect("eliminate", choice.cardId, choice.targetPlayerId, choice.targetCardId);
+      else if (choice.kind === "support") decideEffect("support", choice.cardId, undefined, undefined, choice.supporterId, choice.side);
+      else decideEffect("pass");
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [state, review]);
+
   function endEliminatedGame() {
     localStorage.removeItem(MASTER_SAVE_KEY);
     localStorage.removeItem(MASTER_NPC_ATTACK_KEY);
@@ -328,9 +434,9 @@ export default function MasterClient() {
     <p>Build twenty cards into legal piles, protect your heir, and defeat opposing formations as complete units.</p>
     <div className="actions"><button onClick={() => setScreen("setup")}>New Master Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Master Game</button><a className="buttonLink secondary" href="/master/multiplayer">Multiplayer</a></div>
     <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Master Rules</button><a className="landingBack" href="/">Return to Main</a></div>
-    <small>Core profile · Special card effects are not used</small>
+    <small>Build your army and challenge the other kingdoms.</small>
     <footer className="landingFooter">© 2026 Nile South Games</footer>
-  </section>{help && <MasterHelp onClose={() => setHelp(false)} />}</main>;
+  </section>{help && <MasterHelp effectsMode={effectsMode} onClose={() => setHelp(false)} />}</main>;
 
   if (screen === "setup") return <main className="setupPage"><section className="setupPanel">
     <button className="backButton" onClick={() => setScreen("home")}>← Back</button><p className="kicker">MASTER GAME</p><h1>Assemble your army</h1><p className="lede">Choose your faction and heir, then arrange twenty privately revealed cards into legal piles.</p>
@@ -339,6 +445,7 @@ export default function MasterClient() {
       <label><span>Computer opponents</span><select value={npcCount} onChange={(event) => setNpcCount(event.target.value === "random" ? "random" : Number(event.target.value))}><option value="random">Random (1–4)</option>{[1,2,3,4].map((count) => <option key={count} value={count}>{count}</option>)}</select></label>
       <label><span>Opening initiative</span><select value={openingPlayer} onChange={(event) => setOpeningPlayer(event.target.value as "random" | "human" | "npc")}><option value="random">Random participant</option><option value="human">You</option><option value="npc">Computer opponent</option></select></label>
       <label><span>Victory rule</span><select value={victoryMode} onChange={(event) => setVictoryMode(event.target.value as MasterVictoryMode)}><option value="standard">First heir eliminated</option><option value="long">Last heir standing</option></select></label>
+      <label><span>Special effects</span><select value={effectsMode} onChange={(event) => setEffectsMode(event.target.value as MasterEffectsMode)}><option value="off">Effects Off · Core rules</option><option value="on">Effects On · printed card powers</option></select></label>
       <label className="toggle"><input type="checkbox" checked={floods} onChange={(event) => setFloods(event.target.checked)} /><span><b>Nile Floods</b><small>Add one d6 to each competing unit.</small></span></label>
       <label className="seedSetting"><span><b>Game seed</b><small>Use identical settings and a seed to reproduce setup.</small></span><input value={seed} maxLength={48} placeholder="Generated automatically" onChange={(event) => setSeed(event.target.value)} /></label>
     </div><button className="beginButton" onClick={assemble}>Choose Heir</button>
@@ -382,7 +489,7 @@ export default function MasterClient() {
     {review ? <MasterReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : <section className="amateurBoard masterBoard">
       <MasterPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetUnitId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onUnit={setAttackerId} />
       <div className="amateurOpponents">{state.players.filter((player) => player.controller === "npc").map((player) => {
-        const targets = humanTurn && attackerId && selectedStat ? new Set(legalMasterTargets(state, player.id)) : new Set<string>();
+        const targets = humanTurn && attackerId && selectedStat ? new Set(legalMasterTargets(state, player.id, selectedStat)) : new Set<string>();
         const highlights = new Set<string>();
         if (npcAttack && active.id === player.id) highlights.add(npcAttack.attackerUnitId);
         if (npcAttack?.targetPlayerId === player.id) highlights.add(npcAttack.targetUnitId);
@@ -390,13 +497,15 @@ export default function MasterClient() {
       })}</div>
     </section>}
 
+    {!review && state.phase === "effects" && state.pendingEffectComparison && <section className="chooser npcChoicePanel"><p className="kicker">COMPARISON PAUSED</p><h2>{state.pendingEffectComparison.attack.stat} comparison</h2><p>Attacker: {state.pendingEffectComparison.scores[0]}{state.pendingEffectComparison.dice[0] ? ` + Flood ${state.pendingEffectComparison.dice[0]}` : ""} · Defender: {state.pendingEffectComparison.scores[1]}{state.pendingEffectComparison.dice[1] ? ` + Flood ${state.pendingEffectComparison.dice[1]}` : ""}</p><p>{state.players[state.pendingEffectComparison.priorityIndex].controller === "human" ? "Choose an effect or pass." : "Waiting for an opponent’s effect choice."}</p>{state.players[state.pendingEffectComparison.priorityIndex].controller === "human" && (state.pendingEffectComparison.floodPending ? <button onClick={() => decideEffect("flood")}>Roll Nile Flood dice</button> : <div>{availableMasterGuarantees(state, human.id).map((card) => <button key={card.id} onClick={() => decideEffect("guarantee", card.id)}>Spend {card.name} guarantee</button>)}{[human.heir, ...human.army.flatMap((pile) => pile.cards)].filter((card) => card.face === "up" && !card.effectSpent && (state.pendingEffectComparison!.attack.stat === "zeal" ? [16, 82, 112] : [109]).includes(Number(card.artFile?.match(/^\d+/)?.[0] ?? 0))).map((card) => <button key={card.id} onClick={() => decideEffect("interrupt", card.id)}>Interrupt with {card.name}</button>)}{[human.heir, ...human.army.flatMap((pile) => pile.cards)].filter((card) => card.face === "up" && !card.effectSpent && [1, 3, 51, 52, 85, 89, 129, 132].includes(Number(card.artFile?.match(/^\d+/)?.[0] ?? 0))).map((card) => { const forward = [3, 85, 129].includes(Number(card.artFile?.match(/^\d+/)?.[0] ?? 0)); return <button key={card.id} disabled={!forward && (state.turnBoundaries?.length ?? 0) < 2} onClick={() => decideEffect(forward ? "clock-forward" : "clock-backward", card.id)}>{forward ? "Advance" : "Retreat"} the clock with {card.name}</button>; })}{[human.heir, ...human.army.flatMap((pile) => pile.cards)].flatMap((source) => availableMasterSupporters(state, human.id, source.id).flatMap((supporter) => (Number(source.artFile?.match(/^\d+/)?.[0] ?? 0) === 156 ? ["attacker", "defender"] as const : ["defender"] as const).map((side) => <button key={`${source.id}-${supporter.id}-${side}`} onClick={() => decideEffect("support", source.id, undefined, undefined, supporter.id, side)}>Support {side} with {supporter.name} via {source.name}</button>)))}{[human.heir, ...human.army.flatMap((pile) => pile.cards)].filter((source) => source.face === "up" && !source.effectSpent && Number(source.artFile?.match(/^\d+/)?.[0] ?? 0) === 176).flatMap((source) => [human.heir, ...human.army.flatMap((pile) => pile.cards)].map((target) => <button key={`${source.id}-${target.id}`} onClick={() => decideEffect("priest", source.id, undefined, target.id)}>Protect {target.name} with {source.name}</button>))}{[human.heir, ...human.army.flatMap((pile) => pile.cards)].flatMap((source) => eligibleMasterEliminationTargets(state, human.id, source.id).map((target) => <button key={`${source.id}-${target.card.id}`} onClick={() => decideEffect("eliminate", source.id, target.playerId, target.card.id)}>Eliminate {target.card.face === "up" ? target.card.name : "hidden card"} with {source.name}</button>))}{[human.heir, ...human.army.flatMap((pile) => pile.cards)].filter((source) => source.face === "up" && !source.effectSpent && [10, 12, 141].includes(Number(source.artFile?.match(/^\d+/)?.[0] ?? 0))).flatMap((source) => [<button key={`${source.id}-new`} disabled={!state.mercenaryReserve?.length} onClick={() => decideEffect("recruit", source.id)}>Recruit with {source.name} as new pile</button>, ...human.army.filter((pile) => pile.id === state.pendingEffectComparison!.attack.attackerUnitId || pile.id === state.pendingEffectComparison!.attack.targetUnitId).map((pile) => <button key={`${source.id}-${pile.id}`} disabled={!state.mercenaryReserve?.length || !legalMasterPileAddition(pile.cards, { ...source, id: "preview-mercenary", type: "person" })} onClick={() => decideEffect("recruit", source.id, undefined, undefined, undefined, undefined, pile.id)}>Recruit into {pile.id}</button>)])}<button onClick={() => decideEffect("pass")}>Pass</button></div>)}</section>}
+    {!review && humanTurn && state.effectsMode === "on" && <section className="chooser npcChoicePanel"><h2>Available card effects</h2>{[human.heir, ...human.army.flatMap((pile) => pile.cards)].filter((card) => card.face === "up" && !card.effectSpent && card.revealedRound !== state.round).flatMap((card) => { const number = Number(card.artFile?.match(/^\d+/)?.[0] ?? 0); return [1, 3, 8, 10, 12, 51, 52, 75, 84, 85, 89, 92, 103, 110, 129, 132, 138, 141, 174, 176].includes(number) ? [<div key={card.id}><b>{card.name}</b>{number === 176 ? [human.heir, ...human.army.flatMap((pile) => pile.cards)].map((target) => <button key={target.id} onClick={() => useArmyEffect(card.id, undefined, undefined, target.id)}>Protect {target.name}</button>) : [1, 3, 51, 52, 85, 89, 129, 132].includes(number) ? <button disabled={![3, 85, 129].includes(number) && (state.turnBoundaries?.length ?? 0) < 2} onClick={() => useArmyEffect(card.id, undefined, undefined, undefined, [3, 85, 129].includes(number) ? "forward" : "backward")}>{[3, 85, 129].includes(number) ? "Advance" : "Retreat"} the clock</button> : number === 174 ? eligibleMasterEliminationTargets(state, human.id, card.id).map((target) => <button key={target.card.id} onClick={() => useArmyEffect(card.id, target.playerId, undefined, target.card.id)}>Eliminate {target.card.face === "up" ? target.card.name : "hidden card"}</button>) : [92, 103].includes(number) ? state.players.filter((player) => !player.eliminated && player.id !== human.id).map((player) => <button key={player.id} onClick={() => useArmyEffect(card.id, player.id)}>Discard a random hidden card from {INFO[player.factionId].name}</button>) : <><button onClick={() => useArmyEffect(card.id)}>{[75, 138].includes(number) ? "Increase army limit and draw" : "Deploy as a new pile"}</button>{![75, 138].includes(number) && human.army.map((pile) => <button key={pile.id} onClick={() => useArmyEffect(card.id, undefined, pile.id)}>Add to pile {human.army.indexOf(pile) + 1}</button>)}</>}</div>] : []; })}</section>}
     {!review && humanTurn && <section className="chooser amateurChooser"><p>{!selectedStat ? "Which statistic will decide the attack?" : !attackerId ? masterArmySize(human) ? "Now choose one of your army piles to attack." : "Your heir is your last card. Choose it to attack." : "Now select an enemy pile. An exposed heir may also be selected."}</p><div>{STATS.map((stat) => <button key={stat} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section>}
     {!review && npcAttack && <section className="chooser npcChoicePanel" aria-live="polite"><p className="kicker">ATTACK DECLARED</p><h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using <b>{npcAttack.stat}</b></h2><p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p><button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetUnitId, { attackerUnitId: npcAttack.attackerUnitId, stat: npcAttack.stat })}>Resolve Attack</button></section>}
     {!review && state.phase === "replenish" && pending?.controller === "human" && <section className="chooser replenishmentPanel"><div className="replenishmentHeading"><div><p className="kicker">VICTORIOUS PLAYER</p><b>Replenish your army?</b></div><button onClick={() => applyReplenishment("skip")}>Skip</button></div><div className="replenishmentChoices">{pending.unused.length > 0 && <button onClick={() => applyReplenishment("draw")}><b>Draw hidden reserve card</b><small>{pending.unused.length} cards remain in reserve</small></button>}</div></section>}
     {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir" : `${INFO[winner.factionId].name} are victorious`}</h2><a className="buttonLink" href="/master">Play Again</a></section>}
     {eliminationPending && !review && <EliminatedGamePrompt onContinue={() => setWatchAfterElimination(true)} onEnd={endEliminatedGame} />}
     <aside className="history"><h2>Game record</h2><small style={{display:"block",color:"var(--muted)",marginTop:-6,marginBottom:12}}>Master · Round {state.round} · Seed {state.random.seed}</small>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}<div className="toolbar" style={{justifyContent:"flex-start",flexWrap:"nowrap",overflowX:"auto",marginTop:16}}><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/master">Leave</a></div></aside>
-    {help && <MasterHelp onClose={() => setHelp(false)} />}
+    {help && <MasterHelp effectsMode={state.effectsMode ?? "off"} onClose={() => setHelp(false)} />}
   </main>;
 }
 
@@ -418,18 +527,18 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
   const attackerPlayer = state.players.find((player) => player.id === review.attackerPlayerId)!;
   const targetPlayer = state.players.find((player) => player.id === review.targetPlayerId)!;
   const high = Math.max(...review.scores.map((score) => score.total));
-  const winnerId = review.tie ? undefined : review.scores.find((score) => score.total === high)?.playerId;
-  const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
-  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><p className="kicker">{battleTitle(review.stat)}</p><h2>{headline}</h2></header><div className="comparisonCards">{[
+  const winnerId = review.tie ? undefined : review.winnerId ?? review.scores.find((score) => score.total === high)?.playerId;
+  const headline = review.cancelReason === "interrupt" ? "The comparison was interrupted" : review.cancelReason === "immunity" ? "Conversion cancelled: the target is immune" : roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
+  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><p className="kicker">{battleTitle(review.stat)}</p><h2>{headline}</h2>{Boolean(review.guarantees?.length) && <p>One-time guarantee used{new Set(review.guarantees).size > 1 ? " by both sides; they cancel." : "."}</p>}</header><div className="comparisonCards">{[
     { player: attackerPlayer, cards: review.attacker, unitId: review.attackerUnitId, role: "Attacker" },
     { player: targetPlayer, cards: review.target, unitId: review.targetUnitId, role: "Target" },
   ].map(({ player, cards, unitId, role }) => {
     const score = review.scores.find((entry) => entry.unitId === unitId)!;
-    const result = review.tie ? "Tied" : score.total === high ? "Winner" : "Defeated";
+    const result = review.cancelReason ? "Cancelled" : review.tie ? "Tied" : score.playerId === winnerId ? "Winner" : "Defeated";
     return <article key={`${player.id}-${unitId}`} className={`comparisonCard masterComparison result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><div className="reviewPileCards">{cards.map((card) => <MasterCardView key={card.id} card={card} visible defeated={result === "Defeated"} />)}</div><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
   })}</div><button className="reviewContinue" onClick={onContinue}>Continue</button></section>;
 }
 
-function MasterHelp({ onClose }: { onClose: () => void }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE ROCK CHURCH OF LALIBELA</p><h2>Master Rules</h2><ol><li>Choose a Leader heir before the deal. Unchosen Leaders return to the deck and may appear in your twenty-card army.</li><li>Arrange the army into Place–Person–Thing piles. A Leader may occupy the Person position. A Thing cannot stand alone during initial setup.</li><li>Choose an army pile to attack an opposing pile using Strength, Zeal, or Wealth. Your chosen heir may attack only after every army card is gone.</li><li>Every pile uses the combined statistic of all its cards. The losing pile is discarded in full; tied piles survive face up.</li><li>An enemy heir is protected until every army pile is gone.</li><li>After a non-tied win, the victorious player may draw one random face-down reserve card as a new standalone unit, up to twenty army cards.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol><p className="note">Printed special effects are not used in this Core prototype.</p></section></div>;
+function MasterHelp({ onClose, effectsMode }: { onClose: () => void; effectsMode: MasterEffectsMode }) {
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE ROCK CHURCH OF LALIBELA</p><h2>Master Rules</h2><ol><li>Choose a Leader heir before the deal. Unchosen Leaders return to the deck and may appear in your twenty-card army.</li><li>Arrange the army into Place–Person–Thing piles. A Leader may occupy the Person position. A Thing cannot stand alone during initial setup.</li><li>Choose an army pile to attack an opposing pile using Strength, Zeal, or Wealth. Your chosen heir may attack only after every army card is gone.</li><li>Every pile uses the combined statistic of all its cards. The losing pile is discarded in full; tied piles survive face up.</li><li>An enemy heir is protected until every army pile is gone.</li><li>After a non-tied win, the victorious player may draw one random face-down reserve card as a new standalone unit, up to your army limit.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol>{effectsMode === "on" ? <p className="note">Revealed cards may grant printed bonuses and one-time actions. Most actions become available on your next turn. When a comparison pauses, the active player gets the first effect opportunity and play proceeds clockwise. With Nile Floods, roll the Flood dice before choosing a guarantee.</p> : <p className="note">Effects Off uses the Core rules without printed card powers.</p>}</section></div>;
 }

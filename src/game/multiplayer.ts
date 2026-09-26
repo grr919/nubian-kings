@@ -14,6 +14,7 @@ export interface MultiplayerRoomSettings {
   nileFloods: boolean;
   openingPlayer: MultiplayerOpeningPlayer;
   victoryMode?: "standard" | "long";
+  effectsMode?: "off" | "on";
 }
 
 export interface MultiplayerSeat {

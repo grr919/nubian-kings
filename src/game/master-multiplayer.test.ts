@@ -8,6 +8,15 @@ const seats:MultiplayerSeat[]=[
 ];
 const settings:MultiplayerRoomSettings={totalSeats:3,npcCount:1,nileFloods:false,openingPlayer:"human",victoryMode:"standard"};
 describe("Master multiplayer setup",()=>{
+ it("honors the room creator's Effects On setting and initializes the shared reserve",()=>{
+  const prepared=prepareMultiplayerMaster(seats,{...settings,effectsMode:"on"}),draft=beginMultiplayerConstruction(prepared,{"human-1":masterMultiplayerHeirs(prepared,"human-1")[0].id,"human-2":masterMultiplayerHeirs(prepared,"human-2")[0].id});
+  for(const id of["human-1","human-2"]){autoArrangeDraft(draft,id);confirmDraft(draft,id)}
+  const game=startMultiplayerMaster(draft);
+  expect(game.effectsMode).toBe("on");
+  expect(game.mercenaryReserve).toHaveLength(32);
+  expect(game.turnBoundaries).toHaveLength(1);
+  expect("turnBoundaries"in publicMasterState(game)).toBe(false);
+ });
  it("gives each human private heir choices and a legal twenty-card construction",()=>{
   const prepared=prepareMultiplayerMaster(seats,settings),one=masterMultiplayerHeirs(prepared,"human-1"),two=masterMultiplayerHeirs(prepared,"human-2");
   expect(one.length).toBeGreaterThan(0);expect(two.length).toBeGreaterThan(0);
@@ -21,8 +30,11 @@ describe("Master multiplayer setup",()=>{
  it("hides every face-down pile card from the public state",()=>{
   const prepared=prepareMultiplayerMaster(seats,settings),draft=beginMultiplayerConstruction(prepared,{"human-1":masterMultiplayerHeirs(prepared,"human-1")[0].id,"human-2":masterMultiplayerHeirs(prepared,"human-2")[0].id});
   for(const id of["human-1","human-2"]){autoArrangeDraft(draft,id);confirmDraft(draft,id)}
-  const state=publicMasterState(startMultiplayerMaster(draft));
+  const privateGame=startMultiplayerMaster(draft);
+  privateGame.turnBoundaries=[JSON.stringify({secret:"hidden deck order"})];
+  const state=publicMasterState(privateGame);
   const hidden=state.players.flatMap(p=>p.army.flatMap(x=>x.cards));
   expect(hidden.every(c=>!("name"in c)&&!("definitionId"in c)&&!("strength"in c))).toBe(true);
+  expect("turnBoundaries"in state).toBe(false);
  });
 });
