@@ -5,6 +5,7 @@ import EparchCrownMark from "@/components/EparchCrownMark";
 import MasterArmyBoard, { moveArmyCard } from "@/components/MasterArmyBoard";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import FeedbackButton from "@/components/FeedbackButton";
+import FactionPortrait from "@/components/FactionPortrait";
 import cardData from "@/data/cards.json";
 import {
   activeMasterPlayer,
@@ -415,7 +416,7 @@ export default function MasterClient() {
 
   if (screen === "setup") return <main className="setupPage"><section className="setupPanel">
     <button className="backButton" onClick={() => setScreen("home")}>← Back</button><p className="kicker">MASTER GAME</p><h1>Assemble your army</h1><p className="lede">Choose your faction and heir, then arrange twenty privately revealed cards into legal piles.</p>
-    <h2>Choose a faction</h2><div className="factionGrid">{FACTIONS.map((id) => <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}><span className="sigil">{INFO[id].mark}</span><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}</button>)}</div>
+    <h2>Choose a faction</h2><div className="factionGrid">{FACTIONS.map((id) => <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}><FactionPortrait factionId={id} /><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}</button>)}</div>
     <div className="settings">
       <label><span>Computer opponents</span><select value={npcCount} onChange={(event) => setNpcCount(event.target.value === "random" ? "random" : Number(event.target.value))}><option value="random">Random (1–4)</option>{[1,2,3,4].map((count) => <option key={count} value={count}>{count}</option>)}</select></label>
       <label><span>Opening initiative</span><select value={openingPlayer} onChange={(event) => setOpeningPlayer(event.target.value as "random" | "human" | "npc")}><option value="random">Random participant</option><option value="human">You</option><option value="npc">Computer opponent</option></select></label>

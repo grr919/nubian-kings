@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import FeedbackButton from "@/components/FeedbackButton";
+import FactionPortrait from "@/components/FactionPortrait";
 import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
@@ -192,7 +193,7 @@ export default function GameClient() {
   if (screen === "setup") return (
     <main className="setupPage"><section className="setupPanel">
       <button className="backButton" onClick={() => setScreen("home")}>← Back</button><p className="kicker">BEGINNER GAME</p><h1>Assemble your army</h1><p className="lede">Choose your faction. Each army begins with five hidden cards.</p>
-      <h2>Choose a faction</h2><div className="factionGrid">{FACTIONS.map((id) => <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}><span className="sigil">{INFO[id].mark}</span><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}</button>)}</div>
+      <h2>Choose a faction</h2><div className="factionGrid">{FACTIONS.map((id) => <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}><FactionPortrait factionId={id} /><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}</button>)}</div>
       <div className="settings"><label><span>Computer opponents</span><select value={npcCount} onChange={(e) => setNpcCount(e.target.value === "random" ? "random" : Number(e.target.value))}><option value="random">Random (1–4)</option>{[1,2,3,4].map((n) => <option key={n} value={n}>{n}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(e) => setOpeningPlayer(e.target.value as "random" | "human" | "npc")}><option value="random">Random participant</option><option value="human">You</option><option value="npc">Computer opponent</option></select></label><label className="seedSetting"><span><b>Game seed</b><small>Use the same seed and setup choices to reproduce a game.</small></span><input value={seed} maxLength={48} placeholder="Generated automatically" onChange={(e) => setSeed(e.target.value)} /></label><label className="toggle"><input type="checkbox" checked={floods} onChange={(e) => setFloods(e.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label></div>
       <button className="beginButton" onClick={start}>Begin Game</button>
     </section></main>

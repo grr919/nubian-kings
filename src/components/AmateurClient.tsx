@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import FeedbackButton from "@/components/FeedbackButton";
+import FactionPortrait from "@/components/FactionPortrait";
 import cardData from "@/data/cards.json";
 import {
   activePlayer,
@@ -316,7 +317,7 @@ export default function AmateurClient() {
         <h2>Choose a faction</h2>
         <div className="factionGrid">{FACTIONS.map((id) => (
           <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}>
-            <span className="sigil">{INFO[id].mark}</span><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}
+            <FactionPortrait factionId={id} /><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}
           </button>
         ))}</div>
         <div className="settings">
