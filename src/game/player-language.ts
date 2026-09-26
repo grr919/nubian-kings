@@ -23,6 +23,21 @@ export function battleTitle(stat: Stat) {
   return `A Battle of ${stat[0].toUpperCase()}${stat.slice(1)}`;
 }
 
+/** Master uses a different action for each statistic, while the game engine calls all three attacks. */
+export function masterActionLanguage(stat: Stat) {
+  if (stat === "zeal") return { noun: "conversion attempt", verb: "try to convert", actor: "Converting pile", target: "Conversion target", title: "A Conversion by Zeal" };
+  if (stat === "wealth") return { noun: "bid for support", verb: "seek support from", actor: "Seeking support", target: "Support target", title: "A Bid for Support by Wealth" };
+  return { noun: "attack", verb: "attack", actor: "Attacker", target: "Defender", title: "A Battle of Strength" };
+}
+
+export function masterRoundOutcomeText(players: OutcomePlayer[], winnerId: string | undefined, participantIds: string[], stat: Stat, tied = false) {
+  return tied ? `The ${masterActionLanguage(stat).noun} ends without a victor.` : roundOutcomeText(players, winnerId, participantIds, stat);
+}
+
+export function masterMultiplayerOutcomeText(stat: Stat, winnerId: string | undefined, participantIds: string[], viewerId: string, winnerName?: string, tied = false) {
+  return tied ? `The ${masterActionLanguage(stat).noun} ends without a victor.` : multiplayerRoundOutcomeText(stat, winnerId, participantIds, viewerId, winnerName);
+}
+
 function victoryText(stat: Stat, subject: "human" | "npc", winnerName?: string) {
   const owner = subject === "human" ? "Your" : possessive(winnerName!);
   if (stat === "strength") return `${owner} strength brings ${subject === "human" ? "you" : "them"} victory in battle.`;
