@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "source": "NK DB.xls + Nubian Kings Reconciliation.csv",
-  "statisticsAuthority": "JPEG for Ethiopian Jewish cards; spreadsheet for all other factions",
+  "statisticsAuthority": "JPEG for matched Christian cards including lower-stat John of Phanijoit; JPEG for Ethiopian Jewish cards; spreadsheet for Egyptian Muslim cards",
   "cards": [
     {
       "id": "NK-ROW-002",
       "name": "The Ngonnen",
-      "strength": 2,
-      "zeal": 5,
+      "strength": 5,
+      "zeal": 2,
       "wealth": 5,
       "religion": "Ch",
       "nation": "N",
@@ -25,7 +25,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 2,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -50,7 +50,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 3,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -58,7 +58,7 @@
       "name": "Mari",
       "strength": 3,
       "zeal": 6,
-      "wealth": 5,
+      "wealth": 6,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -75,7 +75,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 4,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -83,7 +83,7 @@
       "name": "Moses Giyorgios",
       "strength": 4,
       "zeal": 7,
-      "wealth": 7,
+      "wealth": 8,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -100,7 +100,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 5,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -108,7 +108,7 @@
       "name": "Merkourios",
       "strength": 4,
       "zeal": 9,
-      "wealth": 8,
+      "wealth": 9,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -125,7 +125,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 6,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -133,7 +133,7 @@
       "name": "Adama the Eparch",
       "strength": 3,
       "zeal": 4,
-      "wealth": 4,
+      "wealth": 5,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -150,7 +150,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 7,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -158,7 +158,7 @@
       "name": "Gourresi the Eparch",
       "strength": 2,
       "zeal": 2,
-      "wealth": 3,
+      "wealth": 4,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -175,7 +175,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 8,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -206,7 +206,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 9,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -237,7 +237,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 10,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -268,7 +268,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 11,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -299,7 +299,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 12,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -324,7 +324,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 13,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -349,7 +349,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 14,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -374,7 +374,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 15,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -399,7 +399,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 16,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -424,7 +424,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 17,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -449,7 +449,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 18,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -474,7 +474,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 19,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -499,7 +499,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 20,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -524,7 +524,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 21,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -549,7 +549,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 22,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -557,7 +557,7 @@
       "name": "Ibrim",
       "strength": 7,
       "zeal": 3,
-      "wealth": 3,
+      "wealth": 5,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -574,7 +574,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 23,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -582,7 +582,7 @@
       "name": "Faras",
       "strength": 5,
       "zeal": 2,
-      "wealth": 5,
+      "wealth": 7,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -599,7 +599,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 24,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -607,7 +607,7 @@
       "name": "Meinarti",
       "strength": 5,
       "zeal": 2,
-      "wealth": 3,
+      "wealth": 5,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -624,7 +624,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 25,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -632,7 +632,7 @@
       "name": "Dongola",
       "strength": 7,
       "zeal": 4,
-      "wealth": 7,
+      "wealth": 9,
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
@@ -649,7 +649,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 26,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -674,7 +674,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 27,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -699,7 +699,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 28,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -724,7 +724,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 29,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -749,7 +749,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 30,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -774,7 +774,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 31,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -799,7 +799,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 32,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -824,7 +824,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 33,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -849,7 +849,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 34,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -874,7 +874,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 35,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -899,7 +899,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 36,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -924,7 +924,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 37,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -949,7 +949,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 38,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -974,14 +974,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 39,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-040",
       "name": "Cyril",
       "strength": 3,
-      "zeal": 6,
+      "zeal": 7,
       "wealth": 9,
       "religion": "Ch",
       "nation": "Eg",
@@ -999,26 +999,20 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 40,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-041",
       "name": "John of Phanijoit",
-      "strength": 5,
-      "zeal": 8,
+      "strength": 2,
+      "zeal": 7,
       "wealth": 3,
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
       "type": "leader",
       "assets": [
-        {
-          "assetId": "NK-ASSET-053",
-          "filename": "50 Blue.jpg",
-          "copyCount": 1,
-          "status": "Matched—Card Error"
-        },
         {
           "assetId": "NK-ASSET-163",
           "filename": "51 Blue.jpg",
@@ -1030,32 +1024,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 41,
-        "statisticsAuthority": "spreadsheet"
-      }
-    },
-    {
-      "id": "NK-ROW-042",
-      "name": "The Hunchback's Son",
-      "strength": 2,
-      "zeal": 6,
-      "wealth": 3,
-      "religion": "Ch",
-      "nation": "Eg",
-      "factionId": "egyptian-christians",
-      "type": "place",
-      "assets": [],
-      "deckCopies": 0,
-      "availableInPrototype": false,
-      "source": {
-        "spreadsheetRow": 42,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-043",
       "name": "Mawhub ibn Mansur",
       "strength": 2,
-      "zeal": 6,
+      "zeal": 7,
       "wealth": 3,
       "religion": "Ch",
       "nation": "Eg",
@@ -1073,14 +1049,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 43,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-044",
       "name": "Forty-Nine Martyrs",
       "strength": 4,
-      "zeal": 8,
+      "zeal": 9,
       "wealth": 3,
       "religion": "Ch",
       "nation": "Eg",
@@ -1098,14 +1074,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 44,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-045",
       "name": "Gabriel II",
       "strength": 3,
-      "zeal": 6,
+      "zeal": 7,
       "wealth": 7,
       "religion": "Ch",
       "nation": "Eg",
@@ -1123,7 +1099,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 45,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1148,7 +1124,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 46,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1173,7 +1149,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 47,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1198,7 +1174,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 48,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1223,7 +1199,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 49,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1248,14 +1224,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 50,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-051",
       "name": "Coptic Deacon",
       "strength": 1,
-      "zeal": 3,
+      "zeal": 4,
       "wealth": 3,
       "religion": "Ch",
       "nation": "Eg",
@@ -1273,7 +1249,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 51,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1298,14 +1274,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 52,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-053",
       "name": "Ascetic Holy Man",
       "strength": 1,
-      "zeal": 5,
+      "zeal": 6,
       "wealth": 1,
       "religion": "Ch",
       "nation": "Eg",
@@ -1323,14 +1299,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 53,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-054",
       "name": "Mountain Hermit",
       "strength": 1,
-      "zeal": 6,
+      "zeal": 7,
       "wealth": 1,
       "religion": "Ch",
       "nation": "Eg",
@@ -1348,7 +1324,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 54,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1373,7 +1349,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 55,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1398,7 +1374,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 56,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1429,7 +1405,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 57,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1460,7 +1436,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 58,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1485,7 +1461,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 59,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1510,7 +1486,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 60,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1535,7 +1511,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 61,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1560,7 +1536,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 62,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1585,7 +1561,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 63,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1610,7 +1586,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 64,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1635,7 +1611,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 65,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1660,7 +1636,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 66,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1685,7 +1661,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 67,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1710,7 +1686,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 68,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1735,7 +1711,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 69,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1760,7 +1736,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 70,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1768,7 +1744,7 @@
       "name": "Shrine",
       "strength": 2,
       "zeal": 3,
-      "wealth": 2,
+      "wealth": 1,
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
@@ -1785,15 +1761,15 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 71,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-072",
       "name": "Coptic Gospel",
       "strength": 0,
-      "zeal": 3,
-      "wealth": 2,
+      "zeal": 0,
+      "wealth": 1,
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
@@ -1810,14 +1786,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 72,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-073",
       "name": "The Wizard's Hoard",
       "strength": 0,
-      "zeal": 2,
+      "zeal": 0,
       "wealth": 2,
       "religion": "Ch",
       "nation": "Eg",
@@ -1835,7 +1811,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 73,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1843,7 +1819,7 @@
       "name": "Amda Tseyon",
       "strength": 4,
       "zeal": 5,
-      "wealth": 7,
+      "wealth": 8,
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
@@ -1860,7 +1836,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 74,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1885,7 +1861,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 75,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1910,7 +1886,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 76,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1935,7 +1911,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 77,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1960,7 +1936,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 78,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -1985,13 +1961,13 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 79,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-080",
       "name": "Habesha Spearmen",
-      "strength": 5,
+      "strength": 6,
       "zeal": 2,
       "wealth": 2,
       "religion": "Ch",
@@ -2010,13 +1986,13 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 80,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-081",
       "name": "Habesha Swordsmen",
-      "strength": 4,
+      "strength": 5,
       "zeal": 3,
       "wealth": 3,
       "religion": "Ch",
@@ -2035,13 +2011,13 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 81,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-082",
       "name": "Habesha Archers",
-      "strength": 4,
+      "strength": 5,
       "zeal": 3,
       "wealth": 2,
       "religion": "Ch",
@@ -2060,13 +2036,13 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 82,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-083",
       "name": "Habesha Shield-Men",
-      "strength": 3,
+      "strength": 4,
       "zeal": 1,
       "wealth": 2,
       "religion": "Ch",
@@ -2085,13 +2061,13 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 83,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-084",
       "name": "Habesha Dart-Men",
-      "strength": 3,
+      "strength": 4,
       "zeal": 1,
       "wealth": 2,
       "religion": "Ch",
@@ -2110,7 +2086,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 84,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2135,7 +2111,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 85,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2160,7 +2136,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 86,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2185,7 +2161,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 87,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2210,7 +2186,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 88,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2235,7 +2211,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 89,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2260,7 +2236,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 90,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2285,7 +2261,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 91,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2293,7 +2269,7 @@
       "name": "Le'ul",
       "strength": 2,
       "zeal": 1,
-      "wealth": 4,
+      "wealth": 5,
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
@@ -2316,7 +2292,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 92,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2341,7 +2317,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 93,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2366,7 +2342,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 94,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2391,7 +2367,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 95,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2416,7 +2392,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 96,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2441,7 +2417,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 97,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2472,13 +2448,13 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 98,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-099",
       "name": "Castle",
-      "strength": 4,
+      "strength": 5,
       "zeal": 1,
       "wealth": 3,
       "religion": "Ch",
@@ -2497,14 +2473,14 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 99,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-100",
       "name": "Monastery",
       "strength": 3,
-      "zeal": 3,
+      "zeal": 5,
       "wealth": 3,
       "religion": "Ch",
       "nation": "Et",
@@ -2522,7 +2498,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 100,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2547,7 +2523,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 101,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2572,7 +2548,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 102,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2597,7 +2573,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 103,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2622,7 +2598,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 104,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2647,7 +2623,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 105,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2672,7 +2648,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 106,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2697,7 +2673,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 107,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2705,7 +2681,7 @@
       "name": "Axum",
       "strength": 3,
       "zeal": 5,
-      "wealth": 4,
+      "wealth": 7,
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
@@ -2722,15 +2698,15 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 108,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-109",
       "name": "Gondar",
-      "strength": 4,
+      "strength": 5,
       "zeal": 3,
-      "wealth": 6,
+      "wealth": 9,
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
@@ -2747,15 +2723,15 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 109,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
       "id": "NK-ROW-110",
       "name": "Lalibela",
-      "strength": 6,
+      "strength": 7,
       "zeal": 5,
-      "wealth": 6,
+      "wealth": 9,
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
@@ -2772,7 +2748,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 110,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -2780,7 +2756,7 @@
       "name": "Cathedral",
       "strength": 5,
       "zeal": 5,
-      "wealth": 3,
+      "wealth": 5,
       "religion": "Ch",
       "nation": "Et",
       "factionId": "ethiopian-christians",
@@ -2797,7 +2773,7 @@
       "availableInPrototype": true,
       "source": {
         "spreadsheetRow": 111,
-        "statisticsAuthority": "spreadsheet"
+        "statisticsAuthority": "JPEG"
       }
     },
     {
@@ -4260,6 +4236,274 @@
         "spreadsheetRow": 168,
         "statisticsAuthority": "JPEG"
       }
+    },
+    {
+      "id": "NK-CARD-020",
+      "name": "Mountain Hermit",
+      "strength": 1,
+      "zeal": 5,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "person",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-132",
+          "filename": "20 Red.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-034",
+      "name": "Orchard",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "place",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-028",
+          "filename": "34 Red.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-036",
+      "name": "Flood Plain",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 2,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "place",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-042",
+          "filename": "36 Red.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-038",
+      "name": "Unirrigated Plot",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "place",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-022",
+          "filename": "38 2x Red.jpg",
+          "copyCount": 2,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 2,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-040",
+      "name": "Shrine",
+      "strength": 2,
+      "zeal": 3,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "place",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-123",
+          "filename": "40 Red.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-044",
+      "name": "Ore Deposit",
+      "strength": 2,
+      "zeal": 0,
+      "wealth": 4,
+      "religion": "Ch",
+      "nation": "N",
+      "factionId": "nubian-christians",
+      "type": "place",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-194",
+          "filename": "44 Red.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-101",
+      "name": "Ascetic Holy Man",
+      "strength": 1,
+      "zeal": 4,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "person",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-178",
+          "filename": "101 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-103",
+      "name": "Negusa Negast",
+      "strength": 4,
+      "zeal": 4,
+      "wealth": 6,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "person",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-004",
+          "filename": "103 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-116",
+      "name": "Shrine",
+      "strength": 2,
+      "zeal": 2,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "place",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-059",
+          "filename": "116 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
+    },
+    {
+      "id": "NK-CARD-121",
+      "name": "Unirrigated Plot",
+      "strength": 1,
+      "zeal": 0,
+      "wealth": 1,
+      "religion": "Ch",
+      "nation": "Et",
+      "factionId": "ethiopian-christians",
+      "type": "place",
+      "assets": [
+        {
+          "assetId": "NK-ASSET-103",
+          "filename": "121 Yellow.jpg",
+          "copyCount": 1,
+          "status": "Reconciled—Added Database Row"
+        }
+      ],
+      "deckCopies": 1,
+      "availableInPrototype": true,
+      "source": {
+        "spreadsheetRow": null,
+        "statisticsAuthority": "JPEG"
+      }
     }
-  ]
+  ],
+  "reconciliation": {
+    "approved": "2026-09-27",
+    "christianJpegStatOverrides": 34,
+    "resolvedChristianException": "NK-ROW-041 John of Phanijoit — higher-stat 50 Blue.jpg removed; lower-stat 51 Blue.jpg (2/7/3) preserved",
+    "removedCard": "The Hunchback's Son",
+    "addedDatabaseRows": [
+      "NK-CARD-020",
+      "NK-CARD-034",
+      "NK-CARD-036",
+      "NK-CARD-038",
+      "NK-CARD-040",
+      "NK-CARD-044",
+      "NK-CARD-101",
+      "NK-CARD-103",
+      "NK-CARD-116",
+      "NK-CARD-121"
+    ]
+  }
 }

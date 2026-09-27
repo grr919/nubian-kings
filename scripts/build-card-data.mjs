@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { reconciledCardAdditions, removedCardNames } from "./reconciled-card-additions.mjs";
 const root=path.resolve(import.meta.dirname,"..");
 const tsv=fs.readFileSync(path.resolve(root,"../NK DB extracted.tsv"),"utf8");
 const csv=fs.readFileSync(path.resolve(root,"../Nubian Kings Reconciliation.csv"),"utf8");
@@ -19,7 +20,8 @@ for(const r of rec){
 }
 const factionFor=(religion,nation)=>({"Ch:N":"nubian-christians","Ch:Eg":"egyptian-christians","Ch:Et":"ethiopian-christians","M:Eg":"egyptian-muslims","J:Et":"ethiopian-jews"}[`${religion}:${nation}`]);
 const rows=tsv.split(/\r?\n/).map(x=>x.trimEnd()).filter(x=>x.startsWith("\t"));
-const cards=rows.map((line,index)=>{const [,name,s,z,w,religion,rawNation]=line.split("\t");const nation=rawNation==="E"?"Et":rawNation;const spreadsheetRow=index+2;const id=`NK-ROW-${String(spreadsheetRow).padStart(3,"0")}`;const assets=assetsByRow.get(id)??[];const reconciledCopies=assets.reduce((n,a)=>n+a.copyCount,0);const availableInPrototype=assets.length>0;const jpegStats=ethiopianJewishJpegStatsByRow.get(id);return{id,name,strength:jpegStats?.strength??Number(s),zeal:jpegStats?.zeal??Number(z),wealth:jpegStats?.wealth??Number(w),religion,nation,factionId:factionFor(religion,nation),type:cardTypes[id],assets,deckCopies:availableInPrototype?reconciledCopies:0,availableInPrototype,source:{spreadsheetRow,statisticsAuthority:jpegStats?"JPEG":"spreadsheet"}}});
+const cards=rows.map((line,index)=>{const [,name,s,z,w,religion,rawNation]=line.split("\t");const nation=rawNation==="E"?"Et":rawNation;const spreadsheetRow=index+2;const id=`NK-ROW-${String(spreadsheetRow).padStart(3,"0")}`;const assets=assetsByRow.get(id)??[];const reconciledCopies=assets.reduce((n,a)=>n+a.copyCount,0);const availableInPrototype=assets.length>0;const jpegStats=ethiopianJewishJpegStatsByRow.get(id);return{id,name,strength:jpegStats?.strength??Number(s),zeal:jpegStats?.zeal??Number(z),wealth:jpegStats?.wealth??Number(w),religion,nation,factionId:factionFor(religion,nation),type:cardTypes[id],assets,deckCopies:availableInPrototype?reconciledCopies:0,availableInPrototype,source:{spreadsheetRow,statisticsAuthority:jpegStats?"JPEG":"spreadsheet"}}}).filter(card=>!removedCardNames.has(card.name));
+cards.push(...structuredClone(reconciledCardAdditions));
 const invalid=cards.filter(c=>!c.factionId||!["leader","person","place","thing"].includes(c.type)||![c.strength,c.zeal,c.wealth].every(Number.isFinite));
 if(invalid.length)throw new Error(`Invalid canonical rows: ${invalid.map(c=>c.id).join(", ")}`);
 const output={schemaVersion:1,source:"NK DB.xls + Nubian Kings Reconciliation.csv",statisticsAuthority:"JPEG for Ethiopian Jewish cards; spreadsheet for all other factions",cards};

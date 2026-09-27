@@ -1,9 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
+import { reconciledCardAdditions, removedCardNames } from "./reconciled-card-additions.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const cardsPath = path.resolve(root, "src/data/cards.json");
 const data = JSON.parse(fs.readFileSync(cardsPath, "utf8"));
+data.cards = data.cards.filter((card) => !removedCardNames.has(card.name) && !reconciledCardAdditions.some((addition) => addition.id === card.id));
+data.cards.push(...structuredClone(reconciledCardAdditions));
 
 // Approved 2026-09-04 selective reconciliation:
 // - matched Christian cards: JPEG statistics are authoritative
@@ -75,10 +78,12 @@ for (const card of data.cards) {
 
 data.statisticsAuthority = "JPEG for matched Christian cards including lower-stat John of Phanijoit; JPEG for Ethiopian Jewish cards; spreadsheet for Egyptian Muslim cards";
 data.reconciliation = {
-  approved: "2026-09-04",
+  approved: "2026-09-27",
   christianJpegStatOverrides: Object.keys(christianJpegOverrides).length,
-  resolvedChristianException: "NK-ROW-041 John of Phanijoit — higher-stat 50 Blue.jpg removed; lower-stat 51 Blue.jpg (2/7/3) preserved"
+  resolvedChristianException: "NK-ROW-041 John of Phanijoit — higher-stat 50 Blue.jpg removed; lower-stat 51 Blue.jpg (2/7/3) preserved",
+  removedCard: "The Hunchback's Son",
+  addedDatabaseRows: reconciledCardAdditions.map((card) => card.id)
 };
 
 fs.writeFileSync(cardsPath, JSON.stringify(data, null, 2) + "\n");
-console.log(JSON.stringify({ changedStats, christianJpegAuthority, removedHigherPhanijoitAsset, johnOfPhanijoit: { strength: 2, zeal: 7, wealth: 3, preservedAsset: "51 Blue.jpg" } }, null, 2));
+console.log(JSON.stringify({ changedStats, christianJpegAuthority, removedHigherPhanijoitAsset, removedCard: "The Hunchback's Son", addedDatabaseRows: reconciledCardAdditions.length, johnOfPhanijoit: { strength: 2, zeal: 7, wealth: 3, preservedAsset: "51 Blue.jpg" } }, null, 2));

@@ -8,8 +8,8 @@ describe("Master effect source data", () => {
   it("binds printed text to each numbered card image, including different variants of one card", () => {
     const numbers = new Set(cards.cards.flatMap((card) => card.assets.map((asset) => asset.filename.match(/^\d+/)?.[0])));
     expect([...numbers].every((number) => Boolean(number && effects[number as keyof typeof effects]))).toBe(true);
-    // The Router also describes images that are not represented in the current faction deck.
-    expect(numbers.has("103")).toBe(false);
+    // The formerly unmatched Negusa Negast artwork is now represented in the faction deck.
+    expect(numbers.has("103")).toBe(true);
     expect(effects["8"].text).not.toBe(effects["9"].text);
     expect(effects["190"].text).toContain("Immune to conversion");
   });
