@@ -5,6 +5,7 @@ import EparchCrownMark from "@/components/EparchCrownMark";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import FeedbackButton from "@/components/FeedbackButton";
 import FactionPortrait from "@/components/FactionPortrait";
+import GameStateBanner from "@/components/GameStateBanner";
 import cardData from "@/data/cards.json";
 import {
   activePlayer,
@@ -361,14 +362,11 @@ export default function AmateurClient() {
 
   return (
     <main className="gamePage amateurGame">
-      <header className="gameHeader"><div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b></div></header>
-      <section className="statusBar">
-        <span className={`turnDot ${thinking ? "thinking" : ""}`} />
-        <div>
-          <b>{review ? "Review the comparison:" : npcAttack ? `${battleTitle(npcAttack.stat)} declared.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}</b>
-          <small>{npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}</small>
-        </div>
-      </section>
+      <GameStateBanner
+        thinking={thinking}
+        title={review ? "Review the comparison:" : npcAttack ? `${battleTitle(npcAttack.stat)} declared.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
+        detail={npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
+      />
 
       {review ? <AmateurReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : (
         <section className="amateurBoard">

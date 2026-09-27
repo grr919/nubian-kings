@@ -6,6 +6,7 @@ import MasterArmyBoard, { moveArmyCard } from "@/components/MasterArmyBoard";
 import EliminatedGamePrompt from "@/components/EliminatedGamePrompt";
 import FeedbackButton from "@/components/FeedbackButton";
 import FactionPortrait from "@/components/FactionPortrait";
+import GameStateBanner from "@/components/GameStateBanner";
 import cardData from "@/data/cards.json";
 import {
   activeMasterPlayer,
@@ -456,8 +457,11 @@ export default function MasterClient() {
   const allowedAttackers = new Set(humanTurn && selectedStat ? legalMasterAttackers(state) : []);
 
   return <main className="gamePage amateurGame masterGame">
-    <header className="gameHeader"><div><EparchCrownMark className="miniMark" /><b>Nubian Kings</b></div></header>
-    <section className="statusBar"><span className={`turnDot ${thinking ? "thinking" : ""}`} /><div><b>{review ? `Review the ${masterActionLanguage(review.stat).noun}:` : npcAttack ? `${INFO[active.factionId].name}: ${masterActionLanguage(npcAttack.stat).noun} declared.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your pile:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}</b><small>{npcAttack ? `The selected units remain hidden until you resolve the ${masterActionLanguage(npcAttack.stat).noun}.` : humanTurn ? masterArmySize(human) ? "Choose an army pile. Your heir cannot act until every army card is gone." : "Your heir is your last card and must act alone." : "Losing piles are discarded as complete units."}</small></div></section>
+    <GameStateBanner
+      thinking={thinking}
+      title={review ? `Review the ${masterActionLanguage(review.stat).noun}:` : npcAttack ? `${INFO[active.factionId].name}: ${masterActionLanguage(npcAttack.stat).noun} declared.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your pile:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
+      detail={npcAttack ? `The selected units remain hidden until you resolve the ${masterActionLanguage(npcAttack.stat).noun}.` : humanTurn ? masterArmySize(human) ? "Choose an army pile. Your heir cannot act until every army card is gone." : "Your heir is your last card and must act alone." : "Losing piles are discarded as complete units."}
+    />
 
     {review ? <MasterReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : <section className="amateurBoard masterBoard">
       <MasterPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetUnitId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onUnit={setAttackerId} />
