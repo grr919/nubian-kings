@@ -186,7 +186,7 @@ export default function GameClient() {
       <p className="kicker">BEGINNER LEVEL: THE AL-AZHAR MOSQUE</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
       <p>Lead a medieval African faction through a contest of strength, zeal, and wealth.</p>
       <div className="actions"><button onClick={() => setScreen("setup")}>New Solo Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Solo Game</button><a className="buttonLink" href="/beginner/multiplayer">Multiplayer</a></div>
-      <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><small>Core prototype · Special card effects are deferred</small><footer className="landingFooter">© 2026 Nile South Games</footer>
+      <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><footer className="landingFooter">© 2026 Nile South Games</footer>
     </section>{help && <Help onClose={() => setHelp(false)} />}</main>
   );
 
@@ -255,7 +255,7 @@ function NpcChoicePanel({ choice, state, onReveal }: { choice: { playerId: strin
 }
 
 function CardDetail({ card, onClose }: { card: Card; onClose: () => void }) {
-  return <div className="modalShade" role="presentation" onMouseDown={onClose}><section className="modal cardDetail" role="dialog" aria-modal="true" aria-labelledby="card-detail-title" onMouseDown={(event) => event.stopPropagation()}><button className="modalClose" aria-label="Close card" onClick={onClose}>×</button><img src={artwork(card)} alt={`${card.name} card artwork`} /><div><p className="kicker">REVEALED CARD</p><h2 id="card-detail-title">{card.name}</h2><p>The card image shows the original printed design. The values below come from the spreadsheet and govern play.</p><div className="detailStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat}</span>)}</div><small>Special-effect text is not active in this core prototype.</small></div></section></div>;
+  return <div className="modalShade" role="presentation" onMouseDown={onClose}><section className="modal cardDetail" role="dialog" aria-modal="true" aria-labelledby="card-detail-title" onMouseDown={(event) => event.stopPropagation()}><button className="modalClose" aria-label="Close card" onClick={onClose}>×</button><img src={artwork(card)} alt={`${card.name} card artwork`} /><div><p className="kicker">REVEALED CARD</p><h2 id="card-detail-title">{card.name}</h2><p>The card image shows the original printed design. The values below come from the spreadsheet and govern play.</p><div className="detailStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat}</span>)}</div></div></section></div>;
 }
 
 function Help({ onClose }: { onClose: () => void }) {
