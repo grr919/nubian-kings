@@ -29,7 +29,6 @@ export default function Home() {
             <span className="levelAction">Play Master</span>
           </Link>
         </div>
-        <small className="profileNote">Core profile · Special card effects are not used.</small>
         <footer className="landingFooter">© 2026 Nile South Games</footer>
       </section>
     </main>

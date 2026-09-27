@@ -301,7 +301,6 @@ export default function AmateurClient() {
           <a className="buttonLink" href="/amateur/multiplayer">Multiplayer</a>
         </div>
         <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">Return to Main</a></div>
-      <small>Core profile · Special card effects are not used.</small>
         <footer className="landingFooter">© 2026 Nile South Games</footer>
       </section>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
