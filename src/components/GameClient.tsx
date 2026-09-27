@@ -1,4 +1,5 @@
 "use client";
+import { CardInspection } from "./CardInspection";
 
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
@@ -263,9 +264,10 @@ function NpcChoicePanel({ choice, state, onReveal }: { choice: { playerId: strin
 }
 
 function CardDetail({ card, onClose }: { card: Card; onClose: () => void }) {
-  return <div className="modalShade" role="presentation" onMouseDown={onClose}><section className="modal cardDetail" role="dialog" aria-modal="true" aria-labelledby="card-detail-title" onMouseDown={(event) => event.stopPropagation()}><button className="modalClose" aria-label="Close card" onClick={onClose}>×</button><img src={artwork(card)} alt={`${card.name} card artwork`} /><div><p className="kicker">REVEALED CARD</p><h2 id="card-detail-title">{card.name}</h2><p>The card image shows the original printed design. The values below come from the spreadsheet and govern play.</p><div className="detailStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat}</span>)}</div></div></section></div>;
+  return <CardInspection cards={[{ ...card, image: artwork(card) }]} onClose={onClose} />;
 }
 
 function Help({ onClose }: { onClose: () => void }) {
   return <div className="modalShade" role="presentation" onMouseDown={onClose}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="rules-title" onMouseDown={(e) => e.stopPropagation()}><button className="modalClose" aria-label="Close rules" onClick={onClose}>×</button><p className="kicker">CORE RULES</p><h2 id="rules-title">How to play</h2><ol><li>Each army begins with five hidden cards in a fixed order.</li><li>The selector chooses strength, zeal, or wealth before hidden cards are revealed.</li><li>Every active army plays its next card. The highest statistic wins.</li><li>The winner keeps its card in play. Lower cards are discarded.</li><li>After a tie, the original selector chooses any trait—including the one just used—and tied armies play their next card.</li><li>The last army with cards remaining wins.</li></ol><p className="note">Nile Floods, if enabled, adds a six-sided die roll to every score. Special card effects are not used in this prototype.</p></section></div>;
 }
+

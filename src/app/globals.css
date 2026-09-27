@@ -153,3 +153,23 @@ body{background:#efd49b}
 .opponentBoard,.amateurOpponents,.multiplayerPlayers{grid-template-columns:minmax(0,1fr)}
 .gameStateBanner,.playerArea,.npcArea,.humanArea,.amateurPlayer{background:linear-gradient(135deg,#fff0c9ee,#e9c683f2);border:1px solid #a86c20;box-shadow:0 13px 34px #7148193b}
 @media(max-width:600px){.gameStateBanner,.board,.amateurBoard{width:calc(100% - 12px)}}
+
+
+/* Revealed-card inspection, independent of selection and gameplay state. */
+.cardInspection{border:0;padding:24px;background:transparent;color:#382719;width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;overflow:auto}
+.cardInspection[open]{display:flex;align-items:flex-start;justify-content:center}
+.cardInspection::backdrop{background:#27180ed9}
+.inspectionPanel{margin:auto;max-width:1440px;width:fit-content;padding:24px;background:linear-gradient(#fff1d3,#e8c38d);border:2px solid #ad7124;border-radius:12px;box-shadow:0 20px 60px #0008}
+.inspectionPanel header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:20px}
+.inspectionPanel h2{margin:0;font-size:1.6rem}.inspectionPanel p{margin:6px 0 0}.inspectionPanel header button{font-size:1.6rem;min-width:44px;min-height:44px}
+.inspectionCards{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:24px}
+.inspectionCard{width:clamp(240px,30vw,380px);max-width:100%;margin:0}
+.inspectionCard img{display:block;width:100%;height:auto;border-radius:8px}
+.inspectionCard h3{margin:12px 0 8px}.inspectionCard dl{display:grid;grid-template-columns:repeat(3,1fr);margin:0;gap:6px;text-align:center}
+.inspectionCard dl div{padding:8px;background:#fff3d8;border:1px solid #b88439}.inspectionCard dt{text-transform:capitalize;font-size:.8rem}.inspectionCard dd{margin:0;font-size:1.4rem;font-weight:bold}
+.inspectableCard,.inspectableCard .card.face{cursor:zoom-in}.selectionCard,.selectionCard .card.face,.bareCardButton .card.face,.armyBoardCard .card.face{cursor:pointer}
+.card.back,.masterUnit:disabled .card{cursor:default}
+.inspectableCard:focus-visible{outline:3px solid #4f79b9;outline-offset:4px}
+@media(max-width:600px){.cardInspection{padding:12px}.inspectionPanel{padding:14px}.inspectionCard{width:min(380px,calc(100vw - 60px))}}
+
+.bareCardButton.inspectableCard .card.face{cursor:zoom-in}.selectionCard.back{cursor:pointer}

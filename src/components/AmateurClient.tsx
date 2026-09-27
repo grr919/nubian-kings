@@ -1,4 +1,5 @@
 "use client";
+import InspectionButton from "./CardInspection";
 
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
@@ -84,7 +85,7 @@ function AmateurCardView({
 }) {
   const image = artwork(card);
   return (
-    <button
+    <InspectionButton cards={visible ? [{ ...card, image }] : []}
       type="button"
       className={`card amateurCard ${visible ? "face" : "back"} ${defeated ? "reviewDefeated" : ""} ${selected ? "selectedCard" : ""} ${enabled ? "selectableCard" : ""}`}
       disabled={!enabled}
@@ -106,7 +107,7 @@ function AmateurCardView({
         <><div className="backOrnament">NK</div><span>Hidden</span></>
       )}
       {defeated && <span className="outcomeMark">Defeated</span>}
-    </button>
+    </InspectionButton>
   );
 }
 
@@ -468,3 +469,4 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
 function AmateurHelp({ onClose }: { onClose: () => void }) {
   return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one initiating card, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot initiate a comparison until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an initiating heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol></section></div>;
 }
+

@@ -1,4 +1,5 @@
 "use client";
+import InspectionButton from "./CardInspection";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
@@ -164,7 +165,7 @@ function PublicPlayerArea({ room, state, player }: { room: Room; state: PublicSt
 function PublicCardView({ card, defeated = false }: { card: PublicCard; defeated?: boolean }) {
   const image = card.name && ART_BY_NAME[card.name] ? `${ART_BASE_URL}/cards/${encodeURIComponent(ART_BY_NAME[card.name])}` : undefined;
   if (card.face === "down" && !card.discarded) return <article className="card back"><div className="backOrnament">NK</div><span>Hidden</span></article>;
-  return <article className={`card face ${defeated || card.discarded ? "reviewDefeated" : ""}`}>{image ? <img className="cardArtwork" src={image} alt={`${card.name} card artwork`} /> : <><EparchCrownMark className="cardCrown" /><h3>{card.name}</h3></>}{(defeated || card.discarded) && <span className="outcomeMark">Defeated</span>}<div className="authoritativeStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat[0].toUpperCase()}</span>)}</div></article>;
+  return <InspectionButton cards={card.face === "up" && card.name ? [{ ...card, image }] : []} className={`card face ${defeated || card.discarded ? "reviewDefeated" : ""}`}>{image ? <img className="cardArtwork" src={image} alt={`${card.name} card artwork`} /> : <><EparchCrownMark className="cardCrown" /><h3>{card.name}</h3></>}{(defeated || card.discarded) && <span className="outcomeMark">Defeated</span>}<div className="authoritativeStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat[0].toUpperCase()}</span>)}</div></InspectionButton>;
 }
 
 function MultiplayerReviewView({ room }: { room: Room }) {
@@ -176,3 +177,4 @@ function MultiplayerReviewView({ room }: { room: Room }) {
   const result = multiplayerRoundOutcomeText(review.stat, review.winnerId, review.scores.map((score) => score.playerId), viewerId, review.winnerId ? nameForPlayer(room, review.winnerId) : undefined, !review.winnerId);
   return <section className="comparisonStage">{actionText && <p>{actionText}</p>}<h1>{result}</h1><div className="comparisonCards">{review.scores.map((score) => { const card = review.cards[score.cardId]; return <div key={`${score.playerId}-${score.cardId}`} className={`comparisonEntry ${score.total === high ? "roundLeader" : ""}`}><h2>{nameForPlayer(room, score.playerId)}</h2>{card ? <PublicCardView card={card} defeated={Boolean(review.winnerId && score.playerId !== review.winnerId)} /> : <article className="card back"><span>Card unavailable</span></article>}<p className="scoreLine"><b>{score.total}</b><span>{score.base}{score.die ? ` + ${score.die}` : ""}</span></p></div>; })}</div></section>;
 }
+

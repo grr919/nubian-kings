@@ -1,4 +1,5 @@
 "use client";
+import InspectionButton from "./CardInspection";
 
 import { useEffect, useMemo, useState } from "react";
 import EparchCrownMark from "@/components/EparchCrownMark";
@@ -488,7 +489,7 @@ export default function MasterClient() {
 }
 
 function MasterUnit({ cards, enabled, selected, highlighted, badge, onClick }: { cards: MasterCard[]; enabled: boolean; selected: boolean; highlighted: boolean; badge: string; onClick: () => void }) {
-  return <button type="button" className={`masterUnit ${enabled ? "selectableUnit" : ""} ${selected || highlighted ? "selectedUnit" : ""}`} disabled={!enabled} onClick={onClick} aria-label={enabled ? `Select ${badge} (${cards.length} cards)` : undefined}><span className="unitBadge">{badge} · {cards.length} card{cards.length === 1 ? "" : "s"}</span><span className="unitCards">{cards.slice(-3).map((card) => <MasterCardView key={card.id} card={card} />)}</span>{cards.length > 3 && <span className="unitOverflow">+{cards.length - 3} more</span>}</button>;
+  return <InspectionButton cards={cards.filter(card => card.face === "up").map(card => ({ ...card, image: artwork(card) }))} type="button" className={`masterUnit ${enabled ? "selectableUnit" : ""} ${selected || highlighted ? "selectedUnit" : ""}`} disabled={!enabled} onClick={onClick} aria-label={enabled ? `Select ${badge} (${cards.length} cards)` : undefined}><span className="unitBadge">{badge} · {cards.length} card{cards.length === 1 ? "" : "s"}</span><span className="unitCards">{cards.slice(-3).map((card) => <MasterCardView key={card.id} card={card} />)}</span>{cards.length > 3 && <span className="unitOverflow">+{cards.length - 3} more</span>}</InspectionButton>;
 }
 
 function MasterPlayerArea({ player, active, attackerId, highlightIds, allowedAttackers, targetIds, onUnit }: { player: MasterPlayer; active: boolean; attackerId?: string; highlightIds: Set<string>; allowedAttackers: Set<string>; targetIds: Set<string>; onUnit: (id: string) => void }) {
@@ -497,7 +498,7 @@ function MasterPlayerArea({ player, active, attackerId, highlightIds, allowedAtt
     <header><span className="sigil small">{INFO[player.factionId].mark}</span><div><h2>{playerLabel(player)}</h2><small>{player.eliminated ? "Heir eliminated" : `${masterArmySize(player)} army cards · ${player.army.length} piles · ${player.discard.length} discarded`}</small></div>{active && !player.eliminated && <span className="selectorBadge">Active</span>}</header>
     <div className="masterHeir"><span>Heir</span><MasterUnit cards={[player.heir]} enabled={enabled(player.heir.id)} selected={attackerId === player.heir.id} highlighted={highlightIds.has(player.heir.id)} badge={player.eliminated ? "Eliminated" : "Heir"} onClick={() => onUnit(player.heir.id)} /></div>
     <div className="masterArmy">{player.army.map((pile, index) => <MasterUnit key={pile.id} cards={pile.cards} enabled={enabled(pile.id)} selected={attackerId === pile.id} highlighted={highlightIds.has(pile.id)} badge={`Pile ${index + 1}`} onClick={() => onUnit(pile.id)} />)}</div>
-    {player.discard.length > 0 && <details className="discardViewer"><summary>View discard pile ({player.discard.length})</summary><div>{player.discard.map((card) => <MasterCardView key={card.id} card={card} visible />)}</div></details>}
+    {player.discard.length > 0 && <details className="discardViewer"><summary>View discard pile ({player.discard.length})</summary><div>{player.discard.map((card) => <InspectionButton key={card.id} cards={[{ ...card, image: artwork(card) }]} className="bareCardButton"><MasterCardView card={card} visible /></InspectionButton>)}</div></details>}
   </section>;
 }
 
@@ -514,10 +515,11 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
   ].map(({ player, cards, unitId, role }) => {
     const score = review.scores.find((entry) => entry.unitId === unitId)!;
     const result = review.cancelReason ? "Cancelled" : review.tie ? "Tied" : score.playerId === winnerId ? "Winner" : "Defeated";
-    return <article key={`${player.id}-${unitId}`} className={`comparisonCard masterComparison result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name} · {cards.length} cards</b></div><div className="reviewPileCards">{cards.map((card) => <MasterCardView key={card.id} card={card} visible defeated={result === "Defeated"} />)}</div><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
+    return <article key={`${player.id}-${unitId}`} className={`comparisonCard masterComparison result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name} · {cards.length} cards</b></div><div className="reviewPileCards">{cards.map((card) => <InspectionButton key={card.id} cards={[{ ...card, image: artwork(card) }]} className="bareCardButton"><MasterCardView card={card} visible defeated={result === "Defeated"} /></InspectionButton>)}</div><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
   })}</div><button className="reviewContinue" onClick={onContinue}>Continue</button></section>;
 }
 
 function MasterHelp({ onClose, effectsMode }: { onClose: () => void; effectsMode: MasterEffectsMode }) {
   return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE ROCK CHURCH OF LALIBELA</p><h2>Master Rules</h2><ol><li>Choose a Leader heir before the deal. Unchosen Leader cards return to the deck as People and may appear in your twenty-card army.</li><li>Arrange each pile with at most one Place, any number of People, and any number of Things in that order. A Thing needs a Person beneath it.</li><li>With Strength, you attack opposing forces. With Zeal, you attempt to convert some of them. With Wealth, you attempt to influence some of them with your wealth. Your chosen heir may initiate a comparison only after every army card is gone.</li><li>Every pile uses the combined statistic of all its cards. The losing pile is discarded in full; tied piles survive face up.</li><li>An enemy heir is protected until every army pile is gone.</li><li>After a non-tied win, the victorious player may draw one random face-down reserve card as a new standalone unit, up to your army limit.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol>{effectsMode === "on" ? <p className="note">Revealed cards may grant printed bonuses and one-time actions. Most actions become available on your next turn. When a comparison pauses, the active player gets the first effect opportunity and play proceeds clockwise. With Nile Floods, roll the Flood dice before choosing a guarantee.</p> : <p className="note">Effects Off uses the Core rules without printed card powers.</p>}</section></div>;
 }
+
