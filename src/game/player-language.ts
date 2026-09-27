@@ -15,19 +15,33 @@ interface OutcomePlayer {
   controller: "human" | "npc";
 }
 
-function possessive(name: string) {
+export function possessive(name: string) {
   return `${name}${name.endsWith("s") ? "'" : "'s"}`;
 }
 
 export function battleTitle(stat: Stat) {
-  return `A Battle of ${stat[0].toUpperCase()}${stat.slice(1)}`;
+  return `${stat[0].toUpperCase()}${stat.slice(1)} Comparison`;
+}
+
+export function comparisonActionText(
+  stat: Stat,
+  actor: string,
+  targetForces: string,
+  actorUsesPluralVerb = actor === "You",
+  wealthPossessive = actor === "You" ? "your" : "their",
+) {
+  const attack = actorUsesPluralVerb ? "attack" : "attacks";
+  const attempt = actorUsesPluralVerb ? "attempt" : "attempts";
+  if (stat === "strength") return `${actor} ${attack} ${targetForces}.`;
+  if (stat === "zeal") return `${actor} ${attempt} to convert some of ${targetForces}.`;
+  return `${actor} ${attempt} to influence some of ${targetForces} with ${wealthPossessive} wealth.`;
 }
 
 /** Master uses a different action for each statistic, while the game engine calls all three attacks. */
 export function masterActionLanguage(stat: Stat) {
-  if (stat === "zeal") return { noun: "conversion attempt", verb: "try to convert", actor: "Converting pile", target: "Conversion target", title: "A Conversion by Zeal" };
-  if (stat === "wealth") return { noun: "bid for support", verb: "seek support from", actor: "Seeking support", target: "Support target", title: "A Bid for Support by Wealth" };
-  return { noun: "attack", verb: "attack", actor: "Attacker", target: "Defender", title: "A Battle of Strength" };
+  if (stat === "zeal") return { noun: "conversion attempt", verb: "attempt to convert", actor: "Converting pile", target: "Conversion target", title: "Zeal Comparison" };
+  if (stat === "wealth") return { noun: "attempt to influence with wealth", verb: "attempt to influence", actor: "Influencing pile", target: "Influence target", title: "Wealth Comparison" };
+  return { noun: "attack", verb: "attack", actor: "Attacking pile", target: "Defending pile", title: "Strength Comparison" };
 }
 
 export function masterRoundOutcomeText(players: OutcomePlayer[], winnerId: string | undefined, participantIds: string[], stat: Stat, tied = false) {
@@ -46,9 +60,9 @@ function victoryText(stat: Stat, subject: "human" | "npc", winnerName?: string) 
 }
 
 export function roundOutcomeText(players: OutcomePlayer[], winnerId: string | undefined, participantIds: string[], stat: Stat, tied = false) {
-  if (tied) return `The battle of ${stat} ends without a victor.`;
+  if (tied) return `The ${stat} comparison ends without a victor.`;
   const winner = players.find((player) => player.id === winnerId);
-  if (!winner) return `The battle of ${stat} has ended.`;
+  if (!winner) return `The ${stat} comparison has ended.`;
   if (winner.controller === "human") return victoryText(stat, "human");
   const human = players.find((player) => player.controller === "human");
   const winnerName = NAMES[winner.factionId];
@@ -62,8 +76,8 @@ export function roundOutcomeText(players: OutcomePlayer[], winnerId: string | un
 }
 
 export function multiplayerRoundOutcomeText(stat: Stat, winnerId: string | undefined, participantIds: string[], viewerId: string, winnerName?: string, tied = false) {
-  if (tied) return `The battle of ${stat} ends without a victor.`;
-  if (!winnerId || !winnerName) return `The battle of ${stat} has ended.`;
+  if (tied) return `The ${stat} comparison ends without a victor.`;
+  if (!winnerId || !winnerName) return `The ${stat} comparison has ended.`;
   if (winnerId === viewerId) return victoryText(stat, "human");
   const owner = possessive(winnerName);
   if (participantIds.includes(viewerId)) {
@@ -94,7 +108,7 @@ export function amateurEventText(event: AmateurEvent, state: AmateurState) {
 export function beginnerEventText(event: GameEvent, state: BeginnerState) {
   const player = "playerId" in event ? state.players.find((item) => item.id === event.playerId) : undefined;
   const who = player ? (player.controller === "human" ? "You" : NAMES[player.factionId]) : "A player";
-  if (event.type === "stat-selected") return `${who} chose ${event.stat}.`;
+  if (event.type === "stat-selected") return comparisonActionText(event.stat, who, player?.controller === "human" ? "the opposing forces" : "your forces", true, player?.controller === "human" ? "your" : "their");
   if (event.type === "card-revealed") return `${who} revealed ${player?.cards.find((card) => card.id === event.cardId)?.name ?? "a card"}.`;
   if (event.type === "score") return `${who} scored ${event.total}${event.die ? ` (${event.base} + ${event.die})` : ""}.`;
   if (event.type === "die-rolled") return `${who} rolled ${event.value}.`;

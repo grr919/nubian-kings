@@ -29,7 +29,7 @@ import {
 } from "@/game/amateur";
 import { AMATEUR_SAVE_KEY, parseAmateurGame, serializeAmateurGame } from "@/game/amateur-save";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
-import { amateurEventText, battleTitle, roundOutcomeText } from "@/game/player-language";
+import { amateurEventText, battleTitle, comparisonActionText, possessive, roundOutcomeText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
 
@@ -365,7 +365,7 @@ export default function AmateurClient() {
       <section className="statusBar">
         <span className={`turnDot ${thinking ? "thinking" : ""}`} />
         <div>
-          <b>{review ? "Review the attack:" : npcAttack ? `${INFO[active.factionId].name} have declared an attack.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your attacker:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}</b>
+          <b>{review ? "Review the comparison:" : npcAttack ? `${battleTitle(npcAttack.stat)} declared.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}</b>
           <small>{npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}</small>
         </div>
       </section>
@@ -385,15 +385,15 @@ export default function AmateurClient() {
 
       {!review && humanTurn && (
         <section className="chooser amateurChooser">
-          <p>{!selectedStat ? "Which statistic will decide the attack?" : !attackerId ? human.army.length ? "Now choose one of your army cards to attack." : "Your heir is your last card. Choose it to attack." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
+          <p>{!selectedStat ? "Which statistic will decide the comparison?" : !attackerId ? human.army.length ? "Now choose one of your army cards to initiate the comparison." : "Your heir is your last card. Choose it to initiate the comparison." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
           <div>{STATS.map((stat) => <button key={stat} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
         </section>
       )}
 
       {!review && npcAttack && (
         <section className="chooser npcChoicePanel" aria-live="polite">
-          <p className="kicker">ATTACK DECLARED</p>
-          <h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using {npcAttack.stat}.</h2>
+          <p className="kicker">{battleTitle(npcAttack.stat)}</p>
+          <h2>{comparisonActionText(npcAttack.stat, INFO[active.factionId].name, state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "your forces" : `${possessive(INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name)} forces`, true)}</h2>
           <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
           <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>What happens next?</button>
         </section>
@@ -451,13 +451,14 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
   const targetPlayer = state.players.find((player) => player.id === review.targetPlayerId)!;
   const high = Math.max(...review.scores.map((score) => score.total));
   const winnerId = review.tie ? undefined : review.scores.find((score) => score.total === high)?.playerId;
+  const actionText = comparisonActionText(review.stat, attackerPlayer.controller === "human" ? "You" : INFO[attackerPlayer.factionId].name, targetPlayer.controller === "human" ? "your forces" : `${possessive(INFO[targetPlayer.factionId].name)} forces`, true, attackerPlayer.controller === "human" ? "your" : "their");
   const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
   return (
     <section className="comparisonStage amateurReview" aria-live="polite">
-      <header><p className="kicker">{battleTitle(review.stat)}</p><h2>{headline}</h2></header>
+      <header><p className="kicker">{battleTitle(review.stat)}</p><p>{actionText}</p><h2>{headline}</h2></header>
       <div className="comparisonCards">{[
-        { player: attackerPlayer, card: review.attacker, role: "Attacker" },
-        { player: targetPlayer, card: review.target, role: "Target" },
+        { player: attackerPlayer, card: review.attacker, role: review.stat === "strength" ? "Attacking card" : review.stat === "zeal" ? "Converting card" : "Influencing card" },
+        { player: targetPlayer, card: review.target, role: review.stat === "strength" ? "Defending card" : review.stat === "zeal" ? "Conversion target" : "Influence target" },
       ].map(({ player, card, role }) => {
         const score = review.scores.find((entry) => entry.cardId === card.id)!;
         const result = review.tie ? "Tied" : score.total === high ? "Winner" : "Defeated";
@@ -469,5 +470,5 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
 }
 
 function AmateurHelp({ onClose }: { onClose: () => void }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one attacker, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot attack until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an attacking heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol></section></div>;
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one initiating card, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot initiate a comparison until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an initiating heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol></section></div>;
 }

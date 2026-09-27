@@ -5,7 +5,7 @@ import EparchCrownMark from "@/components/EparchCrownMark";
 import FactionPortrait from "@/components/FactionPortrait";
 import MultiplayerPresenceControls from "@/components/MultiplayerPresenceControls";
 import cardData from "@/data/cards.json";
-import { battleTitle, multiplayerRoundOutcomeText } from "@/game/player-language";
+import { battleTitle, comparisonActionText, multiplayerRoundOutcomeText } from "@/game/player-language";
 import { browserSupabase } from "@/lib/supabase-browser";
 import type { Stat } from "@/game/types";
 
@@ -26,7 +26,7 @@ type Seat = { id: string; userId?: string; displayName: string; controller: "hum
 type PublicCard = { id: string; name?: string; factionId?: string; strength?: number; zeal?: number; wealth?: number; face: "up" | "down"; discarded: boolean };
 type PublicPlayer = { id: string; factionId: string; controller: "human" | "npc"; cards: PublicCard[]; cursor: number; eliminated: boolean };
 type PublicState = { players: PublicPlayer[]; selectorIndex: number; phase: "select" | "tie" | "complete"; selectedStat?: Stat; winnerId?: string; nileFloods: boolean; round: number; random: { seed: string }; tie?: { participantIds: string[]; usedCardIds: Record<string, string[]> } };
-type Review = { stat: Stat; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; cardIds: string[]; sequenceCardIds: string[]; winnerId?: string; cards: Record<string, PublicCard> };
+type Review = { stat: Stat; actorPlayerId?: string; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; cardIds: string[]; sequenceCardIds: string[]; winnerId?: string; cards: Record<string, PublicCard> };
 type Room = { code: string; status: "waiting" | "active" | "complete" | "abandoned"; isHost: boolean; settings: { totalSeats: number; npcCount: number; nileFloods: boolean; openingPlayer: "random" | "human" | "npc" }; revision: number; acknowledged: boolean; seats: Seat[]; state?: PublicState; review?: Review };
 
 async function accessToken() {
@@ -170,6 +170,8 @@ function MultiplayerReviewView({ room }: { room: Room }) {
   const review = room.review!;
   const high = Math.max(...review.scores.map((score) => score.total));
   const viewerId = room.seats.find((seat) => seat.isYou)!.userId!;
+  const actor = room.state!.players.find((player) => player.id === review.actorPlayerId);
+  const actionText = actor ? comparisonActionText(review.stat, actor.id === viewerId ? "You" : nameForPlayer(room, actor.id), actor.id === viewerId ? "the opposing forces" : "your forces", actor.id === viewerId, actor.id === viewerId ? "your" : "their") : undefined;
   const result = multiplayerRoundOutcomeText(review.stat, review.winnerId, review.scores.map((score) => score.playerId), viewerId, review.winnerId ? nameForPlayer(room, review.winnerId) : undefined, !review.winnerId);
-  return <section className="comparisonStage"><p className="kicker">{battleTitle(review.stat)}</p><h1>{result}</h1><div className="comparisonCards">{review.scores.map((score) => { const card = review.cards[score.cardId]; return <div key={`${score.playerId}-${score.cardId}`} className={`comparisonEntry ${score.total === high ? "roundLeader" : ""}`}><h2>{nameForPlayer(room, score.playerId)}</h2>{card ? <PublicCardView card={card} defeated={Boolean(review.winnerId && score.playerId !== review.winnerId)} /> : <article className="card back"><span>Card unavailable</span></article>}<p className="scoreLine"><b>{score.total}</b><span>{score.base}{score.die ? ` + ${score.die}` : ""}</span></p></div>; })}</div></section>;
+  return <section className="comparisonStage"><p className="kicker">{battleTitle(review.stat)}</p>{actionText && <p>{actionText}</p>}<h1>{result}</h1><div className="comparisonCards">{review.scores.map((score) => { const card = review.cards[score.cardId]; return <div key={`${score.playerId}-${score.cardId}`} className={`comparisonEntry ${score.total === high ? "roundLeader" : ""}`}><h2>{nameForPlayer(room, score.playerId)}</h2>{card ? <PublicCardView card={card} defeated={Boolean(review.winnerId && score.playerId !== review.winnerId)} /> : <article className="card back"><span>Card unavailable</span></article>}<p className="scoreLine"><b>{score.total}</b><span>{score.base}{score.die ? ` + ${score.die}` : ""}</span></p></div>; })}</div></section>;
 }

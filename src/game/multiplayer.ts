@@ -28,6 +28,7 @@ export interface MultiplayerSeat {
 
 export interface MultiplayerReview {
   stat: Stat;
+  actorPlayerId: string;
   scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>;
   cardIds: string[];
   sequenceCardIds: string[];
@@ -81,13 +82,14 @@ export function createMultiplayerBeginnerGame(seats: MultiplayerSeat[], settings
 }
 
 export function playMultiplayerComparison(state: BeginnerState, stat: Stat): MultiplayerReview {
+  const actorPlayerId = state.players[state.selectorIndex].id;
   const priorSequence = Object.values(state.tie?.usedCardIds ?? {}).flat();
   const events = playComparison(state, stat);
   const scores = events.filter((event): event is Extract<GameEvent, { type: "score" }> => event.type === "score").map(({ playerId, cardId, base, die, total }) => ({ playerId, cardId, base, die, total }));
   const discarded = events.filter((event): event is Extract<GameEvent, { type: "cards-discarded" }> => event.type === "cards-discarded").flatMap((event) => event.cardIds);
   const winner = events.find((event): event is Extract<GameEvent, { type: "comparison-won" }> => event.type === "comparison-won");
   const sequenceCardIds = [...new Set([...priorSequence, ...scores.map((score) => score.cardId)])];
-  return { stat, scores, sequenceCardIds, cardIds: [...new Set([...sequenceCardIds, ...discarded])], winnerId: winner?.playerId, events };
+  return { stat, actorPlayerId, scores, sequenceCardIds, cardIds: [...new Set([...sequenceCardIds, ...discarded])], winnerId: winner?.playerId, events };
 }
 
 export function chooseMultiplayerNpcStat(state: BeginnerState): Stat {

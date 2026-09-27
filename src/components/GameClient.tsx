@@ -9,7 +9,7 @@ import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
 import { chooseNpcStatForCard, factionProfile } from "@/game/npc";
-import { battleTitle, beginnerEventText, roundOutcomeText } from "@/game/player-language";
+import { battleTitle, beginnerEventText, comparisonActionText, roundOutcomeText } from "@/game/player-language";
 import { randomSource } from "@/game/random";
 import { parseGame, SAVE_KEY, serializeGame } from "@/game/save";
 import { createBeginnerGame, FACTIONS } from "@/game/setup";
@@ -20,7 +20,7 @@ const REVIEW_KEY = "nubian-kings:comparison-review:v1";
 const NPC_CHOICE_KEY = "nubian-kings:npc-choice:v1";
 const ART_BASE_URL = "https://nubian-kings-qtsa6vhio-grr919-6387s-projects.vercel.app";
 const ART_BY_ID = Object.fromEntries(cardData.cards.flatMap((card) => card.assets[0] ? [[card.id, card.assets[0].filename]] : []));
-interface ComparisonReview { stat: Stat; cardIds: string[]; sequenceCardIds?: string[]; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; winnerId?: string }
+interface ComparisonReview { stat: Stat; actorPlayerId?: string; cardIds: string[]; sequenceCardIds?: string[]; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; winnerId?: string }
 const INFO: Record<string, { name: string; short: string; mark: string }> = {
   "nubian-christians": { name: "Nubian Christians", short: "Nubia", mark: "NC" },
   "egyptian-christians": { name: "Egyptian Christians", short: "Egypt", mark: "EC" },
@@ -118,6 +118,7 @@ export default function GameClient() {
 
   function choose(stat: Stat, sourceState = state) {
     if (!sourceState || sourceState.phase === "complete") return;
+    const actorPlayerId = sourceState.players[sourceState.selectorIndex].id;
     const priorSequence = Object.values(sourceState.tie?.usedCardIds ?? {}).flat();
     const next = structuredClone(sourceState);
     const events = playComparison(next, stat);
@@ -125,7 +126,7 @@ export default function GameClient() {
     const discarded = events.filter((event): event is Extract<GameEvent, { type: "cards-discarded" }> => event.type === "cards-discarded").flatMap((event) => event.cardIds);
     const winnerEvent = events.find((event): event is Extract<GameEvent, { type: "comparison-won" }> => event.type === "comparison-won");
     const sequenceCardIds = [...new Set([...priorSequence, ...scores.map((score) => score.cardId)])];
-    const nextReview: ComparisonReview = { stat, scores, sequenceCardIds, cardIds: [...new Set([...sequenceCardIds, ...discarded])], winnerId: winnerEvent?.playerId };
+    const nextReview: ComparisonReview = { stat, actorPlayerId, scores, sequenceCardIds, cardIds: [...new Set([...sequenceCardIds, ...discarded])], winnerId: winnerEvent?.playerId };
     localStorage.setItem(REVIEW_KEY, JSON.stringify(nextReview)); setReview(nextReview);
     persist(next); setState(next); setHistory((old) => [...events.map((e) => beginnerEventText(e, next)).reverse(), ...old].slice(0, 18));
   }
@@ -241,8 +242,10 @@ function ComparisonStage({ review, state, onInspect }: { review: ComparisonRevie
   const winnerId = review.winnerId ?? (leaders.length === 1 && state.phase !== "tie" ? leaders[0].playerId : undefined);
   const currentIds = new Set(review.scores.map((score) => score.cardId));
   const earlierCards = (review.sequenceCardIds ?? review.cardIds).filter((cardId) => !currentIds.has(cardId)).flatMap((cardId) => { const found = findCard(state, cardId); return found ? [found] : []; });
+  const actor = state.players.find((player) => player.id === review.actorPlayerId);
+  const actionText = actor ? comparisonActionText(review.stat, actor.controller === "human" ? "You" : INFO[actor.factionId].name, actor.controller === "human" ? "the opposing forces" : "your forces", true, actor.controller === "human" ? "your" : "their") : undefined;
   const headline = roundOutcomeText(state.players, winnerId, review.scores.map((score) => score.playerId), review.stat, !winnerId && leaders.length > 1);
-  return <section className="comparisonStage" aria-live="polite"><header><p className="kicker">{battleTitle(review.stat)}</p><h2>{headline}</h2></header>{review.scores.length === 0 && <p className="noNewCards">No new cards were played. An army without another card was eliminated.</p>}<div className="comparisonCards">{review.scores.map((score) => { const found = findCard(state, score.cardId)!; const result = winnerId === score.playerId ? "Winner" : winnerId ? "Defeated" : leaders.length > 1 && score.total === high ? "Tied" : "Defeated"; return <article key={score.cardId} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><span className={`sigil small faction-${found.player.factionId}`}>{INFO[found.player.factionId].mark}</span><b>{found.player.controller === "human" ? "You" : INFO[found.player.factionId].name}</b></div><CardView card={found.card} active={result === "Winner"} reviewed onInspect={onInspect} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + roll ${score.die}` : ""}</small></div></article>; })}</div>{earlierCards.length > 0 && <div className="tieTrail"><p>Earlier cards in this tie</p><div>{earlierCards.map(({ player, card }) => <article key={card.id}><CardView card={card} active={false} reviewed onInspect={onInspect} /><small>{player.controller === "human" ? "You" : INFO[player.factionId].name}</small></article>)}</div></div>}</section>;
+  return <section className="comparisonStage" aria-live="polite"><header><p className="kicker">{battleTitle(review.stat)}</p>{actionText && <p>{actionText}</p>}<h2>{headline}</h2></header>{review.scores.length === 0 && <p className="noNewCards">No new cards were played. An army without another card was eliminated.</p>}<div className="comparisonCards">{review.scores.map((score) => { const found = findCard(state, score.cardId)!; const result = winnerId === score.playerId ? "Winner" : winnerId ? "Defeated" : leaders.length > 1 && score.total === high ? "Tied" : "Defeated"; return <article key={score.cardId} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><span className={`sigil small faction-${found.player.factionId}`}>{INFO[found.player.factionId].mark}</span><b>{found.player.controller === "human" ? "You" : INFO[found.player.factionId].name}</b></div><CardView card={found.card} active={result === "Winner"} reviewed onInspect={onInspect} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + roll ${score.die}` : ""}</small></div></article>; })}</div>{earlierCards.length > 0 && <div className="tieTrail"><p>Earlier cards in this tie</p><div>{earlierCards.map(({ player, card }) => <article key={card.id}><CardView card={card} active={false} reviewed onInspect={onInspect} /><small>{player.controller === "human" ? "You" : INFO[player.factionId].name}</small></article>)}</div></div>}</section>;
 }
 
 function ReviewPanel({ onContinue }: { onContinue: () => void }) {
@@ -251,7 +254,7 @@ function ReviewPanel({ onContinue }: { onContinue: () => void }) {
 
 function NpcChoicePanel({ choice, state, onReveal }: { choice: { playerId: string; stat: Stat }; state: BeginnerState; onReveal: () => void }) {
   const player = state.players.find((item) => item.id === choice.playerId)!;
-  return <section className="chooser npcChoicePanel"><p className="kicker">TRAIT SELECTED</p><h2>{INFO[player.factionId].name} chose {choice.stat}.</h2><p>Take a moment to note the chosen trait. No cards have been revealed.</p><button onClick={onReveal}>Reveal Cards</button></section>;
+  return <section className="chooser npcChoicePanel"><p className="kicker">{battleTitle(choice.stat)}</p><h2>{comparisonActionText(choice.stat, INFO[player.factionId].name, "your forces", true)}</h2><p>Take a moment to note the chosen trait. No cards have been revealed.</p><button onClick={onReveal}>Reveal Cards</button></section>;
 }
 
 function CardDetail({ card, onClose }: { card: Card; onClose: () => void }) {
