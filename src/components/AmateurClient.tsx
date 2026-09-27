@@ -31,7 +31,7 @@ import {
 } from "@/game/amateur";
 import { AMATEUR_SAVE_KEY, parseAmateurGame, serializeAmateurGame } from "@/game/amateur-save";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
-import { amateurEventText, battleTitle, comparisonActionText, factionActor, factionForces, roundOutcomeText } from "@/game/player-language";
+import { amateurEventText, declaredActionText, comparisonActionText, factionActor, factionForces, roundOutcomeText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
 
@@ -364,7 +364,7 @@ export default function AmateurClient() {
     <main className="gamePage amateurGame">
       <GameStateBanner
         thinking={thinking}
-        title={review ? "Review the comparison:" : npcAttack ? `${battleTitle(npcAttack.stat)} declared.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
+        title={review ? "Review the comparison:" : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
         detail={npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
       />
 

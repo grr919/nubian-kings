@@ -54,8 +54,10 @@ export function interruptedOutcomeText(stat: Stat) {
   return "This attempt to influence the opposing forces was interrupted.";
 }
 
-export function battleTitle(stat: Stat) {
-  return `${stat[0].toUpperCase()}${stat.slice(1)} Comparison`;
+export function declaredActionText(stat: Stat) {
+  if (stat === "strength") return "Attack declared.";
+  if (stat === "zeal") return "Conversion attempt declared.";
+  return "Attempt to influence with wealth declared.";
 }
 
 export function comparisonActionText(
@@ -74,9 +76,9 @@ export function comparisonActionText(
 
 /** Master uses a different action for each statistic, while the game engine calls all three attacks. */
 export function masterActionLanguage(stat: Stat) {
-  if (stat === "zeal") return { noun: "conversion attempt", verb: "attempt to convert", actor: "Converting pile", target: "Conversion target", title: "Zeal Comparison" };
-  if (stat === "wealth") return { noun: "attempt to influence with wealth", verb: "attempt to influence", actor: "Influencing pile", target: "Influence target", title: "Wealth Comparison" };
-  return { noun: "attack", verb: "attack", actor: "Attacking pile", target: "Defending pile", title: "Strength Comparison" };
+  if (stat === "zeal") return { noun: "conversion attempt", verb: "attempt to convert", actor: "Converting pile", target: "Conversion target" };
+  if (stat === "wealth") return { noun: "attempt to influence with wealth", verb: "attempt to influence", actor: "Influencing pile", target: "Influence target" };
+  return { noun: "attack", verb: "attack", actor: "Attacking pile", target: "Defending pile" };
 }
 
 export function masterRoundOutcomeText(players: OutcomePlayer[], winnerId: string | undefined, participantIds: string[], stat: Stat, tied = false) {

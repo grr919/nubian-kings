@@ -11,7 +11,7 @@ import cardData from "@/data/cards.json";
 import { nextCard, playComparison, surviving } from "@/game/beginner";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
 import { chooseNpcStatForCard, factionProfile } from "@/game/npc";
-import { battleTitle, beginnerEventText, comparisonActionText, factionActor, roundOutcomeText } from "@/game/player-language";
+import { beginnerEventText, comparisonActionText, factionActor, roundOutcomeText } from "@/game/player-language";
 import { randomSource } from "@/game/random";
 import { parseGame, SAVE_KEY, serializeGame } from "@/game/save";
 import { createBeginnerGame, FACTIONS } from "@/game/setup";
@@ -260,7 +260,7 @@ function ReviewPanel({ onContinue }: { onContinue: () => void }) {
 
 function NpcChoicePanel({ choice, state, onReveal }: { choice: { playerId: string; stat: Stat }; state: BeginnerState; onReveal: () => void }) {
   const player = state.players.find((item) => item.id === choice.playerId)!;
-  return <section className="chooser npcChoicePanel"><p className="kicker">{battleTitle(choice.stat)}</p><h2>{comparisonActionText(choice.stat, INFO[player.factionId].name, "your forces", true)}</h2><p>Take a moment to note the chosen trait. No cards have been revealed.</p><button onClick={onReveal}>Reveal Cards</button></section>;
+  return <section className="chooser npcChoicePanel"><h2>{comparisonActionText(choice.stat, INFO[player.factionId].name, "your forces", true)}</h2><p>Take a moment to note the chosen trait. No cards have been revealed.</p><button onClick={onReveal}>Reveal Cards</button></section>;
 }
 
 function CardDetail({ card, onClose }: { card: Card; onClose: () => void }) {

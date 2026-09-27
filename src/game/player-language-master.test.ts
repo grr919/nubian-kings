@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { comparisonActionText, factionActor, factionForces, masterActionLanguage, masterMultiplayerOutcomeText, masterRoundOutcomeText } from "./player-language";
+import { comparisonActionText, declaredActionText, factionActor, factionForces, masterActionLanguage, masterMultiplayerOutcomeText, masterRoundOutcomeText } from "./player-language";
 
 describe("Master comparison wording", () => {
   it("uses attack, conversion, and influence terms for the corresponding statistic", () => {
     expect(masterActionLanguage("strength").noun).toBe("attack");
     expect(masterActionLanguage("zeal").verb).toBe("attempt to convert");
     expect(masterActionLanguage("wealth").verb).toBe("attempt to influence");
-    expect(masterActionLanguage("zeal").title).toBe("Zeal Comparison");
-    expect(masterActionLanguage("wealth").title).toBe("Wealth Comparison");
+    expect(declaredActionText("strength")).toBe("Attack declared.");
+    expect(declaredActionText("zeal")).toBe("Conversion attempt declared.");
+    expect(declaredActionText("wealth")).toBe("Attempt to influence with wealth declared.");
   });
 
   it("uses the approved action sentence for each statistic", () => {
