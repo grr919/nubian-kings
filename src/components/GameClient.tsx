@@ -184,7 +184,7 @@ export default function GameClient() {
   if (screen === "home") return (
     <main className="landing"><section className="panel titlePanel">
       <p className="kicker">BEGINNER LEVEL: THE AL-AZHAR MOSQUE</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
-      <p>Lead a medieval African faction through a contest of strength, zeal, and wealth.</p>
+      <p>Lead a medieval African civilization through a contest of strength, zeal, and wealth.</p>
       <div className="actions"><button onClick={() => setScreen("setup")}>New Solo Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Solo Game</button><a className="buttonLink" href="/beginner/multiplayer">Multiplayer</a></div>
       <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><footer className="landingFooter">© 2026 Nile South Games</footer>
     </section>{help && <Help onClose={() => setHelp(false)} />}</main>
@@ -192,8 +192,8 @@ export default function GameClient() {
 
   if (screen === "setup") return (
     <main className="setupPage"><section className="setupPanel">
-      <button className="backButton" onClick={() => setScreen("home")}>← Back</button><p className="kicker">BEGINNER GAME</p><h1>Assemble your army</h1><p className="lede">Choose your faction. Each army begins with five hidden cards.</p>
-      <h2>Choose a faction</h2><div className="factionGrid">{FACTIONS.map((id) => <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}><FactionPortrait factionId={id} /><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}</button>)}</div>
+      <button className="backButton" onClick={() => setScreen("home")}>← Back</button><p className="kicker">BEGINNER GAME</p><h1>Assemble your army</h1><p className="lede">Choose your civilization. Each army begins with five hidden cards.</p>
+      <h2>Choose a civilization</h2><div className="factionGrid">{FACTIONS.map((id) => <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}><FactionPortrait factionId={id} /><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}</button>)}</div>
       <div className="settings"><label><span>Computer opponents</span><select value={npcCount} onChange={(e) => setNpcCount(e.target.value === "random" ? "random" : Number(e.target.value))}><option value="random">Random (1–4)</option>{[1,2,3,4].map((n) => <option key={n} value={n}>{n}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(e) => setOpeningPlayer(e.target.value as "random" | "human" | "npc")}><option value="random">Random participant</option><option value="human">You</option><option value="npc">Computer opponent</option></select></label><label className="seedSetting"><span><b>Game seed</b><small>Use the same seed and setup choices to reproduce a game.</small></span><input value={seed} maxLength={48} placeholder="Generated automatically" onChange={(e) => setSeed(e.target.value)} /></label><label className="toggle"><input type="checkbox" checked={floods} onChange={(e) => setFloods(e.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label></div>
       <button className="beginButton" onClick={start}>Begin Game</button>
     </section></main>

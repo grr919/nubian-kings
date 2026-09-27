@@ -313,8 +313,8 @@ export default function AmateurClient() {
         <button className="backButton" onClick={() => setScreen("home")}>← Back</button>
         <p className="kicker">AMATEUR GAME</p>
         <h1>Assemble your army</h1>
-        <p className="lede">Each faction receives ten hidden non-Leader army cards and deliberately chooses any Leader as heir.</p>
-        <h2>Choose a faction</h2>
+        <p className="lede">Each civilization receives ten hidden non-Leader army cards and deliberately chooses any Leader as heir.</p>
+        <h2>Choose a civilization</h2>
         <div className="factionGrid">{FACTIONS.map((id) => (
           <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}>
             <FactionPortrait factionId={id} /><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}
