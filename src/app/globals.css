@@ -146,3 +146,10 @@ body{background:#efd49b}
 .gameStateBanner .gameStateActions{margin-top:7px;display:flex;flex-direction:row;justify-content:center;gap:6px}
 .gameStateBanner .gameStateActions .iconButton{min-height:32px;padding:0 9px;border-color:#9d6f35;color:#4d351f}
 @media(max-width:600px){.gameStateBanner{padding:9px 8px;gap:10px}.gameStateBanner .gameStateCopy{gap:7px}.gameStateBanner .gameStateBrand .miniMark{width:29px;height:25px}.gameStateBanner .gameStateBrand>b{font-size:1rem}.gameStateBanner .gameStateBrand>small{font-size:.55rem}.gameStateBanner .gameStateActions{flex-direction:column}.gameStateBanner .gameStateActions .iconButton{min-height:28px;padding:0 5px;font-size:.58rem}}
+
+/* Give the state display and every army one consistent full-width panel. */
+.gameStateBanner,.board,.amateurBoard{width:min(1460px,calc(100% - 24px));margin-inline:auto}
+.board,.amateurBoard{padding-left:0;padding-right:0}
+.opponentBoard,.amateurOpponents,.multiplayerPlayers{grid-template-columns:minmax(0,1fr)}
+.gameStateBanner,.playerArea,.npcArea,.humanArea,.amateurPlayer{background:linear-gradient(135deg,#fff0c9ee,#e9c683f2);border:1px solid #a86c20;box-shadow:0 13px 34px #7148193b}
+@media(max-width:600px){.gameStateBanner,.board,.amateurBoard{width:calc(100% - 12px)}}
