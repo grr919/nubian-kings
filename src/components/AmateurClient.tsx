@@ -30,7 +30,7 @@ import {
 } from "@/game/amateur";
 import { AMATEUR_SAVE_KEY, parseAmateurGame, serializeAmateurGame } from "@/game/amateur-save";
 import { humanMayEndEliminatedGame } from "@/game/elimination";
-import { amateurEventText, battleTitle, comparisonActionText, possessive, roundOutcomeText } from "@/game/player-language";
+import { amateurEventText, battleTitle, comparisonActionText, factionActor, factionForces, roundOutcomeText } from "@/game/player-language";
 import { FACTIONS } from "@/game/setup";
 import type { Stat } from "@/game/types";
 
@@ -391,7 +391,7 @@ export default function AmateurClient() {
       {!review && npcAttack && (
         <section className="chooser npcChoicePanel" aria-live="polite">
           <p className="kicker">{battleTitle(npcAttack.stat)}</p>
-          <h2>{comparisonActionText(npcAttack.stat, INFO[active.factionId].name, state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "your forces" : `${possessive(INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name)} forces`, true)}</h2>
+          <h2>{comparisonActionText(npcAttack.stat, factionActor(INFO[active.factionId].name), state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "your forces" : factionForces(INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name), true)}</h2>
           <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
           <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>What happens next?</button>
         </section>
@@ -449,11 +449,11 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
   const targetPlayer = state.players.find((player) => player.id === review.targetPlayerId)!;
   const high = Math.max(...review.scores.map((score) => score.total));
   const winnerId = review.tie ? undefined : review.scores.find((score) => score.total === high)?.playerId;
-  const actionText = comparisonActionText(review.stat, attackerPlayer.controller === "human" ? "You" : INFO[attackerPlayer.factionId].name, targetPlayer.controller === "human" ? "your forces" : `${possessive(INFO[targetPlayer.factionId].name)} forces`, true, attackerPlayer.controller === "human" ? "your" : "their");
+  const actionText = comparisonActionText(review.stat, attackerPlayer.controller === "human" ? "You" : factionActor(INFO[attackerPlayer.factionId].name), targetPlayer.controller === "human" ? "your forces" : factionForces(INFO[targetPlayer.factionId].name), true, attackerPlayer.controller === "human" ? "your" : "their");
   const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
   return (
     <section className="comparisonStage amateurReview" aria-live="polite">
-      <header><p className="kicker">{battleTitle(review.stat)}</p><p>{actionText}</p><h2>{headline}</h2></header>
+      <header><p>{actionText}</p><h2>{headline}</h2></header>
       <div className="comparisonCards">{[
         { player: attackerPlayer, card: review.attacker, role: review.stat === "strength" ? "Attacking card" : review.stat === "zeal" ? "Converting card" : "Influencing card" },
         { player: targetPlayer, card: review.target, role: review.stat === "strength" ? "Defending card" : review.stat === "zeal" ? "Conversion target" : "Influence target" },

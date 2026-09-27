@@ -28,7 +28,7 @@ describe("player-facing grammar", () => {
     expect(multiplayerRoundOutcomeText("strength", "one", ["one", "two"], "one", "Amina")).toBe("Your strength brings you victory in battle.");
     expect(multiplayerRoundOutcomeText("zeal", "two", ["one", "two"], "one", "Musa")).toBe("Musa's zeal converts some of your forces.");
     expect(multiplayerRoundOutcomeText("wealth", "two", ["one", "two"], "one", "Musa")).toBe("Musa's wealth wins support among your forces.");
-    expect(multiplayerRoundOutcomeText("strength", undefined, ["one", "two"], "one", undefined, true)).toBe("The strength comparison ends without a victor.");
+    expect(multiplayerRoundOutcomeText("strength", undefined, ["one", "two"], "one", undefined, true)).toBe("This battle ends without a victory.");
   });
 
   it("retains third-person Amateur grammar for computer factions", () => {
@@ -52,9 +52,9 @@ describe("player-facing grammar", () => {
     expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"], "strength")).toBe("Your strength brings you victory in battle.");
     expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"], "zeal")).toBe("Your zeal converts some of the enemy forces.");
     expect(roundOutcomeText(amateurState.players, "human", ["human", "npc"], "wealth")).toBe("Your wealth wins enemy support.");
-    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "strength")).toBe("Egyptian Christians' strength defeats your forces in battle.");
-    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "zeal")).toBe("Egyptian Christians' zeal converts some of your forces.");
-    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "wealth")).toBe("Egyptian Christians' wealth wins support among your forces.");
-    expect(roundOutcomeText(amateurState.players, undefined, ["human", "npc"], "zeal", true)).toBe("The zeal comparison ends without a victor.");
+    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "strength")).toBe("Egyptian Christian strength defeats your forces in battle.");
+    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "zeal")).toBe("Egyptian Christian zeal converts some of your forces.");
+    expect(roundOutcomeText(amateurState.players, "npc", ["human", "npc"], "wealth")).toBe("Egyptian Christian wealth wins support among your forces.");
+    expect(roundOutcomeText(amateurState.players, undefined, ["human", "npc"], "zeal", true)).toBe("This conversion attempt ends without a victory.");
   });
 });

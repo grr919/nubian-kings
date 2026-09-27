@@ -9,6 +9,14 @@ const NAMES: Record<string, string> = {
   "ethiopian-jews": "Ethiopian Jews",
 };
 
+const FACTION_ADJECTIVES: Record<string, string> = {
+  "Nubian Christians": "Nubian Christian",
+  "Egyptian Christians": "Egyptian Christian",
+  "Ethiopian Christians": "Ethiopian Christian",
+  "Egyptian Muslims": "Egyptian Muslim",
+  "Ethiopian Jews": "Ethiopian Jewish",
+};
+
 interface OutcomePlayer {
   id: string;
   factionId: string;
@@ -17,6 +25,33 @@ interface OutcomePlayer {
 
 export function possessive(name: string) {
   return `${name}${name.endsWith("s") ? "'" : "'s"}`;
+}
+
+export function factionForces(name: string, capitalize = false) {
+  const adjective = FACTION_ADJECTIVES[name];
+  if (!adjective) return `${possessive(name)} forces`;
+  return `${capitalize ? "The" : "the"} ${adjective} forces`;
+}
+
+export function factionActor(name: string) {
+  return FACTION_ADJECTIVES[name] ? factionForces(name, true) : name;
+}
+
+function strengthOwner(name: string) {
+  return FACTION_ADJECTIVES[name] ?? possessive(name);
+}
+
+function unresolvedOutcomeText(stat: Stat, ended = false) {
+  const ending = ended ? "has ended" : "ends without a victory";
+  if (stat === "strength") return `This battle ${ending}.`;
+  if (stat === "zeal") return `This conversion attempt ${ending}.`;
+  return `This attempt to influence the opposing forces ${ending}.`;
+}
+
+export function interruptedOutcomeText(stat: Stat) {
+  if (stat === "strength") return "This battle was interrupted.";
+  if (stat === "zeal") return "This conversion attempt was interrupted.";
+  return "This attempt to influence the opposing forces was interrupted.";
 }
 
 export function battleTitle(stat: Stat) {
@@ -45,29 +80,29 @@ export function masterActionLanguage(stat: Stat) {
 }
 
 export function masterRoundOutcomeText(players: OutcomePlayer[], winnerId: string | undefined, participantIds: string[], stat: Stat, tied = false) {
-  return tied ? `The ${masterActionLanguage(stat).noun} ends without a victor.` : roundOutcomeText(players, winnerId, participantIds, stat);
+  return tied ? unresolvedOutcomeText(stat) : roundOutcomeText(players, winnerId, participantIds, stat);
 }
 
 export function masterMultiplayerOutcomeText(stat: Stat, winnerId: string | undefined, participantIds: string[], viewerId: string, winnerName?: string, tied = false) {
-  return tied ? `The ${masterActionLanguage(stat).noun} ends without a victor.` : multiplayerRoundOutcomeText(stat, winnerId, participantIds, viewerId, winnerName);
+  return tied ? unresolvedOutcomeText(stat) : multiplayerRoundOutcomeText(stat, winnerId, participantIds, viewerId, winnerName);
 }
 
 function victoryText(stat: Stat, subject: "human" | "npc", winnerName?: string) {
-  const owner = subject === "human" ? "Your" : possessive(winnerName!);
+  const owner = subject === "human" ? "Your" : strengthOwner(winnerName!);
   if (stat === "strength") return `${owner} strength brings ${subject === "human" ? "you" : "them"} victory in battle.`;
   if (stat === "zeal") return `${owner} zeal converts some of the ${subject === "human" ? "enemy" : "opposing"} forces.`;
   return `${owner} wealth wins enemy support.`;
 }
 
 export function roundOutcomeText(players: OutcomePlayer[], winnerId: string | undefined, participantIds: string[], stat: Stat, tied = false) {
-  if (tied) return `The ${stat} comparison ends without a victor.`;
+  if (tied) return unresolvedOutcomeText(stat);
   const winner = players.find((player) => player.id === winnerId);
-  if (!winner) return `The ${stat} comparison has ended.`;
+  if (!winner) return unresolvedOutcomeText(stat, true);
   if (winner.controller === "human") return victoryText(stat, "human");
   const human = players.find((player) => player.controller === "human");
   const winnerName = NAMES[winner.factionId];
   if (human && participantIds.includes(human.id)) {
-    const owner = possessive(winnerName);
+    const owner = strengthOwner(winnerName);
     if (stat === "strength") return `${owner} strength defeats your forces in battle.`;
     if (stat === "zeal") return `${owner} zeal converts some of your forces.`;
     return `${owner} wealth wins support among your forces.`;
@@ -76,10 +111,10 @@ export function roundOutcomeText(players: OutcomePlayer[], winnerId: string | un
 }
 
 export function multiplayerRoundOutcomeText(stat: Stat, winnerId: string | undefined, participantIds: string[], viewerId: string, winnerName?: string, tied = false) {
-  if (tied) return `The ${stat} comparison ends without a victor.`;
-  if (!winnerId || !winnerName) return `The ${stat} comparison has ended.`;
+  if (tied) return unresolvedOutcomeText(stat);
+  if (!winnerId || !winnerName) return unresolvedOutcomeText(stat, true);
   if (winnerId === viewerId) return victoryText(stat, "human");
-  const owner = possessive(winnerName);
+  const owner = strengthOwner(winnerName);
   if (participantIds.includes(viewerId)) {
     if (stat === "strength") return `${owner} strength defeats your forces in battle.`;
     if (stat === "zeal") return `${owner} zeal converts some of your forces.`;
