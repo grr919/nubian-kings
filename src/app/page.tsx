@@ -8,7 +8,7 @@ export default function Home() {
         <p className="kicker">THE BATTLE FOR AFRICA</p>
         <EparchCrownMark className="royalMark" />
         <h1>Nubian Kings</h1>
-        <p className="subtitle">Choose a level</p>
+        <p className="subtitle">Choose a level:</p>
         <div className="levelGrid">
           <Link href="/beginner" className="levelOption">
             <span className="levelName">Beginner</span>
@@ -29,7 +29,7 @@ export default function Home() {
             <span className="levelAction">Play Master</span>
           </Link>
         </div>
-        <small className="profileNote">Core profile · Special card effects are not used</small>
+        <small className="profileNote">Core profile · Special card effects are not used.</small>
         <footer className="landingFooter">© 2026 Nile South Games</footer>
       </section>
     </main>

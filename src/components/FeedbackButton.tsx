@@ -45,7 +45,7 @@ export default function FeedbackButton({ diagnostics }: { diagnostics: FeedbackD
     <button className="iconButton" onClick={() => setOpen(true)}>Feedback</button>
     {open && <div className="modalShade" role="presentation" onMouseDown={close}><section className="modal feedbackModal" role="dialog" aria-modal="true" aria-labelledby="feedback-title" onMouseDown={(event) => event.stopPropagation()}>
       <button className="modalClose" aria-label="Close feedback form" onClick={close}>×</button>
-      <p className="kicker">PLAYTEST FEEDBACK</p><h2 id="feedback-title">Report an issue</h2>
+      <p className="kicker">PLAYTEST FEEDBACK</p><h2 id="feedback-title">Report an issue:</h2>
       {status === "sent" ? <div className="feedbackSuccess" aria-live="polite"><p>{message}</p><button onClick={close}>Close</button></div> : <form onSubmit={submit}>
         <label><span>Category</span><select value={category} onChange={(event) => setCategory(event.target.value as FeedbackCategory)}>{FEEDBACK_CATEGORIES.map((item) => <option key={item}>{item}</option>)}</select></label>
         <label><span>What happened?</span><textarea required minLength={10} maxLength={4000} value={description} onChange={(event) => setDescription(event.target.value)} /></label>

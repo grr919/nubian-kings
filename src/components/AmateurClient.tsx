@@ -300,7 +300,7 @@ export default function AmateurClient() {
           <a className="buttonLink" href="/amateur/multiplayer">Multiplayer</a>
         </div>
         <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">Return to Main</a></div>
-        <small>Core profile · Special card effects are not used</small>
+      <small>Core profile · Special card effects are not used.</small>
         <footer className="landingFooter">© 2026 Nile South Games</footer>
       </section>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
@@ -312,9 +312,9 @@ export default function AmateurClient() {
       <section className="setupPanel">
         <button className="backButton" onClick={() => setScreen("home")}>← Back</button>
         <p className="kicker">AMATEUR GAME</p>
-        <h1>Assemble your army</h1>
+        <h1>Assemble your army:</h1>
         <p className="lede">Each civilization receives ten hidden non-Leader army cards and deliberately chooses any Leader as heir.</p>
-        <h2>Choose a civilization</h2>
+        <h2>Choose a civilization:</h2>
         <div className="factionGrid">{FACTIONS.map((id) => (
           <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}>
             <FactionPortrait factionId={id} /><span>{INFO[id].name}</span>{faction === id && <b>Selected</b>}
@@ -337,7 +337,7 @@ export default function AmateurClient() {
       <section className="setupPanel heirSetup">
         <button className="backButton" onClick={() => { setPrepared(undefined); setScreen("setup"); }}>← Back</button>
         <p className="kicker">CHOOSE YOUR HEIR</p>
-        <h1>Select a Leader</h1>
+        <h1>Select a Leader:</h1>
         <p className="lede">All Leaders were reserved from the initial deal. Choose one to stand face up behind your ten-card army.</p>
         <div className="heirChoices">{setupChoices.map((card) => (
           <div key={card.id}>
@@ -365,7 +365,7 @@ export default function AmateurClient() {
       <section className="statusBar">
         <span className={`turnDot ${thinking ? "thinking" : ""}`} />
         <div>
-          <b>{review ? "Review the attack" : npcAttack ? `${INFO[active.factionId].name} have declared an attack` : state.phase === "complete" ? "Game complete" : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish` : humanTurn ? !selectedStat ? "Choose a statistic" : !attackerId ? "Choose your attacker" : "Choose an enemy target" : `${INFO[active.factionId].name}'s turn`}</b>
+          <b>{review ? "Review the attack:" : npcAttack ? `${INFO[active.factionId].name} have declared an attack.` : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your attacker:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}</b>
           <small>{npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}</small>
         </div>
       </section>
@@ -393,7 +393,7 @@ export default function AmateurClient() {
       {!review && npcAttack && (
         <section className="chooser npcChoicePanel" aria-live="polite">
           <p className="kicker">ATTACK DECLARED</p>
-          <h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using {npcAttack.stat}</h2>
+          <h2>{INFO[active.factionId].name} attack {state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "you" : INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name} using {npcAttack.stat}.</h2>
           <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
           <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>What happens next?</button>
         </section>
@@ -403,13 +403,13 @@ export default function AmateurClient() {
         <section className="chooser replenishmentPanel">
           <div className="replenishmentHeading"><div><p className="kicker">VICTORIOUS PLAYER</p><b>Replenish your army?</b></div><button onClick={() => applyReplenishment("skip")}>Skip</button></div>
           <div className="replenishmentChoices">
-            {pending.unused.length > 0 && <button onClick={() => applyReplenishment("unused")}><b>Draw hidden card</b><small>{pending.unused.length} cards remain unused</small></button>}
+            {pending.unused.length > 0 && <button onClick={() => applyReplenishment("unused")}><b>Draw hidden card</b><small>{pending.unused.length} cards remain unused.</small></button>}
             {pending.discard.map((card) => <button key={card.id} onClick={() => applyReplenishment("discard", card.id)}><b>Restore {card.name}</b><small>{card.strength} Strength · {card.zeal} Zeal · {card.wealth} Wealth</small></button>)}
           </div>
         </section>
       )}
 
-      {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir" : `${INFO[winner.factionId].name} are victorious`}</h2><a className="buttonLink" href="/amateur">Play Again</a></section>}
+      {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated the decisive heir!" : `${INFO[winner.factionId].name} are victorious!`}</h2><a className="buttonLink" href="/amateur">Play Again</a></section>}
       {eliminationPending && !review && <EliminatedGamePrompt onContinue={() => setWatchAfterElimination(true)} onEnd={endEliminatedGame} />}
       <aside className="history"><h2>Game record</h2><small style={{display:"block",color:"var(--muted)",marginTop:-6,marginBottom:12}}>Amateur · Round {state.round} · Seed {state.random.seed}</small>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}<div className="toolbar" style={{justifyContent:"flex-start",flexWrap:"nowrap",overflowX:"auto",marginTop:16}}><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/amateur">Leave</a></div></aside>
       <footer className="abandonGameFooter"><button className="secondary" onClick={() => { if (window.confirm("Abandon this game? Your saved game will be deleted.")) endEliminatedGame(); }}>Abandon this game</button></footer>
