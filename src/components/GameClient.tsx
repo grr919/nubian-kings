@@ -1,4 +1,5 @@
 "use client";
+import CardBack from "./CardBack";
 import { CardInspection } from "./CardInspection";
 
 import { useEffect, useMemo, useState } from "react";
@@ -70,7 +71,7 @@ function CardView({ card, active, reviewed, onInspect }: { card: Card; active: b
           </div>
         </>
       ) : (
-        <><div className="backOrnament">NK</div><span>Hidden</span></>
+        <CardBack />
       )}
     </article>
   );
@@ -232,7 +233,7 @@ function PlayerArea({ player, state, compact = false, onInspect }: { player: Pla
   const excluded = state.tie?.usedCardIds[player.id] ?? [];
   const next = upcoming(player, excluded)?.id;
   const tiedOut = Boolean(state.tie && !state.tie.participantIds.includes(player.id));
-  return <section className={`playerArea ${compact ? "npcArea" : "humanArea"} faction-${player.factionId} ${player.eliminated ? "eliminated" : ""}`}><header><span className="sigil small">{INFO[player.factionId].mark}</span><div><h2>{playerName(player)}</h2><small>{player.eliminated ? "Eliminated" : tiedOut ? "Out of this tie" : `${surviving(player).length} cards remain.`}</small></div>{state.players[state.selectorIndex].id === player.id && !player.eliminated && <span className="selectorBadge">Selector</span>}</header><div className="cards">{player.cards.map((card) => <CardView key={card.id} card={card} active={!tiedOut && card.id === next} reviewed={false} onInspect={onInspect} />)}</div></section>;
+  return <section className={`playerArea ${compact ? "npcArea" : "humanArea"} faction-${player.factionId} ${player.eliminated ? "eliminated" : ""}`}><header><FactionPortrait factionId={player.factionId} compact /><div><h2>{playerName(player)}</h2><small>{player.eliminated ? "Eliminated" : tiedOut ? "Out of this tie" : `${surviving(player).length} cards remain.`}</small></div>{state.players[state.selectorIndex].id === player.id && !player.eliminated && <span className="selectorBadge">Selector</span>}</header><div className="cards">{player.cards.map((card) => <CardView key={card.id} card={card} active={!tiedOut && card.id === next} reviewed={false} onInspect={onInspect} />)}</div></section>;
 }
 
 function findCard(state: BeginnerState, cardId: string) {
@@ -251,7 +252,7 @@ function ComparisonStage({ review, state, onInspect }: { review: ComparisonRevie
   const actor = state.players.find((player) => player.id === review.actorPlayerId);
   const actionText = actor ? comparisonActionText(review.stat, actor.controller === "human" ? "You" : factionActor(INFO[actor.factionId].name), actor.controller === "human" ? "the opposing forces" : "your forces", true, actor.controller === "human" ? "your" : "their") : undefined;
   const headline = roundOutcomeText(state.players, winnerId, review.scores.map((score) => score.playerId), review.stat, !winnerId && leaders.length > 1);
-  return <section className="comparisonStage" aria-live="polite"><header>{actionText && <p>{actionText}</p>}<h2>{headline}</h2></header>{review.scores.length === 0 && <p className="noNewCards">No new cards were played. An army without another card was eliminated.</p>}<div className="comparisonCards">{review.scores.map((score) => { const found = findCard(state, score.cardId)!; const result = winnerId === score.playerId ? "Winner" : winnerId ? "Defeated" : leaders.length > 1 && score.total === high ? "Tied" : "Defeated"; return <article key={score.cardId} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><span className={`sigil small faction-${found.player.factionId}`}>{INFO[found.player.factionId].mark}</span><b>{found.player.controller === "human" ? "You" : INFO[found.player.factionId].name}</b></div><CardView card={found.card} active={result === "Winner"} reviewed onInspect={onInspect} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + roll ${score.die}` : ""}</small></div></article>; })}</div>{earlierCards.length > 0 && <div className="tieTrail"><p>Earlier cards in this tie</p><div>{earlierCards.map(({ player, card }) => <article key={card.id}><CardView card={card} active={false} reviewed onInspect={onInspect} /><small>{player.controller === "human" ? "You" : INFO[player.factionId].name}</small></article>)}</div></div>}</section>;
+  return <section className="comparisonStage" aria-live="polite"><header>{actionText && <p>{actionText}</p>}<h2>{headline}</h2></header>{review.scores.length === 0 && <p className="noNewCards">No new cards were played. An army without another card was eliminated.</p>}<div className="comparisonCards">{review.scores.map((score) => { const found = findCard(state, score.cardId)!; const result = winnerId === score.playerId ? "Winner" : winnerId ? "Defeated" : leaders.length > 1 && score.total === high ? "Tied" : "Defeated"; return <article key={score.cardId} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><FactionPortrait factionId={found.player.factionId} compact /><b>{found.player.controller === "human" ? "You" : INFO[found.player.factionId].name}</b></div><CardView card={found.card} active={result === "Winner"} reviewed onInspect={onInspect} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b></div></article>; })}</div>{earlierCards.length > 0 && <div className="tieTrail"><p>Earlier cards in this tie</p><div>{earlierCards.map(({ player, card }) => <article key={card.id}><CardView card={card} active={false} reviewed onInspect={onInspect} /><small>{player.controller === "human" ? "You" : INFO[player.factionId].name}</small></article>)}</div></div>}</section>;
 }
 
 function ReviewPanel({ onContinue }: { onContinue: () => void }) {

@@ -1,4 +1,5 @@
 "use client";
+import CardBack from "./CardBack";
 import InspectionButton from "./CardInspection";
 
 import { useEffect, useMemo, useState } from "react";
@@ -128,7 +129,7 @@ function MasterCardView({ card, visible = card.face === "up", defeated = false, 
     {badge && <span className="amateurBadge">{badge}</span>}
     {visible && image ? <><img className="cardArtwork" src={image} alt="" /><div className="authoritativeStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat[0].toUpperCase()}</span>)}</div></>
       : visible ? <><h3>{card.name}</h3><div className="cardStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat}</span>)}</div></>
-      : <><div className="backOrnament">NK</div><span>Hidden</span></>}
+      : <CardBack />}
     {defeated && <span className="outcomeMark">Defeated</span>}
   </div>;
 }
@@ -495,7 +496,7 @@ function MasterUnit({ cards, enabled, selected, highlighted, badge, onClick }: {
 function MasterPlayerArea({ player, active, attackerId, highlightIds, allowedAttackers, targetIds, onUnit }: { player: MasterPlayer; active: boolean; attackerId?: string; highlightIds: Set<string>; allowedAttackers: Set<string>; targetIds: Set<string>; onUnit: (id: string) => void }) {
   const enabled = (id: string) => allowedAttackers.has(id) || targetIds.has(id);
   return <section className={`playerArea amateurPlayer masterPlayer faction-${player.factionId} ${player.controller === "human" ? "humanArea" : "npcArea"} ${player.eliminated ? "eliminated" : ""}`}>
-    <header><span className="sigil small">{INFO[player.factionId].mark}</span><div><h2>{playerLabel(player)}</h2><small>{player.eliminated ? "Heir eliminated" : `${masterArmySize(player)} army cards · ${player.army.length} piles · ${player.discard.length} discarded`}</small></div>{active && !player.eliminated && <span className="selectorBadge">Active</span>}</header>
+    <header><FactionPortrait factionId={player.factionId} leader={player.heir} compact /><div><h2>{playerLabel(player)}</h2><small>{player.eliminated ? "Heir eliminated" : `${masterArmySize(player)} army cards · ${player.army.length} piles · ${player.discard.length} discarded`}</small></div>{active && !player.eliminated && <span className="selectorBadge">Active</span>}</header>
     <div className="masterHeir"><span>Heir</span><MasterUnit cards={[player.heir]} enabled={enabled(player.heir.id)} selected={attackerId === player.heir.id} highlighted={highlightIds.has(player.heir.id)} badge={player.eliminated ? "Eliminated" : "Heir"} onClick={() => onUnit(player.heir.id)} /></div>
     <div className="masterArmy">{player.army.map((pile, index) => <MasterUnit key={pile.id} cards={pile.cards} enabled={enabled(pile.id)} selected={attackerId === pile.id} highlighted={highlightIds.has(pile.id)} badge={`Pile ${index + 1}`} onClick={() => onUnit(pile.id)} />)}</div>
     {player.discard.length > 0 && <details className="discardViewer"><summary>View discard pile ({player.discard.length})</summary><div>{player.discard.map((card) => <InspectionButton key={card.id} cards={[{ ...card, image: artwork(card) }]} className="bareCardButton"><MasterCardView card={card} visible /></InspectionButton>)}</div></details>}
@@ -515,7 +516,7 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
   ].map(({ player, cards, unitId, role }) => {
     const score = review.scores.find((entry) => entry.unitId === unitId)!;
     const result = review.cancelReason ? "Cancelled" : review.tie ? "Tied" : score.playerId === winnerId ? "Winner" : "Defeated";
-    return <article key={`${player.id}-${unitId}`} className={`comparisonCard masterComparison result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name} · {cards.length} cards</b></div><div className="reviewPileCards">{cards.map((card) => <InspectionButton key={card.id} cards={[{ ...card, image: artwork(card) }]} className="bareCardButton"><MasterCardView card={card} visible defeated={result === "Defeated"} /></InspectionButton>)}</div><div className="comparisonScore"><span>{result}</span><b>{score.total}</b><small>{score.base}{score.die ? ` + d6 ${score.die}` : ""}</small></div></article>;
+    return <article key={`${player.id}-${unitId}`} className={`comparisonCard masterComparison result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name} · {cards.length} cards</b></div><div className="reviewPileCards">{cards.map((card) => <InspectionButton key={card.id} cards={[{ ...card, image: artwork(card) }]} className="bareCardButton"><MasterCardView card={card} visible defeated={result === "Defeated"} /></InspectionButton>)}</div><div className="comparisonScore"><span>{result}</span><b>{score.total}</b></div></article>;
   })}</div><button className="reviewContinue" onClick={onContinue}>Continue</button></section>;
 }
 

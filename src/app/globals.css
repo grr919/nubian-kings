@@ -173,3 +173,13 @@ body{background:#efd49b}
 @media(max-width:600px){.cardInspection{padding:12px}.inspectionPanel{padding:14px}.inspectionCard{width:min(380px,calc(100vw - 60px))}}
 
 .bareCardButton.inspectableCard .card.face{cursor:zoom-in}.selectionCard.back{cursor:pointer}
+
+/* A shared Nile map keeps every concealed card visually identical. */
+.card.back{background:#d9ae70;padding:0}
+.nileCardBack{display:block;position:absolute;inset:0;background:url('/card-back-nile.svg') center/cover no-repeat}
+.factionPortrait.compactPortrait{width:42px;height:42px;flex:0 0 auto;border-width:2px;outline-width:1px;box-shadow:0 2px 6px #56351444}
+.factionPortrait .leaderPortrait{display:block;width:100%;height:100%}
+.humanArea .compactPortrait{width:48px;height:48px}
+.comparisonOwner .compactPortrait{width:32px;height:32px}
+.lobbySeat .compactPortrait{margin-left:auto}
+.comparisonScore b{grid-row:1}
