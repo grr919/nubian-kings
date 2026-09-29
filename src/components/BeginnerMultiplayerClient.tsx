@@ -1,4 +1,6 @@
 "use client";
+import RematchControls from "./RematchControls";
+import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
 import InspectionButton from "./CardInspection";
 
@@ -15,8 +17,6 @@ import type { Stat } from "@/game/types";
 const FACTIONS = ["nubian-christians", "egyptian-christians", "ethiopian-christians", "egyptian-muslims", "ethiopian-jews"] as const;
 const STATS: Stat[] = ["strength", "zeal", "wealth"];
 const ROOM_KEY = "nubian-kings:multiplayer-room:v1";
-const ART_BASE_URL = "https://nubian-kings-qtsa6vhio-grr919-6387s-projects.vercel.app";
-const ART_BY_NAME = Object.fromEntries(cardData.cards.flatMap((card) => card.assets[0] ? [[card.name, card.assets[0].filename]] : []));
 const INFO: Record<string, { name: string; mark: string }> = {
   "nubian-christians": { name: "Nubian Christians", mark: "NC" },
   "egyptian-christians": { name: "Egyptian Christians", mark: "EC" },
@@ -26,11 +26,11 @@ const INFO: Record<string, { name: string; mark: string }> = {
 };
 
 type Seat = { id: string; userId?: string; displayName: string; controller: "human" | "npc"; factionId?: string; seatOrder: number; isYou: boolean; replaceable?: boolean };
-type PublicCard = { id: string; name?: string; factionId?: string; strength?: number; zeal?: number; wealth?: number; face: "up" | "down"; discarded: boolean };
+type PublicCard = { id: string; definitionId?: string; name?: string; factionId?: string; strength?: number; zeal?: number; wealth?: number; face: "up" | "down"; discarded: boolean };
 type PublicPlayer = { id: string; factionId: string; controller: "human" | "npc"; cards: PublicCard[]; cursor: number; eliminated: boolean };
 type PublicState = { players: PublicPlayer[]; selectorIndex: number; phase: "select" | "tie" | "complete"; selectedStat?: Stat; winnerId?: string; nileFloods: boolean; round: number; random: { seed: string }; tie?: { participantIds: string[]; usedCardIds: Record<string, string[]> } };
 type Review = { stat: Stat; actorPlayerId?: string; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; cardIds: string[]; sequenceCardIds: string[]; winnerId?: string; cards: Record<string, PublicCard> };
-type Room = { code: string; status: "waiting" | "active" | "complete" | "abandoned"; isHost: boolean; settings: { totalSeats: number; npcCount: number; nileFloods: boolean; openingPlayer: "random" | "human" | "npc" }; revision: number; acknowledged: boolean; seats: Seat[]; state?: PublicState; review?: Review };
+type Room = { code: string; status: "waiting" | "active" | "complete" | "abandoned"; isHost: boolean; settings: { rematchVotes?: Record<string, boolean>; totalSeats: number; npcCount: number; nileFloods: boolean; openingPlayer: "random" | "human" | "npc" }; revision: number; acknowledged: boolean; seats: Seat[]; state?: PublicState; review?: Review };
 
 async function accessToken() {
   const client = browserSupabase();
@@ -134,7 +134,7 @@ export default function BeginnerMultiplayerClient() {
 
   if (!room) return null;
   if (room.status === "waiting") return <><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><Lobby room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></>;
-  return <><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><MultiplayerBoard room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></>;
+  return <><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><MultiplayerBoard key={room.state?.random.seed} room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></>;
 }
 
 function Shell({ children }: { children: React.ReactNode }) { return <main className="landing multiplayerPage">{children}</main>; }
@@ -155,7 +155,7 @@ function MultiplayerBoard({ room, busy, error, onAct, onLeave }: { room: Room; b
   const yourTurn = selector.id === yourSeat.userId && !room.review && room.status === "active";
   const winner = state.players.find((player) => player.id === state.winnerId);
   const reviewing = Boolean(room.review) && !(room.status === "complete" && showFinalVictory);
-  return <main className="gamePage multiplayerGame"><GameStateBanner title={reviewing ? "Review the comparison:" : room.status === "complete" ? "Game complete." : yourTurn ? "Choose a statistic:" : `${nameForPlayer(room, selector.id)} is taking a turn.`} detail={reviewing ? "Review the revealed cards and scores." : yourTurn ? "Select a trait to decide this comparison." : "Every active army contributes its next card."} meta={`Beginner multiplayer · Round ${state.round} · Room ${room.code}`} actions={<><button className="iconButton" onClick={() => navigator.clipboard?.writeText(room.code)}>Copy Room Code</button><button className="iconButton" onClick={onLeave}>Leave View</button></>} />{reviewing ? <MultiplayerReviewView room={room} /> : <div className="board"><div className="opponentBoard multiplayerPlayers">{state.players.map((player) => <PublicPlayerArea key={player.id} room={room} state={state} player={player} />)}</div></div>}{reviewing ? <section className="chooser ready multiplayerContinue">{room.status === "complete" ? <button onClick={() => setShowFinalVictory(true)}>View Final Result</button> : room.acknowledged ? <p>Waiting for the other players to continue…</p> : <button disabled={busy} onClick={() => onAct({ action: "acknowledge" })}>Continue</button>}</section> : room.status === "active" ? <section className={`chooser ${yourTurn ? "ready" : "waiting"}`}><p>{yourTurn ? "It is your turn. Select a trait to decide this comparison." : selector.controller === "npc" ? `${nameForPlayer(room, selector.id)} is considering which trait to select…` : `${nameForPlayer(room, selector.id)} is taking a turn.`}</p><div>{STATS.map((stat) => <button key={stat} disabled={!yourTurn || busy} onClick={() => onAct({ action: "choose", stat })}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section> : winner && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.id === yourSeat.userId ? "You are victorious!" : `${nameForPlayer(room, winner.id)} is victorious!`}</h2><div className="victoryActions">{room.isHost?<button disabled={busy} onClick={()=>onAct({action:"rematch"})}>Play Again in This Room</button>:<p>Waiting for the host to start a rematch…</p>}<button onClick={onLeave}>Leave Room</button><a className="buttonLink secondary" href="/beginner">Beginner Menu</a></div></section>}{error && <p className="formError multiplayerError" role="alert">{error}</p>}<footer className="abandonGameFooter"><button className="secondary" disabled={busy} onClick={() => { if (window.confirm("Abandon this game? Your seat will transfer to the computer and you will leave this room.")) onAct({action:"transfer-self"}); }}>Abandon this game</button></footer></main>;
+  return <main className="gamePage multiplayerGame"><GameStateBanner title={reviewing ? "Review the comparison:" : room.status === "complete" ? "Game complete." : yourTurn ? "Choose a statistic:" : `${nameForPlayer(room, selector.id)} is taking a turn.`} detail={reviewing ? "Review the revealed cards and scores." : yourTurn ? "Select a trait to decide this comparison." : "Every active army contributes its next card."} meta={`Beginner multiplayer · Round ${state.round} · Room ${room.code}`} actions={<><button className="iconButton" onClick={() => navigator.clipboard?.writeText(room.code)}>Copy Room Code</button><button className="iconButton" onClick={onLeave}>Leave View</button></>} />{reviewing ? <MultiplayerReviewView room={room} /> : <div className="board"><div className="opponentBoard multiplayerPlayers">{state.players.map((player) => <PublicPlayerArea key={player.id} room={room} state={state} player={player} />)}</div></div>}{reviewing ? <section className="chooser ready multiplayerContinue">{room.status === "complete" ? <button onClick={() => setShowFinalVictory(true)}>View Final Result</button> : room.acknowledged ? <p>Waiting for the other players to continue…</p> : <button disabled={busy} onClick={() => onAct({ action: "acknowledge" })}>Continue</button>}</section> : room.status === "active" ? <section className={`chooser ${yourTurn ? "ready" : "waiting"}`}><p>{yourTurn ? "It is your turn. Select a trait to decide this comparison." : selector.controller === "npc" ? `${nameForPlayer(room, selector.id)} is considering which trait to select…` : `${nameForPlayer(room, selector.id)} is taking a turn.`}</p><div>{STATS.map((stat) => <button key={stat} disabled={!yourTurn || busy} onClick={() => onAct({ action: "choose", stat })}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div></section> : winner && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.id === yourSeat.userId ? "You are victorious!" : `${nameForPlayer(room, winner.id)} is victorious!`}</h2><div className="victoryActions"><RematchControls room={room} busy={busy} onAct={onAct} /><button onClick={onLeave}>Leave Room</button><a className="buttonLink secondary" href="/beginner">Beginner Menu</a></div></section>}{error && <p className="formError multiplayerError" role="alert">{error}</p>}<footer className="abandonGameFooter"><button className="secondary" disabled={busy} onClick={() => { if (window.confirm("Abandon this game? Your seat will transfer to the computer and you will leave this room.")) onAct({action:"transfer-self"}); }}>Abandon this game</button></footer></main>;
 }
 
 function PublicPlayerArea({ room, state, player }: { room: Room; state: PublicState; player: PublicPlayer }) {
@@ -164,9 +164,9 @@ function PublicPlayerArea({ room, state, player }: { room: Room; state: PublicSt
 }
 
 function PublicCardView({ card, defeated = false }: { card: PublicCard; defeated?: boolean }) {
-  const image = card.name && ART_BY_NAME[card.name] ? `${ART_BASE_URL}/cards/${encodeURIComponent(ART_BY_NAME[card.name])}` : undefined;
+  const image = getCardArtwork(card);
   if (card.face === "down" && !card.discarded) return <article className="card back"><CardBack /></article>;
-  return <InspectionButton cards={card.face === "up" && card.name ? [{ ...card, image }] : []} className={`card face ${defeated || card.discarded ? "reviewDefeated" : ""}`}>{image ? <img className="cardArtwork" src={image} alt={`${card.name} card artwork`} /> : <><EparchCrownMark className="cardCrown" /><h3>{card.name}</h3></>}{(defeated || card.discarded) && <span className="outcomeMark">Defeated</span>}<div className="authoritativeStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat[0].toUpperCase()}</span>)}</div></InspectionButton>;
+  return <InspectionButton cards={card.face === "up" && card.name ? [{ ...card, image }] : []} className={`card face ${defeated || card.discarded ? "reviewDefeated" : ""}`}>{image ? <img className="cardArtwork" src={image} alt={`${card.name} card artwork`} /> : <><EparchCrownMark className="cardCrown" /><h3>{card.name}</h3><div className="cardStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat}</span>)}</div></>}{(defeated || card.discarded) && <span className="outcomeMark">Defeated</span>}</InspectionButton>;
 }
 
 function MultiplayerReviewView({ room }: { room: Room }) {

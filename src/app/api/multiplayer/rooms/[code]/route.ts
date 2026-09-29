@@ -1,3 +1,4 @@
+import { castRematchVote } from "@/game/rematch-consent";
 import { adminSupabase, multiplayerConfigured, requestUser } from "@/lib/supabase-server";
 import { chooseMultiplayerNpcStat, createMultiplayerBeginnerGame, MULTIPLAYER_FACTIONS, playMultiplayerComparison, publicBeginnerState, publicReview, type MultiplayerReview, type MultiplayerRoomSettings, type MultiplayerSeat } from "@/game/multiplayer";
 import type { BeginnerState, Stat } from "@/game/types";
@@ -102,17 +103,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ co
     if (gamePlayer) (gamePlayer as { controller: "human" | "npc" }).controller = "npc";
     const { error: playerError } = await supabase.from("nk_multiplayer_players").update({ controller: "npc", former_user_id: targetUserId, user_id: null, display_name: `${target.display_name} (Computer)` }).eq("id", target.id).eq("user_id", targetUserId);
     if (playerError) return Response.json({ error: "The seat could not be transferred." }, { status: 409 });
-    const { data, error } = await supabase.from("nk_multiplayer_rooms").update({ host_user_id: successorHost ?? room.host_user_id, settings: { ...room.settings, npcCount: room.settings.npcCount + 1 }, game_state: state, revision: room.revision + 1, updated_at: new Date().toISOString() }).eq("code", room.code).eq("revision", room.revision).select().maybeSingle();
+    const { data, error } = await supabase.from("nk_multiplayer_rooms").update({ host_user_id: successorHost ?? room.host_user_id, settings: { ...room.settings, rematchVotes: {}, npcCount: room.settings.npcCount + 1 }, game_state: state, revision: room.revision + 1, updated_at: new Date().toISOString() }).eq("code", room.code).eq("revision", room.revision).select().maybeSingle();
     if (error || !data) return Response.json({ error: "The room changed while the seat was transferring." }, { status: 409 });
     if (action === "transfer-self") return Response.json({ transferred: true });
   } else if (action === "rematch") {
-    if (room.host_user_id !== user.id) return Response.json({ error: "Only the host can start a rematch." }, { status: 403 });
-    if (room.status !== "complete") return Response.json({ error: "The current game must be complete before a rematch." }, { status: 409 });
+    const vote = castRematchVote(room, players, user.id, body);
+    if ("error" in vote) return Response.json({ error: vote.error }, { status: vote.status });
     if (players.some((player) => !player.faction_id)) return Response.json({ error: "Every participant must retain a faction." }, { status: 409 });
     const rematchSeats: MultiplayerSeat[] = players.map((player) => ({ id: player.id, userId: player.user_id ?? undefined, displayName: player.display_name, controller: player.controller, factionId: player.faction_id!, seatOrder: player.seat_order }));
-    const state = createMultiplayerBeginnerGame(rematchSeats, room.settings);
-    const { data, error } = await supabase.from("nk_multiplayer_rooms").update({ status: "active", game_state: state, review: null, review_acks: [], revision: room.revision + 1, updated_at: new Date().toISOString() }).eq("code", room.code).eq("revision", room.revision).select().maybeSingle();
-    if (error || !data) return Response.json({ error: "The room changed while the rematch was starting." }, { status: 409 });
+    const changes = vote.ready ? { status: "active", game_state: createMultiplayerBeginnerGame(rematchSeats, vote.settings), review: null, review_acks: [] } : {};
+    const { data, error } = await supabase.from("nk_multiplayer_rooms").update({ ...changes, settings: vote.settings, revision: room.revision + 1, updated_at: new Date().toISOString() }).eq("code", room.code).eq("revision", room.revision).select().maybeSingle();
+    if (error || !data) return Response.json({ error: "The room changed while you were answering. Please try again." }, { status: 409 });
   } else if (action === "choose-faction") {
     if (room.status !== "waiting") return Response.json({ error: "Factions cannot be changed after the game begins." }, { status: 409 });
     if (!MULTIPLAYER_FACTIONS.includes(body.factionId)) return Response.json({ error: "Choose an available faction." }, { status: 400 });

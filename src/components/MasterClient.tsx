@@ -1,4 +1,5 @@
 "use client";
+import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
 import InspectionButton from "./CardInspection";
 
@@ -64,8 +65,6 @@ import type { Stat } from "@/game/types";
 
 const STATS: Stat[] = ["strength", "zeal", "wealth"];
 const MASTER_NPC_ATTACK_KEY = "nubian-kings:master-npc-attack:v1";
-const ART_BASE_URL = "https://nubian-kings-qtsa6vhio-grr919-6387s-projects.vercel.app";
-const ART_BY_ID = Object.fromEntries(cardData.cards.flatMap((card) => card.assets[0] ? [[card.id, card.assets[0].filename]] : []));
 const INFO: Record<string, { name: string; mark: string }> = {
   "nubian-christians": { name: "Nubian Christians", mark: "NC" },
   "egyptian-christians": { name: "Egyptian Christians", mark: "EC" },
@@ -90,8 +89,7 @@ interface MasterReview {
 }
 
 function artwork(card: MasterCard) {
-  const filename = card.artFile ?? ART_BY_ID[card.definitionId];
-  return filename ? `${card.mercenary ? "" : ART_BASE_URL}/cards/${encodeURIComponent(filename)}` : undefined;
+  return getCardArtwork(card);
 }
 
 function playerLabel(player: MasterPlayer) {
@@ -127,7 +125,7 @@ function MasterCardView({ card, visible = card.face === "up", defeated = false, 
   const image = artwork(card);
   return <div className={`card amateurCard masterCard ${visible ? "face" : "back"} ${defeated ? "reviewDefeated" : ""}`}>
     {badge && <span className="amateurBadge">{badge}</span>}
-    {visible && image ? <><img className="cardArtwork" src={image} alt="" /><div className="authoritativeStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat[0].toUpperCase()}</span>)}</div></>
+    {visible && image ? <><img className="cardArtwork" src={image} alt="" /></>
       : visible ? <><h3>{card.name}</h3><div className="cardStats">{STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat}</span>)}</div></>
       : <CardBack />}
     {defeated && <span className="outcomeMark">Defeated</span>}

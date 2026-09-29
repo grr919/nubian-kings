@@ -1,4 +1,5 @@
 "use client";
+import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
 import { CardInspection } from "./CardInspection";
 
@@ -21,8 +22,6 @@ import type { BeginnerState, Card, GameEvent, Player, Stat } from "@/game/types"
 const STATS: Stat[] = ["strength", "zeal", "wealth"];
 const REVIEW_KEY = "nubian-kings:comparison-review:v1";
 const NPC_CHOICE_KEY = "nubian-kings:npc-choice:v1";
-const ART_BASE_URL = "https://nubian-kings-qtsa6vhio-grr919-6387s-projects.vercel.app";
-const ART_BY_ID = Object.fromEntries(cardData.cards.flatMap((card) => card.assets[0] ? [[card.id, card.assets[0].filename]] : []));
 interface ComparisonReview { stat: Stat; actorPlayerId?: string; cardIds: string[]; sequenceCardIds?: string[]; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; winnerId?: string }
 const INFO: Record<string, { name: string; short: string; mark: string }> = {
   "nubian-christians": { name: "Nubian Christians", short: "Nubia", mark: "NC" },
@@ -42,8 +41,7 @@ function upcoming(player: Player, excluded: string[] = []) {
 }
 
 function artwork(card: Card) {
-  const filename = ART_BY_ID[card.id.split(":")[0]];
-  return filename ? `${ART_BASE_URL}/cards/${encodeURIComponent(filename)}` : undefined;
+  return getCardArtwork(card);
 }
 
 function CardView({ card, active, reviewed, onInspect }: { card: Card; active: boolean; reviewed: boolean; onInspect: (card: Card) => void }) {
@@ -58,9 +56,7 @@ function CardView({ card, active, reviewed, onInspect }: { card: Card; active: b
         <>
           <img className="cardArtwork" src={image} alt={`${card.name} card artwork`} />
           {card.discarded && reviewed && <span className="outcomeMark">Defeated</span>}
-          <div className="authoritativeStats" aria-label="Official prototype statistics">
-            {STATS.map((stat) => <span key={stat}><b>{card[stat]}</b>{stat[0].toUpperCase()}</span>)}
-          </div>
+          
         </>
       ) : visible ? (
         <>

@@ -9,6 +9,7 @@ export type MultiplayerRoomStatus = "waiting" | "active" | "complete" | "abandon
 export type MultiplayerOpeningPlayer = "random" | "human" | "npc";
 
 export interface MultiplayerRoomSettings {
+  rematchVotes?: Record<string, boolean>;
   totalSeats: number;
   npcCount: number;
   nileFloods: boolean;
@@ -51,6 +52,7 @@ function deck(factionId: string, rng: () => number): Card[] {
   const cards = cardData.cards.filter((card) => card.factionId === factionId).flatMap((card) =>
     Array.from({ length: card.deckCopies }, (_, copy) => ({
       id: `${factionId}-${copy}-${crypto.randomUUID()}`,
+      definitionId: card.id,
       name: card.name,
       factionId,
       strength: card.strength,

@@ -3,6 +3,10 @@ import path from "node:path";
 import { reconciledCardAdditions, removedCardNames } from "./reconciled-card-additions.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
+// Prefer artwork shipped with this release over the legacy asset deployment.
+const localArtwork = fs.readdirSync(path.resolve(root, "public/cards"), { withFileTypes: true })
+  .filter((entry) => entry.isFile()).map((entry) => entry.name).sort();
+fs.writeFileSync(path.resolve(root, "src/data/local-card-artwork.json"), JSON.stringify(localArtwork, null, 2) + "\n");
 const cardsPath = path.resolve(root, "src/data/cards.json");
 const data = JSON.parse(fs.readFileSync(cardsPath, "utf8"));
 data.cards = data.cards.filter((card) => !removedCardNames.has(card.name) && !reconciledCardAdditions.some((addition) => addition.id === card.id));

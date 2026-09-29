@@ -1,6 +1,6 @@
 export type Stat="strength"|"zeal"|"wealth";
 export type Face="down"|"up";
-export interface Card{readonly id:string;readonly name:string;readonly factionId:string;readonly strength:number;readonly zeal:number;readonly wealth:number;face:Face;discarded:boolean}
+export interface Card{readonly id:string;readonly definitionId?:string;readonly name:string;readonly factionId:string;readonly strength:number;readonly zeal:number;readonly wealth:number;face:Face;discarded:boolean}
 export interface Player{readonly id:string;readonly factionId:string;readonly controller:"human"|"npc";cards:Card[];cursor:number;eliminated:boolean}
 export interface TieState{participantIds:string[];usedCardIds:Record<string,string[]>}
 export interface RandomState{seed:string;state:number;calls:number}
