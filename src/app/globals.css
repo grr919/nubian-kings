@@ -204,3 +204,10 @@ body{background:#efd49b}
 @keyframes comparisonNumberPulse{0%,65%,100%{transform:scale(1)}30%{transform:scale(1.15)}}
 @keyframes comparisonStatPop{from{opacity:0;transform:translateY(-5px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.statHighlightBubble,.statHighlightBubble>b{animation:none}}
+.comparisonCards>.comparisonCard,.comparisonCards>.comparisonEntry{width:clamp(270px,26vw,350px);flex:0 0 clamp(270px,26vw,350px)}
+.comparisonCards>.masterComparison{width:min(100%,740px);flex:0 1 740px}
+.reviewPileCards>.bareCardButton{flex:0 1 280px;width:280px}
+@media(max-width:600px){.comparisonCards>.comparisonCard,.comparisonCards>.comparisonEntry{width:min(280px,calc(100vw - 64px));flex:0 0 min(280px,calc(100vw - 64px))}.comparisonCards>.masterComparison{width:calc(100vw - 64px);flex:0 0 calc(100vw - 64px)}.reviewPileCards>.bareCardButton{flex-basis:260px;width:260px}}
+
+.tieTrail article{flex-basis:120px}
+.tieTrail .outcomeMark{font-size:.45rem}
