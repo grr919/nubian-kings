@@ -1,4 +1,5 @@
 "use client";
+import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
 import InspectionButton from "./CardInspection";
@@ -307,7 +308,7 @@ export default function MasterClient() {
     if (events) {
       const scores = events.filter((event): event is Extract<MasterEvent, { type: "score" }> => event.type === "score").map(({ playerId: id, unitId, base, die, total }) => ({ playerId: id, unitId, base, die, total }));
       const loser = events.find((event): event is Extract<MasterEvent, { type: "defeated" }> => event.type === "defeated")?.playerId;
-      setReview({ stat: before.attack.stat, attacker: before.attackerCards, target: before.defenderCards, attackerUnitId: before.attack.attackerUnitId, targetUnitId: before.attack.targetUnitId, attackerPlayerId: before.attackerPlayerId, targetPlayerId: before.defenderPlayerId, scores, tie: events.some((event) => event.type === "tie" || event.type === "cancelled"), winnerId: loser ? loser === before.attackerPlayerId ? before.defenderPlayerId : before.attackerPlayerId : undefined, cancelReason: before.cancelReason, guarantees: before.guarantees });
+      setReview({ stat: before.attack.stat, attacker: before.attackerCards, target: before.defenderCards, attackerUnitId: before.attack.attackerUnitId, targetUnitId: before.attack.targetUnitId, attackerPlayerId: before.attackerPlayerId, targetPlayerId: before.defenderPlayerId, scores, tie: events.some((event) => event.type === "tie" || event.type === "cancelled"), winnerId: before.forcedWinnerId ?? (loser ? loser === before.attackerPlayerId ? before.defenderPlayerId : before.attackerPlayerId : undefined), cancelReason: events.find((event): event is Extract<MasterEvent, { type: "cancelled" }> => event.type === "cancelled")?.reason ?? before.cancelReason, guarantees: before.guarantees });
       addEvents(events, next);
     }
     persist(next);
@@ -508,14 +509,14 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
   const winnerId = review.tie ? undefined : review.winnerId ?? review.scores.find((score) => score.total === high)?.playerId;
   const actionText = masterComparisonAction(review.stat, attackerPlayer, targetPlayer);
   const headline = review.cancelReason === "interrupt" ? interruptedOutcomeText(review.stat) : review.cancelReason === "immunity" ? "Conversion cancelled: the target is immune." : masterRoundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
-  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><p>{actionText}</p><h2>{headline}</h2>{Boolean(review.guarantees?.length) && <p>One-time guarantee used{new Set(review.guarantees).size > 1 ? " by both sides; they cancel." : "."}</p>}</header><div className="comparisonCards">{[
+  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><p>{actionText}</p><h2>{headline}</h2>{Boolean(review.guarantees?.length) && <p>One-time guarantee used{new Set(review.guarantees).size > 1 ? " by both sides; they cancel." : "."}</p>}</header><ComparisonHighlights>{[
     { player: attackerPlayer, cards: review.attacker, unitId: review.attackerUnitId, role: masterActionLanguage(review.stat).actor },
     { player: targetPlayer, cards: review.target, unitId: review.targetUnitId, role: masterActionLanguage(review.stat).target },
   ].map(({ player, cards, unitId, role }) => {
     const score = review.scores.find((entry) => entry.unitId === unitId)!;
     const result = review.cancelReason ? "Cancelled" : review.tie ? "Tied" : score.playerId === winnerId ? "Winner" : "Defeated";
-    return <article key={`${player.id}-${unitId}`} className={`comparisonCard masterComparison result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name} · {cards.length} cards</b></div><div className="reviewPileCards">{cards.map((card) => <InspectionButton key={card.id} cards={[{ ...card, image: artwork(card) }]} className="bareCardButton"><MasterCardView card={card} visible defeated={result === "Defeated"} /></InspectionButton>)}</div><div className="comparisonScore"><span>{result}</span><b>{score.total}</b></div></article>;
-  })}</div><button className="reviewContinue" onClick={onContinue}>Continue</button></section>;
+    return <article key={`${player.id}-${unitId}`} className={`comparisonCard masterComparison result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name} · {cards.length} cards</b></div><div className="reviewPileCards">{cards.map((card) => <InspectionButton key={card.id} cards={[{ ...card, image: artwork(card) }]} className="bareCardButton"><ComparisonStatCard card={card} stat={review.stat} result={result} pile={cards.length > 1}><MasterCardView card={card} visible defeated={result === "Defeated"} /></ComparisonStatCard></InspectionButton>)}</div><div className="comparisonScore"><span>{result}</span><b>{score.total}</b></div><ComparisonScoreDetail cards={cards} stat={review.stat} score={score} cancelled={Boolean(review.cancelReason)} guarantees={review.guarantees} playerId={player.id} winnerId={winnerId} effectDecided={Boolean(winnerId && review.scores.some(entry => entry.playerId !== winnerId && entry.total >= (review.scores.find(entry => entry.playerId === winnerId)?.total ?? Infinity)))} /></article>;
+  })}</ComparisonHighlights><button className="reviewContinue" onClick={onContinue}>Continue</button></section>;
 }
 
 function MasterHelp({ onClose, effectsMode }: { onClose: () => void; effectsMode: MasterEffectsMode }) {

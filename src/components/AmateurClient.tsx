@@ -1,4 +1,5 @@
 "use client";
+import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
 import InspectionButton from "./CardInspection";
@@ -452,14 +453,14 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
   return (
     <section className="comparisonStage amateurReview" aria-live="polite">
       <header><p>{actionText}</p><h2>{headline}</h2></header>
-      <div className="comparisonCards">{[
+      <ComparisonHighlights>{[
         { player: attackerPlayer, card: review.attacker, role: review.stat === "strength" ? "Attacking card" : review.stat === "zeal" ? "Converting card" : "Influencing card" },
         { player: targetPlayer, card: review.target, role: review.stat === "strength" ? "Defending card" : review.stat === "zeal" ? "Conversion target" : "Influence target" },
       ].map(({ player, card, role }) => {
         const score = review.scores.find((entry) => entry.cardId === card.id)!;
         const result = review.tie ? "Tied" : score.total === high ? "Winner" : "Defeated";
-        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><AmateurCardView card={card} visible defeated={result === "Defeated"} /><div className="comparisonScore"><span>{result}</span><b>{score.total}</b></div></article>;
-      })}</div>
+        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><ComparisonStatCard card={card} stat={review.stat} result={result}><AmateurCardView card={card} visible defeated={result === "Defeated"} /></ComparisonStatCard><div className="comparisonScore"><span>{result}</span><b>{score.total}</b></div><ComparisonScoreDetail cards={[card]} stat={review.stat} score={score} /></article>;
+      })}</ComparisonHighlights>
       <button className="reviewContinue" onClick={onContinue}>Continue</button>
     </section>
   );

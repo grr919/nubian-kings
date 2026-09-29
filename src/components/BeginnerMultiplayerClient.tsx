@@ -1,4 +1,5 @@
 "use client";
+import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 import RematchControls from "./RematchControls";
 import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
@@ -176,6 +177,6 @@ function MultiplayerReviewView({ room }: { room: Room }) {
   const actor = room.state!.players.find((player) => player.id === review.actorPlayerId);
   const actionText = actor ? comparisonActionText(review.stat, actor.id === viewerId ? "You" : factionActor(nameForPlayer(room, actor.id)), actor.id === viewerId ? "the opposing forces" : "your forces", actor.id === viewerId, actor.id === viewerId ? "your" : "their") : undefined;
   const result = multiplayerRoundOutcomeText(review.stat, review.winnerId, review.scores.map((score) => score.playerId), viewerId, review.winnerId ? nameForPlayer(room, review.winnerId) : undefined, !review.winnerId);
-  return <section className="comparisonStage">{actionText && <p>{actionText}</p>}<h1>{result}</h1><div className="comparisonCards">{review.scores.map((score) => { const card = review.cards[score.cardId]; return <div key={`${score.playerId}-${score.cardId}`} className={`comparisonEntry ${score.total === high ? "roundLeader" : ""}`}><h2>{nameForPlayer(room, score.playerId)}</h2>{card ? <PublicCardView card={card} defeated={Boolean(review.winnerId && score.playerId !== review.winnerId)} /> : <article className="card back"><span>Card unavailable</span></article>}<p className="scoreLine"><b>{score.total}</b></p></div>; })}</div></section>;
+  return <section className="comparisonStage">{actionText && <p>{actionText}</p>}<h1>{result}</h1><ComparisonHighlights>{review.scores.map((score) => { const card = review.cards[score.cardId]; const outcome = review.winnerId === score.playerId ? "Winner" : review.winnerId || score.total < high ? "Defeated" : "Tied"; return <div key={`${score.playerId}-${score.cardId}`} className={`comparisonEntry ${score.total === high ? "roundLeader" : ""}`}><h2>{nameForPlayer(room, score.playerId)}</h2>{card ? <ComparisonStatCard card={card} stat={review.stat} result={outcome}><PublicCardView card={card} defeated={outcome === "Defeated"} /></ComparisonStatCard> : <article className="card back"><span>Card unavailable</span></article>}<p className="scoreLine">{outcome} · <b>{score.total}</b></p><ComparisonScoreDetail cards={card ? [card] : []} stat={review.stat} score={score} /></div>; })}</ComparisonHighlights></section>;
 }
 

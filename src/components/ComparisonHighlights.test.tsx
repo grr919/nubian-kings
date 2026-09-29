@@ -1,0 +1,57 @@
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it } from "vitest";
+import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail, scoreExplanation } from "./ComparisonHighlights";
+
+const card = { id: "ore", name: "Ore Deposit", factionId: "egyptian-christians", strength: 1, zeal: 0, wealth: 5 };
+describe("comparison explanations", () => {
+  it("explains a Flood reversal using the printed value and roll", () => {
+    expect(scoreExplanation([card], "wealth", { base: 5, die: 1, total: 6 })).toBe("5 printed + 1 Flood = 6");
+    expect(scoreExplanation([{ ...card, wealth: 3 }], "wealth", { base: 3, die: 6, total: 9 })).toBe("3 printed + 6 Flood = 9");
+  });
+  it("separates pile contributions from positive and negative effects", () => {
+    expect(scoreExplanation([card, card], "wealth", { base: 13, die: 2, total: 15 })).toBe("5 + 5 combined + 3 effects + 2 Flood = 15");
+    expect(scoreExplanation([card], "strength", { base: 0, die: 0, total: 0 })).toBe("1 printed − 1 effects = 0");
+  });
+  it.each(["strength", "zeal", "wealth"] as const)("highlights only the selected %s stat", stat => {
+    const html = renderToStaticMarkup(<ComparisonHighlights><ComparisonStatCard card={card} stat={stat} result="Winner"><span>card art</span></ComparisonStatCard></ComparisonHighlights>);
+    expect(html).toContain(`stat-${stat}`);
+    expect(html).toContain(`${stat} ${card[stat]}. Wins.`);
+    expect(html.match(/class="statHighlightRing"/g)).toHaveLength(1);
+    expect(html).toContain("Replay stat highlights");
+  });
+  it.each(["Tied", "Cancelled", "Defeated"] as const)("communicates %s without relying on color", result => {
+    const html = renderToStaticMarkup(<ComparisonStatCard card={card} stat="wealth" result={result} pile><span>card</span></ComparisonStatCard>);
+    expect(html).toContain(`formation ${result.toLowerCase()}`);
+    expect(html).toContain("Contribution");
+  });
+  it("does not draw a misplaced ring when artwork is unavailable", () => {
+    const html = renderToStaticMarkup(<ComparisonStatCard card={{ name: "Unknown" }} stat="zeal" result="Cancelled"><span>fallback</span></ComparisonStatCard>);
+    expect(html).not.toContain('class="statHighlightRing"');
+    expect(html).toContain("unavailable");
+  });
+  it("explains a guaranteed winner with a lower numeric score", () => {
+    const html = renderToStaticMarkup(<ComparisonScoreDetail cards={[card]} stat="wealth" score={{ base: 5, die: 0, total: 5 }} guarantees={["a"]} playerId="a" winnerId="a" />);
+    expect(html).toContain("Wins by one-time guarantee.");
+  });
+  it("gives cancellation precedence over guarantees", () => {
+    const html = renderToStaticMarkup(<ComparisonScoreDetail cards={[card]} stat="wealth" score={{ base: 5, die: 0, total: 5 }} cancelled guarantees={["a"]} playerId="a" winnerId="a" />);
+    expect(html).toContain("scores do not decide");
+    expect(html).not.toContain("Wins by");
+  });
+  it("explains when opposing guarantees cancel", () => {
+    const html = renderToStaticMarkup(<ComparisonScoreDetail cards={[card]} stat="wealth" score={{ base: 5, die: 0, total: 5 }} guarantees={["a", "b"]} />);
+    expect(html).toContain("Both guarantees cancel; scores decide.");
+  });
+  it("preserves the mercenary X instead of inventing a printed zeal number", () => {
+    const mercenary = { ...card, mercenary: true, artFile: "192 6x Black.jpg", zeal: 0 };
+    const html = renderToStaticMarkup(<ComparisonStatCard card={mercenary} stat="zeal" result="Cancelled"><span>art</span></ComparisonStatCard>);
+    expect(html).toContain("zeal X");
+    expect(html).toContain("Immune");
+    expect(scoreExplanation([mercenary], "zeal", { base: 0, die: 0, total: 0 })).toBe("0 base = 0");
+  });
+  it("explains a nonnumeric effect result", () => {
+    const html = renderToStaticMarkup(<ComparisonScoreDetail cards={[card]} stat="wealth" score={{ base: 5, die: 0, total: 5 }} effectDecided />);
+    expect(html).toContain("A card effect decides this result.");
+  });
+});

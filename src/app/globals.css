@@ -185,3 +185,29 @@ body{background:#efd49b}
 .comparisonScore b{grid-row:1}
 
 .victoryActions{flex-wrap:wrap;align-items:center}.rematchConsent{flex:0 0 100%;width:100%;text-align:center}.rematchConsent p{font-size:.95rem;line-height:1.4}.rematchConsent ul{list-style:none;padding:0;margin:12px 0;font-size:.9rem}.rematchChoices{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}.victory{max-height:calc(100svh - 32px);overflow:auto}
+/* Comparison overlays follow the printed stat, leaving the middle defeat ribbon clear. */
+.comparisonStatCard{position:relative;display:block;width:100%;container-type:inline-size;text-align:left}
+.comparisonStatCard>.card{width:100%;margin:0}
+.statHighlight{--stat-mark:#f9c747;--stat-glow:#f9c747b3;--stat-paper:#fff1bf;--stat-ink:#4d3205;position:absolute;inset:0;pointer-events:none;z-index:4;font-family:Arial,sans-serif}
+.highlight-defeated .statHighlight{--stat-mark:#d65a4b;--stat-glow:#b6483e65;--stat-paper:#ffebe5;--stat-ink:#76291f}
+.highlight-tied .statHighlight,.highlight-cancelled .statHighlight{--stat-mark:#a8c7df;--stat-glow:#6586a165;--stat-paper:#edf4fa;--stat-ink:#244359}
+.statHighlightRing{position:absolute;left:5.6%;top:3.8%;width:7.1%;height:6%;border:2px solid var(--stat-mark);border-radius:3px;box-shadow:0 0 0 1px #251c0d99,0 0 12px var(--stat-glow);animation:comparisonStatPulse 1.1s ease-out both}
+.stat-zeal .statHighlightRing{left:11.8%;top:7.5%;width:7%;height:5.6%}
+.stat-wealth .statHighlightRing{left:79.8%;top:3.4%;width:15.4%;height:10.3%}
+.statHighlightBubble{position:absolute;top:18%;left:4.8%;display:grid;grid-template-columns:1fr auto;column-gap:6px;align-items:center;padding:5px 7px;border:2px solid var(--stat-mark);border-radius:7px;background:var(--stat-paper);color:var(--stat-ink);box-shadow:0 3px 9px #241a1740;font-size:clamp(8px,5cqw,12px);line-height:1.1;animation:comparisonStatPop .65s ease-out both}
+.statHighlightBubble:before{content:"";position:absolute;bottom:100%;left:7%;width:2px;height:10cqw;background:var(--stat-mark)}
+.stat-zeal .statHighlightBubble:before{left:20%;height:7cqw}
+.stat-wealth .statHighlightBubble{left:auto;right:4.8%}
+.stat-wealth .statHighlightBubble:before{left:auto;right:13%;height:5cqw}
+.statHighlightBubble>span{text-transform:uppercase;font-weight:700;letter-spacing:.035em}
+.statHighlightBubble>b{grid-column:2;grid-row:1/3;font-size:clamp(18px,12cqw,30px);line-height:1}
+.statHighlightBubble>small{font-size:.9em;margin-top:3px}
+.noArtwork .statHighlightBubble{top:auto;bottom:4%}.noArtwork .statHighlightBubble:before{display:none}
+.comparisonScoreDetail{font:13px/1.45 Arial,sans-serif;text-align:center;margin:8px 0 0;overflow-wrap:anywhere;color:#513a25}
+.comparisonScoreDetail>span{display:block}.comparisonScoreDetail>strong{display:block;margin-top:5px;font-size:12px}
+.comparisonReplay{display:block;margin:16px auto 10px;min-height:44px;font-size:13px}
+.reviewPileCards>.bareCardButton{flex:0 1 180px;width:180px;max-width:100%}
+.reviewPileCards .comparisonStatCard>.masterCard{width:100%;margin:0}
+@keyframes comparisonStatPulse{0%,100%{transform:scale(1)}35%{transform:scale(1.13);box-shadow:0 0 0 2px var(--stat-mark),0 0 20px var(--stat-glow)}}
+@keyframes comparisonStatPop{from{opacity:0;transform:translateY(-5px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.statHighlightRing,.statHighlightBubble{animation:none}}
