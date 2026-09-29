@@ -1,24 +1,16 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail, scoreExplanation } from "./ComparisonHighlights";
+import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 
 const card = { id: "ore", name: "Ore Deposit", factionId: "egyptian-christians", strength: 1, zeal: 0, wealth: 5 };
 describe("comparison explanations", () => {
-  it("explains a Flood reversal using the printed value and roll", () => {
-    expect(scoreExplanation([card], "wealth", { base: 5, die: 1, total: 6 })).toBe("5 printed + 1 Flood = 6");
-    expect(scoreExplanation([{ ...card, wealth: 3 }], "wealth", { base: 3, die: 6, total: 9 })).toBe("3 printed + 6 Flood = 9");
-  });
-  it("separates pile contributions from positive and negative effects", () => {
-    expect(scoreExplanation([card, card], "wealth", { base: 13, die: 2, total: 15 })).toBe("5 + 5 combined + 3 effects + 2 Flood = 15");
-    expect(scoreExplanation([card], "strength", { base: 0, die: 0, total: 0 })).toBe("1 printed − 1 effects = 0");
-  });
   it.each(["strength", "zeal", "wealth"] as const)("highlights only the selected %s stat", stat => {
     const html = renderToStaticMarkup(<ComparisonHighlights><ComparisonStatCard card={card} stat={stat} result="Winner"><span>card art</span></ComparisonStatCard></ComparisonHighlights>);
     expect(html).toContain(`stat-${stat}`);
     expect(html).toContain(`${stat} ${card[stat]}. Wins.`);
     expect(html).not.toContain('class="statHighlightRing"');
-    expect(html).toContain("Replay stat highlights");
+    expect(html).not.toContain("Replay stat highlights");
   });
   it.each(["Tied", "Cancelled", "Defeated"] as const)("communicates %s without relying on color", result => {
     const html = renderToStaticMarkup(<ComparisonStatCard card={card} stat="wealth" result={result} pile><span>card</span></ComparisonStatCard>);
@@ -48,7 +40,6 @@ describe("comparison explanations", () => {
     const html = renderToStaticMarkup(<ComparisonStatCard card={mercenary} stat="zeal" result="Cancelled"><span>art</span></ComparisonStatCard>);
     expect(html).toContain("zeal X");
     expect(html).toContain("Immune");
-    expect(scoreExplanation([mercenary], "zeal", { base: 0, die: 0, total: 0 })).toBe("0 base = 0");
   });
   it("explains a nonnumeric effect result", () => {
     const html = renderToStaticMarkup(<ComparisonScoreDetail cards={[card]} stat="wealth" score={{ base: 5, die: 0, total: 5 }} effectDecided />);

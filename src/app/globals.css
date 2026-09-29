@@ -176,7 +176,7 @@ body{background:#efd49b}
 
 /* A shared Nile map keeps every concealed card visually identical. */
 .card.back{background:#d9ae70;padding:0}
-.nileCardBack{display:block;position:absolute;inset:0;background:url('/card-back-nile.svg') center/cover no-repeat}
+.nileCardBack{display:block;position:absolute;inset:0;background:#d7ceb0 url('/card-back-map.svg') center/contain no-repeat}
 .factionPortrait.compactPortrait{width:42px;height:42px;flex:0 0 auto;border-width:2px;outline-width:1px;box-shadow:0 2px 6px #56351444}
 .factionPortrait .leaderPortrait{display:block;width:100%;height:100%}
 .humanArea .compactPortrait{width:48px;height:48px}
@@ -199,7 +199,6 @@ body{background:#efd49b}
 .noArtwork .statHighlightBubble{top:auto;bottom:4%}
 .comparisonScoreDetail{font:13px/1.45 Arial,sans-serif;text-align:center;margin:8px 0 0;overflow-wrap:anywhere;color:#513a25}
 .comparisonScoreDetail>span{display:block}.comparisonScoreDetail>strong{display:block;margin-top:5px;font-size:12px}
-.comparisonReplay{display:block;margin:16px auto 10px;min-height:44px;font-size:13px}
 .reviewPileCards>.bareCardButton{flex:0 1 180px;width:180px;max-width:100%}
 .reviewPileCards .comparisonStatCard>.masterCard{width:100%;margin:0}
 @keyframes comparisonNumberPulse{0%,65%,100%{transform:scale(1)}30%{transform:scale(1.15)}}
