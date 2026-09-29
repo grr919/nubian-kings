@@ -29,7 +29,6 @@ export function ComparisonStatCard({ card, stat, result, pile = false, children 
   return <span className={`comparisonStatCard stat-${stat} highlight-${result.toLowerCase()} ${artwork ? "hasArtwork" : "noArtwork"}`}>
     {children}
     <span key={`${card.id}-${stat}-${value}-${result}-${replay}`} className="statHighlight" aria-label={`${card.name ?? "Card"}: ${stat} ${value ?? "unavailable"}. ${pile ? "Pile contribution; formation " + result.toLowerCase() : label}.`}>
-      {artwork && <span className="statHighlightRing" aria-hidden="true" />}
       <span className="statHighlightBubble" aria-hidden="true"><span>{stat}</span><b>{value ?? "—"}</b><small>{immune ? "Immune" : pile ? "Contribution" : label}</small></span>
     </span>
   </span>;

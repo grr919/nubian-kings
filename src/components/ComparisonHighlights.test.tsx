@@ -17,7 +17,7 @@ describe("comparison explanations", () => {
     const html = renderToStaticMarkup(<ComparisonHighlights><ComparisonStatCard card={card} stat={stat} result="Winner"><span>card art</span></ComparisonStatCard></ComparisonHighlights>);
     expect(html).toContain(`stat-${stat}`);
     expect(html).toContain(`${stat} ${card[stat]}. Wins.`);
-    expect(html.match(/class="statHighlightRing"/g)).toHaveLength(1);
+    expect(html).not.toContain('class="statHighlightRing"');
     expect(html).toContain("Replay stat highlights");
   });
   it.each(["Tied", "Cancelled", "Defeated"] as const)("communicates %s without relying on color", result => {
@@ -25,7 +25,7 @@ describe("comparison explanations", () => {
     expect(html).toContain(`formation ${result.toLowerCase()}`);
     expect(html).toContain("Contribution");
   });
-  it("does not draw a misplaced ring when artwork is unavailable", () => {
+  it("labels unavailable stats when artwork is missing", () => {
     const html = renderToStaticMarkup(<ComparisonStatCard card={{ name: "Unknown" }} stat="zeal" result="Cancelled"><span>fallback</span></ComparisonStatCard>);
     expect(html).not.toContain('class="statHighlightRing"');
     expect(html).toContain("unavailable");
