@@ -194,14 +194,14 @@ body{background:#efd49b}
 .statHighlightBubble{position:absolute;top:18%;left:4.8%;display:grid;grid-template-columns:1fr auto;column-gap:6px;align-items:center;padding:5px 7px;border:2px solid var(--stat-mark);border-radius:7px;background:var(--stat-paper);color:var(--stat-ink);box-shadow:0 3px 9px #241a1740;font-size:clamp(8px,5cqw,12px);line-height:1.1;animation:comparisonStatPop .65s ease-out both}
 .stat-wealth .statHighlightBubble{left:auto;right:4.8%}
 .statHighlightBubble>span{text-transform:uppercase;font-weight:700;letter-spacing:.035em}
-.statHighlightBubble>b{grid-column:2;grid-row:1/3;font-size:clamp(18px,12cqw,30px);line-height:1;transform-origin:center;animation:comparisonNumberPulse 2.2s ease-in-out .7s infinite}
+.statHighlightBubble>b{grid-column:2;grid-row:1/3;font-size:clamp(18px,12cqw,30px);line-height:1;transform-origin:center;animation:comparisonNumberPulse 1.6s ease-in-out .7s infinite}
 .statHighlightBubble>small{font-size:.9em;margin-top:3px}
 .noArtwork .statHighlightBubble{top:auto;bottom:4%}
 .comparisonScoreDetail{font:13px/1.45 Arial,sans-serif;text-align:center;margin:8px 0 0;overflow-wrap:anywhere;color:#513a25}
 .comparisonScoreDetail>span{display:block}.comparisonScoreDetail>strong{display:block;margin-top:5px;font-size:12px}
 .reviewPileCards>.bareCardButton{flex:0 1 180px;width:180px;max-width:100%}
 .reviewPileCards .comparisonStatCard>.masterCard{width:100%;margin:0}
-@keyframes comparisonNumberPulse{0%,65%,100%{transform:scale(1)}30%{transform:scale(1.15)}}
+@keyframes comparisonNumberPulse{0%,70%,100%{transform:scale(1);text-shadow:none}35%{transform:scale(1.35);text-shadow:0 0 8px var(--stat-glow)}}
 @keyframes comparisonStatPop{from{opacity:0;transform:translateY(-5px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.statHighlightBubble,.statHighlightBubble>b{animation:none}}
 .comparisonCards>.comparisonCard,.comparisonCards>.comparisonEntry{width:clamp(270px,26vw,350px);flex:0 0 clamp(270px,26vw,350px)}
