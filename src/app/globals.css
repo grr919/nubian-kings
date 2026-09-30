@@ -213,12 +213,12 @@ body{background:#efd49b}
 .tieTrail .outcomeMark{font-size:.45rem}
 
 /* Beginner rules: printed card values remain visible beneath the callouts. */
-.beginnerRules{width:min(1050px,100%);display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,380px);gap:28px;align-items:start;padding:40px 28px 28px}
+.beginnerRules{width:min(1100px,100%);display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,430px);gap:28px;align-items:start;padding:40px 28px 28px}
 .beginnerRulesText{min-width:0}.beginnerRulesText ol{padding-left:24px}
 .rulesCardPanel{min-width:0;padding:16px;background:linear-gradient(145deg,#fff3d5,#efd19a);border:1px solid #ad7124;border-radius:10px}
 .rulesCardPanel h3{margin:0 0 14px;text-align:center;font-size:1.2rem}
-.rulesCardPanel figure{margin:0}.rulesSampleCard{position:relative;width:100%;max-width:350px;margin:0 auto}
-.rulesSampleCard>img{display:block;width:100%;height:auto;border-radius:6px}
+.rulesCardPanel figure{margin:0}.rulesSampleCard{position:relative;width:100%;max-width:435px;margin:0 auto}
+.rulesSampleCard>img{display:block;width:76.037%;margin-left:23.963%;height:auto;border-radius:6px}
 .rulesCardAnnotations{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .rulesStatBanner{--banner-color:#684021}.rulesZeal{--banner-color:#314e78}.rulesWealth{--banner-color:#546027}
 .rulesStatBanner rect{fill:var(--banner-color);stroke:#fff3d5;stroke-width:3}
