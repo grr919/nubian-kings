@@ -3,8 +3,18 @@ import { getCardArtwork } from "./card-artwork";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import localArtwork from "../data/local-card-artwork.json";
+import cardData from "../data/cards.json";
+import mercenaryData from "../data/mercenaries.json";
 
 describe("card artwork identity", () => {
+  it("bundles every database artwork variant and mercenary image", () => {
+    const required = [
+      ...cardData.cards.flatMap((card) => card.assets.map((asset) => asset.filename)),
+      ...mercenaryData.cards.map((card) => card.image.split("/").at(-1)!),
+    ];
+    expect(required.filter((filename) => !localArtwork.includes(filename))).toEqual([]);
+    expect(cardData.cards.filter((card) => !card.assets.length)).toEqual([]);
+  });
   it("distinguishes Ore Deposits across factions in existing Beginner games", () => {
     expect(getCardArtwork({ name: "Ore Deposit", factionId: "egyptian-christians" })).toBe("/cards/70%20Blue.jpg");
     expect(getCardArtwork({ name: "Ore Deposit", factionId: "nubian-christians" })).toContain("/cards/44%20Red.jpg");
