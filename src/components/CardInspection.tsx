@@ -37,7 +37,6 @@ export function CardInspection({ cards, onClose }: { cards: InspectionCard[]; on
         <div className="inspectionCards">
           {cards.map((card) => <article className="inspectionCard" key={card.id}>
             {card.image && <img src={card.image} alt={card.name ?? "Revealed card"} />}
-            <h3>{card.name}</h3>
             <dl>{(["strength", "zeal", "wealth"] as const).map((stat) =>
               <div key={stat}><dt>{stat}</dt><dd>{card[stat] ?? "—"}</dd></div>)}</dl>
           </article>)}
