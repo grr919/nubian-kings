@@ -507,9 +507,8 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
   const targetPlayer = state.players.find((player) => player.id === review.targetPlayerId)!;
   const high = Math.max(...review.scores.map((score) => score.total));
   const winnerId = review.tie ? undefined : review.winnerId ?? review.scores.find((score) => score.total === high)?.playerId;
-  const actionText = masterComparisonAction(review.stat, attackerPlayer, targetPlayer);
   const headline = review.cancelReason === "interrupt" ? interruptedOutcomeText(review.stat) : review.cancelReason === "immunity" ? "Conversion cancelled: the target is immune." : masterRoundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
-  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><p>{actionText}</p><h2>{headline}</h2>{Boolean(review.guarantees?.length) && <p>One-time guarantee used{new Set(review.guarantees).size > 1 ? " by both sides; they cancel." : "."}</p>}</header><ComparisonHighlights>{[
+  return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><h2>{headline}</h2>{Boolean(review.guarantees?.length) && <p>One-time guarantee used{new Set(review.guarantees).size > 1 ? " by both sides; they cancel." : "."}</p>}</header><ComparisonHighlights>{[
     { player: attackerPlayer, cards: review.attacker, unitId: review.attackerUnitId, role: masterActionLanguage(review.stat).actor },
     { player: targetPlayer, cards: review.target, unitId: review.targetUnitId, role: masterActionLanguage(review.stat).target },
   ].map(({ player, cards, unitId, role }) => {
