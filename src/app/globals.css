@@ -211,3 +211,19 @@ body{background:#efd49b}
 
 .tieTrail article{flex-basis:120px}
 .tieTrail .outcomeMark{font-size:.45rem}
+
+/* Beginner rules: printed card values remain visible beneath the callouts. */
+.beginnerRules{width:min(1050px,100%);display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,380px);gap:28px;align-items:start;padding:40px 28px 28px}
+.beginnerRulesText{min-width:0}.beginnerRulesText ol{padding-left:24px}
+.rulesCardPanel{min-width:0;padding:16px;background:linear-gradient(145deg,#fff3d5,#efd19a);border:1px solid #ad7124;border-radius:10px}
+.rulesCardPanel h3{margin:0 0 14px;text-align:center;font-size:1.2rem}
+.rulesCardPanel figure{margin:0}.rulesSampleCard{position:relative;width:100%;max-width:350px;margin:0 auto}
+.rulesSampleCard>img{display:block;width:100%;height:auto;border-radius:6px}
+.rulesCardAnnotations{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.rulesStatBanner{--banner-color:#684021}.rulesZeal{--banner-color:#314e78}.rulesWealth{--banner-color:#546027}
+.rulesStatBanner rect{fill:var(--banner-color);stroke:#fff3d5;stroke-width:3}
+.rulesStatBanner text{fill:#fffaf0;font:bold 36px Arial,sans-serif;text-anchor:middle;dominant-baseline:central}
+.rulesStatArrow{fill:none;stroke:var(--banner-color);stroke-width:8;stroke-linejoin:round;marker-end:url(#rules-card-arrow)}
+#rules-card-arrow path{fill:context-stroke}
+.rulesCardPanel figcaption{margin-top:14px;font-size:.95rem;line-height:1.5;color:#513a25}
+@media(max-width:700px){.beginnerRules{grid-template-columns:minmax(0,1fr);gap:18px;padding:42px 20px 20px}.rulesCardPanel{width:100%;max-width:382px;justify-self:center}}
