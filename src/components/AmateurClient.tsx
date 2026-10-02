@@ -458,7 +458,7 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
       ].map(({ player, card, role }) => {
         const score = review.scores.find((entry) => entry.cardId === card.id)!;
         const result = review.tie ? "Tied" : score.total === high ? "Winner" : "Defeated";
-        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? "You" : INFO[player.factionId].name}</b></div><ComparisonStatCard card={card} stat={review.stat} result={result}><AmateurCardView card={card} visible defeated={result === "Defeated"} /></ComparisonStatCard><ComparisonScoreDetail cards={[card]} stat={review.stat} score={score} /></article>;
+        return <article key={card.id} className={`comparisonCard result-${result.toLowerCase()} ${player.controller === "human" ? "comparisonYours" : ""}`}><div className="comparisonOwner"><b>{role} · {player.controller === "human" ? <strong className="youLabel">You</strong> : INFO[player.factionId].name}</b></div><ComparisonStatCard card={card} stat={review.stat} result={result}><AmateurCardView card={card} visible defeated={result === "Defeated"} /></ComparisonStatCard><ComparisonScoreDetail cards={[card]} stat={review.stat} score={score} /></article>;
       })}</ComparisonHighlights>
       <button className="reviewContinue" onClick={onContinue}>Continue</button>
     </section>
