@@ -21,6 +21,14 @@ describe("Master army board moves", () => {
     const extraCards = [...cards, card("another-person", "person"), card("another-thing", "thing")];
     const four = moveArmyCard(extraCards, triple, extraCards[3], triple[0].id)!;
     const five = moveArmyCard(extraCards, four, extraCards[4], four[0].id)!;
-    expect(five[0].cards.map((item) => item.type)).toEqual(["place", "person", "person", "thing", "thing"]);
+    expect(five[0].cards.map((item) => item.type)).toEqual(["place", "person", "thing", "person", "thing"]);
   });
+});
+
+it("moves a priest together with its gospel onto a church", () => {
+ const church=card("church","place"), priest=card("priest","person"), gospel=card("gospel","thing");
+ const cards=[church,priest,gospel], piles=[{id:"held",cards:[priest,gospel]}];
+ expect(canMoveArmyCard(cards,piles,priest,church.id)).toBe(true);
+ expect(moveArmyCard(cards,piles,priest,church.id)?.[0].cards.map(c=>c.id)).toEqual(["church","priest","gospel"]);
+ expect(canMoveArmyCard(cards,piles,gospel,church.id)).toBe(false);
 });

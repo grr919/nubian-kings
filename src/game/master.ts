@@ -270,7 +270,6 @@ export function isLegalInitialPile(cards: readonly MasterCard[]) {
     if (card.type === "place") {
       if (stage !== 0 || ++placeCount > 1) return false;
     } else if (personLike(card)) {
-      if (stage === 2) return false;
       stage = 1;
       personCount++;
     } else if (card.type === "thing") {

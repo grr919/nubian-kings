@@ -11,33 +11,37 @@ type Props = {
   onMove: (cardId: string, targetId?: string) => void;
 };
 
+// Array order is bottom to top. Move the selected card and all cards above it.
+function movingCards(piles: MasterPile[], card: MasterCard) {
+ const source=piles.find(p=>p.cards.some(c=>c.id===card.id));
+ return source ? source.cards.slice(source.cards.findIndex(c=>c.id===card.id)) : [card];
+}
+function combineCards(bottom: MasterCard[], top: MasterCard[]) {
+ const cards=[...bottom,...top];
+ return [...cards.filter(c=>c.type==="place"),...cards.filter(c=>c.type!=="place")];
+}
 export function canMoveArmyCard(cards: MasterCard[], piles: MasterPile[], card: MasterCard, targetId?: string) {
-  const source = piles.find((pile) => pile.cards.some((item) => item.id === card.id));
-  if ((source && source.id === targetId) || card.id === targetId) return false;
-  const remainder = source?.cards.filter((item) => item.id !== card.id) ?? [];
-  if (remainder.length && !isLegalInitialPile(remainder)) return false;
-  if (!targetId) return isLegalInitialPile([card]);
-  const targetPile = piles.find((pile) => pile.id === targetId);
-  if (targetPile) return isLegalInitialPile([...targetPile.cards, card].sort((a, b) => rank(a) - rank(b)));
-  const targetCard = cards.find((item) => item.id === targetId);
-  if (!targetCard || piles.some((pile) => pile.cards.some((item) => item.id === targetId))) return false;
-  return isLegalInitialPile([card, targetCard].sort((a, b) => rank(a) - rank(b)));
+ const source=piles.find(p=>p.cards.some(c=>c.id===card.id));
+ if ((source&&source.id===targetId)||card.id===targetId) return false;
+ const moving=movingCards(piles,card), ids=new Set(moving.map(c=>c.id));
+ const remainder=source?.cards.filter(c=>!ids.has(c.id))??[];
+ if(remainder.length&&!isLegalInitialPile(remainder))return false;
+ if(!targetId)return isLegalInitialPile(moving);
+ const target=piles.find(p=>p.id===targetId);
+ if(target)return isLegalInitialPile(combineCards(target.cards,moving));
+ const other=cards.find(c=>c.id===targetId);
+ if(!other||ids.has(targetId)||piles.some(p=>p.cards.some(c=>c.id===targetId)))return false;
+ return isLegalInitialPile(combineCards([other],moving));
 }
-
 export function moveArmyCard(cards: MasterCard[], piles: MasterPile[], card: MasterCard, targetId?: string): MasterPile[] | undefined {
-  if (!canMoveArmyCard(cards, piles, card, targetId)) return;
-  const next = piles.map((pile) => ({ ...pile, cards: pile.cards.filter((item) => item.id !== card.id) })).filter((pile) => pile.cards.length);
-  const target = next.find((pile) => pile.id === targetId);
-  if (target) {
-    target.cards = [...target.cards, card].sort((a, b) => rank(a) - rank(b));
-  } else {
-    const targetCard = cards.find((item) => item.id === targetId);
-    next.push({ id: `pile-${Date.now()}-${card.id}`, cards: targetCard ? [targetCard, card].sort((a, b) => rank(a) - rank(b)) : [card] });
-  }
-  return next;
+ if(!canMoveArmyCard(cards,piles,card,targetId))return;
+ const moving=movingCards(piles,card),ids=new Set(moving.map(c=>c.id));
+ const next=piles.map(p=>({...p,cards:p.cards.filter(c=>!ids.has(c.id))})).filter(p=>p.cards.length);
+ const target=next.find(p=>p.id===targetId);
+ if(target)target.cards=combineCards(target.cards,moving);
+ else {const other=cards.find(c=>c.id===targetId);next.push({id:`pile-${Date.now()}-${card.id}`,cards:other?combineCards([other],moving):moving});}
+ return next;
 }
-
-function rank(card: MasterCard) { return card.type === "place" ? 0 : card.type === "thing" ? 2 : 1; }
 
 export default function MasterArmyBoard({ cards, piles, busy = false, renderCard, onMove }: Props) {
   const [selected, setSelected] = useState<string>();
@@ -84,7 +88,7 @@ export default function MasterArmyBoard({ cards, piles, busy = false, renderCard
   }
 
   return <section className="armyBoard" aria-label="Arrange your army">
-    <div className="armyBoardHeading"><h2>Your cards · {piles.length + loose.filter(card => card.type !== "thing").length} units</h2><p>People and Places may stand alone. Two or more People may share a pile only in a Place. Objects must be given to a Person. Drag cards together, or select two cards by tapping, to form a pile with one Place and any number of People and objects.</p></div>
+    <div className="armyBoardHeading"><h2>Your cards · {piles.length + loose.filter(card => card.type !== "thing").length} units</h2><p>People and Places may stand alone. Two or more People may share a pile only in a Place. Objects must be given to a Person. From bottom to top: Place, Person, then People or objects. Drag a card to move it and every card above it together.</p></div>
     <div className="armyBoardGrid">
       {piles.map((pile, index) => <div key={pile.id} className={`armyBoardSlot ${chosen && canMoveArmyCard(cards, piles, chosen, pile.id) ? "armyBoardAccepts" : ""}`} data-army-target={pile.id} {...destination(pile.id)}>
         <strong>{pile.cards.length} card{pile.cards.length === 1 ? "" : "s"}</strong><div className="armyBoardStack">{pile.cards.map(cardButton)}</div>

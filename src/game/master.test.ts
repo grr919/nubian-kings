@@ -58,6 +58,7 @@ describe("Master pile rules", () => {
     expect(isLegalInitialPile([person, place])).toBe(false);
     expect(isLegalInitialPile([place, place, person])).toBe(false);
     expect(isLegalInitialPile([person, thing, leader])).toBe(false);
+    expect(isLegalInitialPile([place, person, thing, leader])).toBe(true);
   });
 
   it("auto-arranges every card into legal piles", () => {
