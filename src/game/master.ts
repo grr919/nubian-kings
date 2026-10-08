@@ -628,6 +628,14 @@ function refreshPendingMasterScores(state: MasterState): void {
   }
 }
 
+/** Conversion interrupts counter another player's attempt. */
+export function masterInterruptAvailable(card: MasterCard, playerId: string, attackerPlayerId: string, stat: Stat): boolean {
+  const number = Number(card.artFile?.match(/^\d+/)?.[0] ?? 0);
+  return card.face === "up" && !card.effectSpent && (stat === "zeal"
+    ? playerId !== attackerPlayerId && [16, 82, 112].includes(number)
+    : number === 109);
+}
+
 /** An interrupt cancels a pending attempt; it refreshes at the next turn boundary. */
 export function interruptMasterComparison(state: MasterState, playerId: string, cardId: string): MasterEvent[] {
   const pending = state.pendingEffectComparison;
@@ -635,7 +643,7 @@ export function interruptMasterComparison(state: MasterState, playerId: string, 
   const player = state.players.find((candidate) => candidate.id === playerId)!;
   const source = [player.heir, ...player.army.flatMap((pile) => pile.cards)].find((card) => card.id === cardId);
   const number = Number(source?.artFile?.match(/^\d+/)?.[0] ?? 0);
-  if (!source || source.face !== "up" || source.effectSpent || !(pending.attack.stat === "zeal" ? [16, 82, 112].includes(number) : number === 109)) throw new Error("That interrupt is unavailable");
+  if (!source || !masterInterruptAvailable(source, playerId, pending.attackerPlayerId, pending.attack.stat)) throw new Error("That interrupt is unavailable");
   source.effectSpent = true;
   pending.cancelled = true;
   pending.cancelReason = "interrupt";
@@ -679,7 +687,7 @@ export function chooseMasterNpcEffect(state: MasterState): MasterNpcEffectAction
     const supporter = availableMasterSupporters(state, player.id, source.id).sort((a, b) => b[pending.attack.stat] - a[pending.attack.stat])[0];
     if (supporter && (Number(source.artFile?.match(/^\d+/)?.[0] ?? 0) === 156 || ownSide === "defender")) return { kind: "support", cardId: source.id, supporterId: supporter.id, side: ownSide };
   }
-  const interrupt = deployed.find((source) => source.face === "up" && !source.effectSpent && (pending.attack.stat === "zeal" ? [16, 82, 112] : [109]).includes(Number(source.artFile?.match(/^\d+/)?.[0] ?? 0)));
+  const interrupt = deployed.find((source) => masterInterruptAvailable(source, player.id, pending.attackerPlayerId, pending.attack.stat));
   return interrupt ? { kind: "interrupt", cardId: interrupt.id } : { kind: "pass" };
 }
 

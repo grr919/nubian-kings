@@ -105,10 +105,21 @@ describe("paused Master comparisons", () => {
     expect(state.phase).toBe("attack");
   });
 
-  it("lets a newly revealed interrupt cancel an attempt without discarding either side", () => {
-    const source = card("bishop", 16, 9, 9, "down"), state = game(source, card("d1", 0, 1));
+  it("rejects a bishop interrupting its owner's conversion without spending the effect", () => {
+    const bishop = card("bishop", 16, 9);
+    const state = game(bishop, card("d1", 0, 1));
     beginMasterEffectComparison(state, { ...attack, stat: "zeal" });
-    const events = interruptMasterComparison(state, "attacker", source.id);
+    expect(() => interruptMasterComparison(state, "attacker", bishop.id)).toThrow("unavailable");
+    expect(bishop.effectSpent).not.toBe(true);
+    expect(state.phase).toBe("effects");
+  });
+
+  it("lets a newly revealed interrupt cancel an attempt without discarding either side", () => {
+    const source = card("bishop", 16, 9, 9, "down"), state = game(card("a1", 0, 1), source);
+    beginMasterEffectComparison(state, { ...attack, stat: "zeal" });
+    expect(() => interruptMasterComparison(state, "attacker", source.id)).toThrow();
+    passMasterEffectOpportunity(state, "attacker");
+    const events = interruptMasterComparison(state, "defender", source.id);
     expect(events).toContainEqual({ type: "cancelled", reason: "interrupt" });
     expect(state.players[0].army).toHaveLength(1);
     expect(state.players[1].army).toHaveLength(1);
