@@ -383,7 +383,7 @@ export default function AmateurClient() {
 
       {!review && humanTurn && (
         <section className="chooser amateurChooser">
-          <p>{!selectedStat ? "Which statistic will decide the comparison?" : !attackerId ? human.army.length ? "Now choose one of your army cards to initiate the comparison." : "Your heir is your last card. Choose it to initiate the comparison." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
+          <p>{!selectedStat ? "Which statistic will resolve the next conflict?" : !attackerId ? human.army.length ? "Now choose one of your army cards to initiate the comparison." : "Your heir is your last card. Choose it to initiate the comparison." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
           <div>{STATS.map((stat) => <button key={stat} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
         </section>
       )}

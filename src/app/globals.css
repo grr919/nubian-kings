@@ -241,3 +241,5 @@ body{background:#efd49b}
 .masterPlayer .masterHeir,.masterBoard .masterHeir{grid-template-columns:minmax(0,290px)}
 @media(max-width:600px){.masterPlayer .masterHeir,.masterBoard .masterHeir{grid-template-columns:minmax(0,216px)}}
 .masterHeir .masterUnit{padding-top:30px}
+
+.chooser .replenishmentActions{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:12px}.chooser .replenishmentActions>button{flex:1;min-width:0}
