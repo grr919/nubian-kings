@@ -236,3 +236,8 @@ body{background:#efd49b}
 .gameStateRuler.yourRuler{outline:3px solid #087b77}
 .gameStateRulers .compactPortrait{width:48px;height:48px}
 @media(max-width:900px){.gameStateBanner{flex-wrap:wrap}.gameStateRulers{order:3;width:100%;gap:10px}.gameStateRulers .compactPortrait{width:40px;height:40px}.gameStateBrand{margin-left:auto}}
+
+.gameStateBanner .gameStateRulers{flex-direction:row;flex-wrap:nowrap}
+.masterPlayer .masterHeir,.masterBoard .masterHeir{grid-template-columns:minmax(0,290px)}
+@media(max-width:600px){.masterPlayer .masterHeir,.masterBoard .masterHeir{grid-template-columns:minmax(0,216px)}}
+.masterHeir .masterUnit{padding-top:10px}
