@@ -287,6 +287,13 @@ export function legalMasterPileAddition(cards: readonly MasterCard[], card: Mast
   return isLegalInitialPile(combined) ? combined : undefined;
 }
 
+/** Keep separate cards as single-card units; objects still require a person. */
+export function includeStandaloneMasterCards(cards: readonly MasterCard[], piles: readonly MasterPile[]): MasterPile[] {
+  const assigned = new Set(piles.flatMap(pile => pile.cards.map(card => card.id)));
+  return [...piles.map(pile => ({ ...pile, cards: [...pile.cards] })),
+    ...cards.filter(card => !assigned.has(card.id)).map(card => ({ id: `standalone-${card.id}`, cards: [card] }))];
+}
+
 export function validateInitialArmy(piles: readonly MasterPile[], expectedCardIds?: readonly string[]) {
   if (!piles.length || piles.some((pile) => !pile.id || !isLegalInitialPile(pile.cards))) return false;
   const ids = piles.flatMap((pile) => pile.cards.map((card) => card.id));
@@ -350,6 +357,7 @@ export function confirmMasterArmy(construction: MasterConstruction, humanPiles: 
   const player = construction.players.find((candidate) => candidate.controller === "human");
   if (!player) throw new Error("A human player is required");
   const expected = constructionCards(construction, player.id).map((card) => card.id);
+  humanPiles = includeStandaloneMasterCards(constructionCards(construction, player.id), humanPiles);
   if (!validateInitialArmy(humanPiles, expected)) throw new Error("Every card must be assigned to a legal pile");
   player.army = humanPiles.map((pile) => ({ ...pile, cards: pile.cards.map((card) => ({ ...card, face: "down" })) }));
   const state: MasterState = {

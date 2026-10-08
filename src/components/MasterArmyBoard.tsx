@@ -84,15 +84,15 @@ export default function MasterArmyBoard({ cards, piles, busy = false, renderCard
   }
 
   return <section className="armyBoard" aria-label="Arrange your army">
-    <div className="armyBoardHeading"><h2>Your cards · {piles.length} piles</h2><p>Drag one card onto another to make a pile, or select two cards by tapping. A pile may have one Place, any number of People, and any number of Things.</p></div>
+    <div className="armyBoardHeading"><h2>Your cards · {piles.length + loose.filter(card => card.type !== "thing").length} units</h2><p>People and Places may stand alone. Objects must be given to a Person. Drag cards together, or select two cards by tapping, to form a pile with one Place and any number of People and objects.</p></div>
     <div className="armyBoardGrid">
       {piles.map((pile, index) => <div key={pile.id} className={`armyBoardSlot ${chosen && canMoveArmyCard(cards, piles, chosen, pile.id) ? "armyBoardAccepts" : ""}`} data-army-target={pile.id} {...destination(pile.id)}>
         <strong>Pile {index + 1}</strong><div className="armyBoardStack">{pile.cards.map(cardButton)}</div>
         <small>{pile.cards.map((card) => card.type === "leader" ? "person" : card.type).join(" · ")}</small>
       </div>)}
-      {loose.map((card) => <div key={card.id} className={`armyBoardSlot armyBoardLoose ${chosen && canMoveArmyCard(cards, piles, chosen, card.id) ? "armyBoardAccepts" : ""}`} data-army-target={card.id} {...destination(card.id)}><span className="armyBoardLooseLabel">Unassigned</span>{cardButton(card)}</div>)}
-      <div className={`armyBoardSlot armyBoardEmpty ${chosen && canMoveArmyCard(cards, piles, chosen) ? "armyBoardAccepts" : ""}`} data-army-target="" {...destination()}><span>+ New pile</span></div>
+      {loose.map((card) => <div key={card.id} className={`armyBoardSlot armyBoardLoose ${chosen && canMoveArmyCard(cards, piles, chosen, card.id) ? "armyBoardAccepts" : ""}`} data-army-target={card.id} {...destination(card.id)}><span className="armyBoardLooseLabel">{card.type === "thing" ? "Needs a Person" : "Stands alone"}</span>{cardButton(card)}</div>)}
+      <div className={`armyBoardSlot armyBoardEmpty ${chosen && canMoveArmyCard(cards, piles, chosen) ? "armyBoardAccepts" : ""}`} data-army-target="" {...destination()}><span>+ Stand alone</span></div>
     </div>
-    <p className="armyBoardCount" aria-live="polite">{loose.length} card{loose.length === 1 ? "" : "s"} left to assign</p>
+    <p className="armyBoardCount" aria-live="polite">{loose.filter(card => card.type === "thing").length} objects still need a Person</p>
   </section>;
 }

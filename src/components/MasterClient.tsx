@@ -218,7 +218,7 @@ export default function MasterClient() {
   }
 
   function confirmArmy() {
-    if (!construction || unassigned.length || !draftPiles.every((pile) => isLegalInitialPile(pile.cards))) return;
+    if (!construction || unassigned.some(card => card.type === "thing") || !draftPiles.every((pile) => isLegalInitialPile(pile.cards))) return;
     const next = confirmMasterArmy(construction, clonePiles(draftPiles));
     localStorage.removeItem(MASTER_NPC_ATTACK_KEY);
     persist(next);
@@ -440,11 +440,11 @@ export default function MasterClient() {
   </section></main>;
 
   if (screen === "arrange" && construction) {
-    const complete = unassigned.length === 0 && draftPiles.length > 0 && draftPiles.every((pile) => isLegalInitialPile(pile.cards));
+    const complete = unassigned.every(card => card.type !== "thing") && draftPiles.every((pile) => isLegalInitialPile(pile.cards));
     return <main className="setupPage masterArrangePage"><section className="masterArrangePanel">
-      <header><div><p className="kicker">BUILD YOUR ARMY</p><h1>Arrange twenty cards:</h1><p>Drag cards together. Each pile may have one Place, any number of People, then any number of Things.</p></div><div className="arrangeActions"><button className="secondary" disabled={!undo.length} onClick={undoArrangement}>Undo</button><button className="secondary" onClick={resetArrangement}>Reset</button><button onClick={autoArrange}>Auto-arrange</button></div></header>
+      <header><div><p className="kicker">BUILD YOUR ARMY</p><h1>Arrange twenty cards:</h1><p>People and Places may stand alone. Give every object to a Person. You may combine cards into piles with one Place and any number of People and objects.</p></div><div className="arrangeActions"><button className="secondary" disabled={!undo.length} onClick={undoArrangement}>Undo</button><button className="secondary" onClick={resetArrangement}>Reset</button><button onClick={autoArrange}>Auto-arrange</button></div></header>
       <MasterArmyBoard cards={allSetupCards} piles={draftPiles} onMove={moveCard} renderCard={(card) => <MasterCardView card={card} visible badge={card.type === "leader" ? "person" : card.type} />} />
-      <footer className="arrangeFooter"><span>{complete ? "All twenty cards are in legal piles." : `${unassigned.length} unassigned · Finish every legal pile to continue.`}</span><button disabled={!complete} onClick={confirmArmy}>Confirm Army</button></footer>
+      <footer className="arrangeFooter"><span>{complete ? "Your army is ready. People and Places may stand alone." : `${unassigned.filter(card => card.type === "thing").length} objects need a Person.`}</span><button disabled={!complete} onClick={confirmArmy}>Confirm Army</button></footer>
     </section></main>;
   }
 
@@ -519,6 +519,6 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
 }
 
 function MasterHelp({ onClose, effectsMode }: { onClose: () => void; effectsMode: MasterEffectsMode }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE ROCK CHURCH OF LALIBELA</p><h2>Master Rules</h2><ol><li>Choose a Leader heir before the deal. Unchosen Leader cards return to the deck as People and may appear in your twenty-card army.</li><li>Arrange each pile with at most one Place, any number of People, and any number of Things in that order. A Thing needs a Person beneath it.</li><li>With Strength, you attack opposing forces. With Zeal, you attempt to convert some of them. With Wealth, you attempt to influence some of them with your wealth. Your chosen heir may initiate a comparison only after every army card is gone.</li><li>Every pile uses the combined statistic of all its cards. The losing pile is discarded in full; tied piles survive face up.</li><li>An enemy heir is protected until every army pile is gone.</li><li>After a non-tied win, the victorious player may draw one random face-down reserve card as a new standalone unit, up to your army limit.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol>{effectsMode === "on" ? <p className="note">Revealed cards may grant printed bonuses and one-time actions. Most actions become available on your next turn. When a comparison pauses, the active player gets the first effect opportunity and play proceeds clockwise. With Nile Floods, roll the Flood dice before choosing a guarantee.</p> : <p className="note">Effects Off uses the Core rules without printed card powers.</p>}</section></div>;
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal"><button className="modalClose" onClick={onClose}>×</button><p className="kicker">THE ROCK CHURCH OF LALIBELA</p><h2>Master Rules</h2><ol><li>Choose a Leader heir before the deal. Unchosen Leader cards return to the deck as People and may appear in your twenty-card army.</li><li>Arrange each pile with at most one Place, any number of People, and any number of Things in that order. People and Places may stand alone. Only objects must be given to a Person.</li><li>With Strength, you attack opposing forces. With Zeal, you attempt to convert some of them. With Wealth, you attempt to influence some of them with your wealth. Your chosen heir may initiate a comparison only after every army card is gone.</li><li>Every pile uses the combined statistic of all its cards. The losing pile is discarded in full; tied piles survive face up.</li><li>An enemy heir is protected until every army pile is gone.</li><li>After a non-tied win, the victorious player may draw one random face-down reserve card as a new standalone unit, up to your army limit.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol>{effectsMode === "on" ? <p className="note">Revealed cards may grant printed bonuses and one-time actions. Most actions become available on your next turn. When a comparison pauses, the active player gets the first effect opportunity and play proceeds clockwise. With Nile Floods, roll the Flood dice before choosing a guarantee.</p> : <p className="note">Effects Off uses the Core rules without printed card powers.</p>}</section></div>;
 }
 
