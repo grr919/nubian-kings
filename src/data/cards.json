@@ -1061,7 +1061,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "place",
+      "type": "person",
       "assets": [
         {
           "assetId": "NK-ASSET-159",
@@ -1111,7 +1111,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "place",
+      "type": "person",
       "assets": [
         {
           "assetId": "NK-ASSET-138",
@@ -1136,7 +1136,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "place",
+      "type": "person",
       "assets": [
         {
           "assetId": "NK-ASSET-015",
@@ -1161,7 +1161,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "place",
+      "type": "person",
       "assets": [
         {
           "assetId": "NK-ASSET-169",
@@ -1186,7 +1186,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "place",
+      "type": "person",
       "assets": [
         {
           "assetId": "NK-ASSET-035",
@@ -1211,7 +1211,7 @@
       "religion": "Ch",
       "nation": "Eg",
       "factionId": "egyptian-christians",
-      "type": "place",
+      "type": "person",
       "assets": [
         {
           "assetId": "NK-ASSET-034",
