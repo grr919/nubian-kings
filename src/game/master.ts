@@ -72,6 +72,7 @@ export interface MasterConstruction {
 }
 
 export interface MasterState {
+  awaitingStart?: boolean;
   version: 1;
   mode: "master";
   players: MasterPlayer[];

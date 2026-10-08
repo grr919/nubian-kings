@@ -220,6 +220,7 @@ export default function MasterClient() {
   function confirmArmy() {
     if (!construction || unassigned.some(card => card.type === "thing") || !draftPiles.every((pile) => isLegalInitialPile(pile.cards))) return;
     const next = confirmMasterArmy(construction, clonePiles(draftPiles));
+    next.awaitingStart = true;
     localStorage.removeItem(MASTER_NPC_ATTACK_KEY);
     persist(next);
     setState(next);
@@ -338,7 +339,7 @@ export default function MasterClient() {
   }
 
   useEffect(() => {
-    if (!state || review || npcAttack || eliminationPending || state.phase !== "attack" || activeMasterPlayer(state).controller !== "npc") return;
+    if (!state || state.awaitingStart || review || npcAttack || eliminationPending || state.phase !== "attack" || activeMasterPlayer(state).controller !== "npc") return;
     setThinking(true);
     const timer = window.setTimeout(() => {
       const actionState = structuredClone(state);
@@ -451,7 +452,7 @@ export default function MasterClient() {
   if (!state) return null;
   const active = activeMasterPlayer(state);
   const human = state.players.find((player) => player.controller === "human")!;
-  const humanTurn = active.controller === "human" && state.phase === "attack";
+  const humanTurn = !state.awaitingStart && active.controller === "human" && state.phase === "attack";
   const pending = state.players.find((player) => player.id === state.pendingReplenishmentPlayerId);
   const winner = state.players.find((player) => player.id === state.winnerId);
   const feedbackDiagnostics = { level: "Master" as const, seed: state.random.seed, round: state.round, phase: state.phase, humanFaction: INFO[human.factionId].name, npcCount: state.players.filter((player) => player.controller === "npc").length, nileFloods: state.nileFloods, victoryMode: state.victoryMode, recentHistory: history.slice(0, 10) };
@@ -460,9 +461,11 @@ export default function MasterClient() {
   return <main className="gamePage amateurGame masterGame">
     <GameStateBanner players={state.players} viewerId={human.id}
       thinking={thinking}
-      title={review ? `Review the ${masterActionLanguage(review.stat).noun}:` : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your pile:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
-      detail={npcAttack ? `The selected units remain hidden until you resolve the ${masterActionLanguage(npcAttack.stat).noun}.` : humanTurn ? masterArmySize(human) ? "Choose an army pile. Your heir cannot act until every army card is gone." : "Your heir is your last card and must act alone." : "Losing piles are discarded as complete units."}
+      title={state.awaitingStart ? "The armies are ready." : review ? `Review the ${masterActionLanguage(review.stat).noun}:` : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your pile:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
+      detail={state.awaitingStart ? `Inspect the armies below. ${INFO[active.factionId].name} will take the first turn when you begin play.` : npcAttack ? `The selected units remain hidden until you resolve the ${masterActionLanguage(npcAttack.stat).noun}.` : humanTurn ? masterArmySize(human) ? "Choose an army pile. Your heir cannot act until every army card is gone." : "Your heir is your last card and must act alone." : "Losing piles are discarded as complete units."}
     />
+
+    {state.awaitingStart && <section className="chooser"><p>Let the first conflict begin when you are ready.</p><button onClick={() => { const next = { ...state, awaitingStart: false }; persist(next); setState(next); }}>Begin play</button></section>}
 
     {review ? <MasterReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : <section className="amateurBoard masterBoard">
       <MasterPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetUnitId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onUnit={setAttackerId} />

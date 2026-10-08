@@ -16,6 +16,8 @@ describe("Master multiplayer setup",()=>{
   expect(game.mercenaryReserve).toHaveLength(32);
   expect(game.turnBoundaries).toHaveLength(1);
   expect("turnBoundaries"in publicMasterState(game)).toBe(false);
+  game.awaitingStart = true;
+  expect(publicMasterState(game).awaitingStart).toBe(true);
  });
  it("gives each human private heir choices and a legal twenty-card construction",()=>{
   const prepared=prepareMultiplayerMaster(seats,settings),one=masterMultiplayerHeirs(prepared,"human-1"),two=masterMultiplayerHeirs(prepared,"human-2");
