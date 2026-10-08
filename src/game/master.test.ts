@@ -51,7 +51,9 @@ describe("Master pile rules", () => {
     expect(isLegalInitialPile([leader, thing])).toBe(true);
     expect(isLegalInitialPile([place, leader, thing])).toBe(true);
     expect(isLegalInitialPile([place, person, leader, thing, thing, thing])).toBe(true);
-    expect(isLegalInitialPile([person, person, thing, thing])).toBe(true);
+    expect(isLegalInitialPile([person, person, thing, thing])).toBe(false);
+    expect(isLegalInitialPile([person, leader])).toBe(false);
+    expect(isLegalInitialPile([place, person, leader])).toBe(true);
     expect(isLegalInitialPile([place, thing])).toBe(false);
     expect(isLegalInitialPile([person, place])).toBe(false);
     expect(isLegalInitialPile([place, place, person])).toBe(false);

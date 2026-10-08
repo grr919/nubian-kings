@@ -278,7 +278,7 @@ export function isLegalInitialPile(cards: readonly MasterCard[]) {
       stage = 2;
     } else return false;
   }
-  return true;
+  return personCount <= 1 || placeCount === 1;
 }
 
 export function legalMasterPileAddition(cards: readonly MasterCard[], card: MasterCard): MasterCard[] | undefined {
