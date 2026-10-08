@@ -511,7 +511,7 @@ function guaranteeApplies(source: MasterCard, player: MasterPlayer, comparison: 
   const attacker = comparison.attackerCards;
   const defender = comparison.defenderCards;
   const active = player.id === comparison.attackerPlayerId;
-  const attack = comparison.attack.stat !== "zeal";
+  const attack = comparison.attack.stat === "strength";
   const current = active ? attacker : defender;
   const opposing = active ? defender : attacker;
   const targetsAnother = current.some((card) => card.id !== source.id);
@@ -533,10 +533,10 @@ function guaranteeApplies(source: MasterCard, player: MasterPlayer, comparison: 
       if ([2, 4].includes(n)) return targetsAnother;
       if (n === 6) return againstMuslim && current.some((card) => card.factionId.endsWith("christians"));
     }
-  } else if (active) {
+  } else if (comparison.attack.stat === "zeal" && active) {
     if (n === 5) return targetsAnother;
     if ([87, 140].includes(n)) return true;
-  } else if (n === 135) return current.some((card) => card.factionId === "egyptian-muslims") && targetsAnother;
+  } else if (comparison.attack.stat === "zeal" && n === 135) return current.some((card) => card.factionId === "egyptian-muslims") && targetsAnother;
   return false;
 }
 

@@ -12,6 +12,21 @@ function game(attacker: MasterCard, defender: MasterCard, support: MasterCard[] 
 const attack = { attackerUnitId: "a", targetPlayerId: "defender", targetUnitId: "d", stat: "strength" as const };
 
 describe("paused Master comparisons", () => {
+  it.each(["strength", "zeal", "wealth"] as const)("limits Moses Giyorgios’s defense guarantee in %s conflicts", (stat) => {
+    const state = game({ ...card("a1", 0, 5), wealth: 5 }, { ...card("d1", 0, 1), wealth: 1 });
+    const moses = card("moses", 4, 4);
+    state.players[1].army.push({ id: "moses-support", cards: [moses] });
+    beginMasterEffectComparison(state, { ...attack, stat });
+    passMasterEffectOpportunity(state, "attacker");
+    expect(availableMasterGuarantees(state, "defender").map(c => c.id)).toEqual(stat === "strength" ? ["moses"] : []);
+    if (stat !== "strength") {
+      expect(() => spendMasterGuarantee(state, "defender", "moses")).toThrow("unavailable");
+      expect(moses.effectSpent).not.toBe(true);
+      state.players[1].controller = "npc";
+      expect(chooseMasterNpcEffect(state)).not.toEqual({ kind: "guarantee", cardId: "moses" });
+    }
+  });
+
   it("reveals both formations, accepts a previously revealed optional guarantee after a tie, and spends it", () => {
     const source = card("queen", 166, 1);
     const state = game(card("a1", 0, 3, 3, "down"), card("d1", 0, 3, 3, "down"), [source]);
