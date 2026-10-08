@@ -961,7 +961,7 @@
       "religion": "Ch",
       "nation": "N",
       "factionId": "nubian-christians",
-      "type": "place",
+      "type": "thing",
       "assets": [
         {
           "assetId": "NK-ASSET-082",
