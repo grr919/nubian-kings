@@ -1,3 +1,4 @@
+import { cardArtworkUrl } from "@/game/card-artwork";
 import cardData from "@/data/cards.json";
 
 const PORTRAITS: Record<string, string> = {
@@ -36,7 +37,7 @@ export default function FactionPortrait({ factionId, leader, compact = false }: 
   const filename = definition?.assets[0]?.filename;
   return <span className={`factionPortrait faction-${factionId}${compact ? " compactPortrait" : ""}`} aria-hidden="true" title={definition?.name}>
     {face && filename ? <svg viewBox={`${face[0] - face[2] / 2} ${face[1] - face[2] / 2} ${face[2]} ${face[2]}`} className="leaderPortrait" focusable="false">
-      <image href={`https://nubian-kings-qtsa6vhio-grr919-6387s-projects.vercel.app/cards/${encodeURIComponent(filename)}`} width="1000" height="1364" preserveAspectRatio="none" />
+      <image href={cardArtworkUrl(filename)} width="1000" height="1364" preserveAspectRatio="none" />
     </svg> : <img src={PORTRAITS[factionId]} alt="" />}
   </span>;
 }

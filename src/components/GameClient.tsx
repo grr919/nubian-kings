@@ -209,7 +209,7 @@ export default function GameClient() {
   const feedbackDiagnostics = { level: "Beginner" as const, seed: state.random.seed, round: state.round, phase: state.phase, humanFaction: INFO[humanPlayer.factionId].name, npcCount: opponents.length, nileFloods: state.nileFloods, recentHistory: history.slice(0, 10) };
   return (
     <main className="gamePage">
-      <GameStateBanner
+      <GameStateBanner players={state.players} viewerId={humanPlayer.id}
         thinking={thinking}
         title={review ? "Review the comparison:" : state.phase === "complete" ? "Game complete." : humanTurn ? state.phase === "tie" ? "Choose a statistic for the tie:" : "Choose a statistic:" : `${INFO[selector.factionId].name} are deciding…`}
         detail={review ? "Review the revealed cards and scores." : state.phase === "tie" ? "The tied armies will play their next cards." : "Every active army contributes its next card."}

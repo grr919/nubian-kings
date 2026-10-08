@@ -458,7 +458,7 @@ export default function MasterClient() {
   const allowedAttackers = new Set(humanTurn && selectedStat ? legalMasterAttackers(state) : []);
 
   return <main className="gamePage amateurGame masterGame">
-    <GameStateBanner
+    <GameStateBanner players={state.players} viewerId={human.id}
       thinking={thinking}
       title={review ? `Review the ${masterActionLanguage(review.stat).noun}:` : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your pile:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
       detail={npcAttack ? `The selected units remain hidden until you resolve the ${masterActionLanguage(npcAttack.stat).noun}.` : humanTurn ? masterArmySize(human) ? "Choose an army pile. Your heir cannot act until every army card is gone." : "Your heir is your last card and must act alone." : "Losing piles are discarded as complete units."}

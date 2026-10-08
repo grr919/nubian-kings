@@ -229,4 +229,10 @@ body{background:#efd49b}
 @media(max-width:700px){.beginnerRules{grid-template-columns:minmax(0,1fr);gap:18px;padding:42px 20px 20px}.rulesCardPanel{width:100%;max-width:382px;justify-self:center}}
 
 /* Identify the viewer’s card while retaining every opponent box style. */
-.comparisonCards .comparisonYours{outline:5px solid #087b77;outline-offset:2px}.comparisonCards .youLabel{font-weight:900;color:#075f5b}
+.comparisonCards .comparisonYours{outline:5px solid #087b77;outline-offset:2px}.comparisonCards .youLabel{font-size:2em;font-weight:900;color:#075f5b}
+
+.gameStateRulers{display:flex;align-items:center;justify-content:center;gap:12px;flex:0 0 auto;align-self:center}
+.gameStateRuler{display:flex;border-radius:50%;padding:3px}
+.gameStateRuler.yourRuler{outline:3px solid #087b77}
+.gameStateRulers .compactPortrait{width:48px;height:48px}
+@media(max-width:900px){.gameStateBanner{flex-wrap:wrap}.gameStateRulers{order:3;width:100%;gap:10px}.gameStateRulers .compactPortrait{width:40px;height:40px}.gameStateBrand{margin-left:auto}}

@@ -362,7 +362,7 @@ export default function AmateurClient() {
 
   return (
     <main className="gamePage amateurGame">
-      <GameStateBanner
+      <GameStateBanner players={state.players} viewerId={human.id}
         thinking={thinking}
         title={review ? "Review the comparison:" : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
         detail={npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
