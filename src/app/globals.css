@@ -240,4 +240,4 @@ body{background:#efd49b}
 .gameStateBanner .gameStateRulers{flex-direction:row;flex-wrap:nowrap}
 .masterPlayer .masterHeir,.masterBoard .masterHeir{grid-template-columns:minmax(0,290px)}
 @media(max-width:600px){.masterPlayer .masterHeir,.masterBoard .masterHeir{grid-template-columns:minmax(0,216px)}}
-.masterHeir .masterUnit{padding-top:10px}
+.masterHeir .masterUnit{padding-top:30px}
