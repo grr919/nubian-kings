@@ -48,10 +48,10 @@ function unresolvedOutcomeText(stat: Stat, ended = false) {
   return `This attempt to influence the opposing forces ${ending}.`;
 }
 
-export function interruptedOutcomeText(stat: Stat) {
-  if (stat === "strength") return "This battle was interrupted.";
-  if (stat === "zeal") return "This conversion attempt was interrupted.";
-  return "This attempt to influence the opposing forces was interrupted.";
+export function interruptedOutcomeText(stat: Stat, source?: { factionId: string; cardName: string }) {
+  const attempt = stat === "strength" ? "This battle" : stat === "zeal" ? "This conversion attempt" : "This attempt to influence the opposing forces";
+  const civilization = source ? FACTION_ADJECTIVES[NAMES[source.factionId]] ?? NAMES[source.factionId] ?? source.factionId : undefined;
+  return `${attempt} was interrupted${source ? ` by the ${civilization} ${source.cardName}` : ""}.`;
 }
 
 export function declaredActionText(stat: Stat) {

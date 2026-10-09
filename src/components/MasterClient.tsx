@@ -50,6 +50,7 @@ import {
   resolveMasterNpcReplenishment,
   skipMasterReplenishment,
   spendMasterGuarantee,
+  type MasterInterruption,
   type MasterAttack,
   type MasterCard,
   type MasterConstruction,
@@ -88,6 +89,7 @@ interface MasterReview {
   tie: boolean;
   winnerId?: string;
   cancelReason?: "interrupt" | "immunity";
+  interruptedBy?: MasterInterruption;
   guarantees?: string[];
 }
 
@@ -113,7 +115,7 @@ function eventText(event: MasterEvent, state: MasterState) {
   const player = "playerId" in event ? state.players.find((candidate) => candidate.id === event.playerId) : undefined;
   const who = player?.controller === "human" ? "You" : player ? INFO[player.factionId].name : "A player";
   if (event.type === "tie") return "The comparison ended in a tie. Neither unit was lost.";
-  if (event.type === "cancelled") return event.reason === "immunity" ? "Conversion cancelled: the revealed target is immune." : "An effect interrupted the comparison. Neither unit was defeated.";
+  if (event.type === "cancelled") return event.reason === "immunity" ? "Conversion cancelled: the revealed target is immune." : `${interruptedOutcomeText(event.stat ?? "strength", event.interruptedBy)} Neither unit was defeated.`;
   if (event.type === "defeated") return `${player ? possessive(player) : "A player's"} ${event.heir ? "heir" : event.cardIds.length === 1 ? "card" : "pile"} was defeated.`;
   if (event.type === "replenishment-available") return `${who} may replenish the army.`;
   if (event.type === "replenished") return event.source === "discard" ? `${who} recovered a defeated card.` : `${who} drew a hidden reserve card.`;
@@ -312,7 +314,7 @@ export default function MasterClient() {
     if (events) {
       const scores = events.filter((event): event is Extract<MasterEvent, { type: "score" }> => event.type === "score").map(({ playerId: id, unitId, base, die, total }) => ({ playerId: id, unitId, base, die, total }));
       const loser = events.find((event): event is Extract<MasterEvent, { type: "defeated" }> => event.type === "defeated")?.playerId;
-      setReview({ stat: before.attack.stat, attacker: before.attackerCards, target: before.defenderCards, attackerUnitId: before.attack.attackerUnitId, targetUnitId: before.attack.targetUnitId, attackerPlayerId: before.attackerPlayerId, targetPlayerId: before.defenderPlayerId, scores, tie: events.some((event) => event.type === "tie" || event.type === "cancelled"), winnerId: before.forcedWinnerId ?? (loser ? loser === before.attackerPlayerId ? before.defenderPlayerId : before.attackerPlayerId : undefined), cancelReason: events.find((event): event is Extract<MasterEvent, { type: "cancelled" }> => event.type === "cancelled")?.reason ?? before.cancelReason, guarantees: before.guarantees });
+      setReview({ stat: before.attack.stat, attacker: before.attackerCards, target: before.defenderCards, attackerUnitId: before.attack.attackerUnitId, targetUnitId: before.attack.targetUnitId, attackerPlayerId: before.attackerPlayerId, targetPlayerId: before.defenderPlayerId, scores, tie: events.some((event) => event.type === "tie" || event.type === "cancelled"), winnerId: before.forcedWinnerId ?? (loser ? loser === before.attackerPlayerId ? before.defenderPlayerId : before.attackerPlayerId : undefined), cancelReason: events.find((event): event is Extract<MasterEvent, { type: "cancelled" }> => event.type === "cancelled")?.reason ?? before.cancelReason, guarantees: before.guarantees, interruptedBy: events.find((event): event is Extract<MasterEvent, { type: "cancelled" }> => event.type === "cancelled")?.interruptedBy });
       addEvents(events, next);
     }
     persist(next);
@@ -526,7 +528,7 @@ function MasterReviewPanel({ review, state, onContinue }: { review: MasterReview
   const targetPlayer = state.players.find((player) => player.id === review.targetPlayerId)!;
   const high = Math.max(...review.scores.map((score) => score.total));
   const winnerId = review.tie ? undefined : review.winnerId ?? review.scores.find((score) => score.total === high)?.playerId;
-  const headline = review.cancelReason === "interrupt" ? interruptedOutcomeText(review.stat) : review.cancelReason === "immunity" ? "Conversion cancelled: the target is immune." : masterRoundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
+  const headline = review.cancelReason === "interrupt" ? interruptedOutcomeText(review.stat, review.interruptedBy) : review.cancelReason === "immunity" ? "Conversion cancelled: the target is immune." : masterRoundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
   return <section className="comparisonStage amateurReview masterReview" aria-live="polite"><header><h2>{headline}</h2>{Boolean(review.guarantees?.length) && <p>One-time guarantee used{new Set(review.guarantees).size > 1 ? " by both sides; they cancel." : "."}</p>}</header><ComparisonHighlights>{[
     { player: attackerPlayer, cards: review.attacker, unitId: review.attackerUnitId, role: masterActionLanguage(review.stat).actor },
     { player: targetPlayer, cards: review.target, unitId: review.targetUnitId, role: masterActionLanguage(review.stat).target },

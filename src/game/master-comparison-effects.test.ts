@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { activateMasterArmyEffect, activateMasterClockBackward, activateMasterClockForward, activateMasterRandomDiscard, activateMasterSupport, applyMasterNileFlood, availableMasterGuarantees, availableMasterSupporters, beginMasterEffectComparison, chooseMasterNpcArmyEffect, chooseMasterNpcEffect, createMasterMercenaryReserve, eligibleMasterEliminationTargets, eliminateWithMasterEffect, finishMasterEffectComparison, interruptMasterComparison, passMasterEffectOpportunity, recordMasterTurnBoundary, spendMasterGuarantee, type MasterCard, type MasterPlayer, type MasterState } from "./master";
+import { reviewMultiplayerEffectResult } from "./master-multiplayer";
+import { interruptedOutcomeText } from "./player-language";
 import { createRandomState, randomSource } from "./random";
 
 function card(id: string, number: number, strength: number, zeal = strength, face: MasterCard["face"] = "up"): MasterCard {
@@ -12,6 +14,23 @@ function game(attacker: MasterCard, defender: MasterCard, support: MasterCard[] 
 const attack = { attackerUnitId: "a", targetPlayerId: "defender", targetUnitId: "d", stat: "strength" as const };
 
 describe("paused Master comparisons", () => {
+  it("names the civilization and card for interruptions of NPC contests", () => {
+    const source = card("interrupt-card", 109, 1);
+    source.name = "Test interrupt card";
+    source.factionId = "egyptian-christians";
+    const state = game(card("a1", 0, 5), card("d1", 0, 1));
+    state.players.forEach(p => p.controller = "npc");
+    state.players[1].factionId = "egyptian-christians";
+    state.players[1].army.push({ id: "support", cards: [source] });
+    beginMasterEffectComparison(state, { ...attack, stat: "wealth" });
+    passMasterEffectOpportunity(state, "attacker");
+    const before = structuredClone(state.pendingEffectComparison!);
+    const result = reviewMultiplayerEffectResult(before, interruptMasterComparison(state, "defender", source.id));
+    expect(interruptedOutcomeText("wealth", result.interruptedBy)).toBe("This attempt to influence the opposing forces was interrupted by the Egyptian Christian Test interrupt card.");
+    expect(interruptedOutcomeText("strength", result.interruptedBy)).toBe("This battle was interrupted by the Egyptian Christian Test interrupt card.");
+    expect(interruptedOutcomeText("wealth")).toBe("This attempt to influence the opposing forces was interrupted.");
+  });
+
   it.each(["strength", "zeal", "wealth"] as const)("limits Moses Giyorgios’s defense guarantee in %s conflicts", (stat) => {
     const state = game({ ...card("a1", 0, 5), wealth: 5 }, { ...card("d1", 0, 1), wealth: 1 });
     const moses = card("moses", 4, 4);
@@ -119,8 +138,13 @@ describe("paused Master comparisons", () => {
     beginMasterEffectComparison(state, { ...attack, stat: "zeal" });
     expect(() => interruptMasterComparison(state, "attacker", source.id)).toThrow();
     passMasterEffectOpportunity(state, "attacker");
+    const before = structuredClone(state.pendingEffectComparison!);
     const events = interruptMasterComparison(state, "defender", source.id);
-    expect(events).toContainEqual({ type: "cancelled", reason: "interrupt" });
+    expect(events).toContainEqual(expect.objectContaining({ type: "cancelled", reason: "interrupt", interruptedBy: { playerId: "defender", cardId: "bishop", cardName: "bishop", factionId: "nubian-christians" } }));
+    const result = reviewMultiplayerEffectResult(before, events);
+    expect(result.cancelReason).toBe("interrupt");
+    expect(result.interruptedBy?.cardName).toBe("bishop");
+    expect(interruptedOutcomeText(result.attack.stat, result.interruptedBy)).toBe("This conversion attempt was interrupted by the Nubian Christian bishop.");
     expect(state.players[0].army).toHaveLength(1);
     expect(state.players[1].army).toHaveLength(1);
     expect(state.phase).toBe("attack");

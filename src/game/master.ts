@@ -6,6 +6,8 @@ import { createRandomState, randomSource } from "./random";
 import { FACTIONS } from "./setup";
 import type { Face, RandomState, Stat } from "./types";
 
+export interface MasterInterruption { playerId: string; cardId: string; cardName: string; factionId: string }
+
 export type MasterVictoryMode = "standard" | "long";
 export type MasterController = "human" | "npc";
 export type MasterEffectsMode = "off" | "on";
@@ -107,6 +109,7 @@ export interface PendingMasterComparison {
   guarantees: string[];
   cancelled: boolean;
   cancelReason?: "interrupt" | "immunity";
+  interruptedBy?: MasterInterruption;
   forcedWinnerId?: string;
   supports?: Array<{ sourceId: string; supporterId: string; controllerId: string; side: "attacker" | "defender"; stat: "strength" | "zeal" }>;
 }
@@ -133,7 +136,7 @@ export type MasterEvent =
   | { type: "reveal"; playerId: string; cardIds: string[] }
   | { type: "score"; playerId: string; unitId: string; base: number; die: number; total: number }
   | { type: "tie" }
-  | { type: "cancelled"; reason: "interrupt" | "immunity" }
+  | { type: "cancelled"; reason: "interrupt" | "immunity"; stat?: Stat; interruptedBy?: MasterInterruption }
   | { type: "defeated"; playerId: string; unitId: string; cardIds: string[]; heir: boolean }
   | { type: "replenishment-available"; playerId: string }
   | { type: "replenished"; playerId: string; source?: "unused" | "discard"; cardId?: string }
@@ -647,6 +650,7 @@ export function interruptMasterComparison(state: MasterState, playerId: string, 
   source.effectSpent = true;
   pending.cancelled = true;
   pending.cancelReason = "interrupt";
+  pending.interruptedBy = { playerId, cardId: source.id, cardName: source.name, factionId: player.factionId };
   pending.passes = state.players.filter((candidate) => !candidate.eliminated).length;
   return finishMasterEffectComparison(state);
 }
@@ -722,7 +726,7 @@ export function finishMasterEffectComparison(state: MasterState): MasterEvent[] 
   }
   if (!attacker || !target) throw new Error("A comparison unit disappeared without an elimination result");
   if (pending.cancelled || (pending.attack.stat === "zeal" && target.cards.some((card) => immuneToConversion(state, defender, card)))) {
-    events.push({ type: "cancelled", reason: pending.cancelReason ?? "immunity" });
+    events.push({ type: "cancelled", reason: pending.cancelReason ?? "immunity", ...(pending.interruptedBy ? { interruptedBy: pending.interruptedBy, stat: pending.attack.stat } : {}) });
     normalizeMasterPiles(state);
     advanceTurn(state, events);
     return events;
