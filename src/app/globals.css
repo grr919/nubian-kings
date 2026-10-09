@@ -251,6 +251,7 @@ body{background:#efd49b}
 
 /* Replenishment recovery choices must not expand the fixed bottom panel. */
 .masterGame .replenishmentPanel{max-height:65svh;overflow-y:auto}
-.masterGame .replenishmentPanel>.recoveryCards{display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:12px;width:min(1100px,100%);margin:12px auto 0;overflow-x:auto;padding:4px 0 8px}
+.masterGame .replenishmentPanel>p{text-align:center;margin:12px auto 0}
+.masterGame .replenishmentPanel>.recoveryCards{display:flex;flex-wrap:nowrap;justify-content:safe center;gap:12px;width:min(1100px,100%);margin:12px auto 0;overflow-x:auto;padding:4px 0 8px}
 .masterGame .recoveryCards>.bareCardButton{flex:0 0 120px;width:120px;min-width:120px;max-width:120px;padding:0}
 .masterGame .recoveryCards .masterCard{width:100%;min-width:0;max-width:100%}
