@@ -8,7 +8,7 @@ function card(id: string, number: number, strength: number, zeal = strength, fac
   return { id, definitionId: id, name: id, artFile: `${number} card.jpg`, factionId: "nubian-christians", type: id.startsWith("heir-") ? "leader" : "person", strength, zeal, wealth: 0, face };
 }
 function game(attacker: MasterCard, defender: MasterCard, support: MasterCard[] = []): MasterState {
-  const players: MasterPlayer[] = [attacker, defender].map((item, index) => ({ id: index ? "defender" : "attacker", factionId: "nubian-christians", controller: "human", army: [{ id: index ? "d" : "a", cards: [item] }, ...(!index ? support.map((c) => ({ id: c.id, cards: [c] })) : [])], heir: card(`heir-${index}`, 0, 4), unused: [], discard: [], eliminated: false }));
+  const players: MasterPlayer[] = [attacker, defender].map((item, index) => ({ id: index ? "defender" : "attacker", factionId: index ? "nubian-christians" : "egyptian-muslims", controller: "human", army: [{ id: index ? "d" : "a", cards: [item] }, ...(!index ? support.map((c) => ({ id: c.id, cards: [c] })) : [])], heir: card(`heir-${index}`, 0, 4), unused: [], discard: [], eliminated: false }));
   return { version: 1, mode: "master", players, activePlayerIndex: 0, phase: "attack", nileFloods: false, victoryMode: "standard", effectsMode: "on", round: 1, random: createRandomState("EFFECTS") };
 }
 const attack = { attackerUnitId: "a", targetPlayerId: "defender", targetUnitId: "d", stat: "strength" as const };

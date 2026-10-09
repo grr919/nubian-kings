@@ -374,7 +374,7 @@ export default function AmateurClient() {
         <section className="amateurBoard">
           <AmateurPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onCard={(id) => setAttackerId(id)} />
           <div className="amateurOpponents">{state.players.filter((player) => player.controller === "npc").map((player) => {
-            const targets = humanTurn && attackerId && selectedStat ? new Set(legalTargets(state, player.id).map((card) => card.id)) : new Set<string>();
+            const targets = humanTurn && attackerId && selectedStat ? new Set(legalTargets(state, player.id, selectedStat).map((card) => card.id)) : new Set<string>();
             const highlights = new Set<string>();
             if (npcAttack && active.id === player.id) highlights.add(npcAttack.attackerId);
             if (npcAttack?.targetPlayerId === player.id) highlights.add(npcAttack.targetId);
@@ -386,7 +386,7 @@ export default function AmateurClient() {
       {!review && humanTurn && (
         <section className="chooser amateurChooser">
           <p>{!selectedStat ? "Which statistic will resolve the next conflict?" : !attackerId ? human.army.length ? "Now choose one of your army cards to initiate the comparison." : "Your heir is your last card. Choose it to initiate the comparison." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
-          <div>{STATS.map((stat) => <button key={stat} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
+          <div>{STATS.map((stat) => <button key={stat} disabled={!state.players.some(player => legalTargets(state, player.id, stat).length)} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
         </section>
       )}
 

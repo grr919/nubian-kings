@@ -1,3 +1,4 @@
+import { canConvertCivilization } from "./conversion";
 import data from "../data/cards.json";
 import effectText from "../data/card-effects.json";
 import mercenaryData from "../data/mercenaries.json";
@@ -442,6 +443,7 @@ export function legalMasterTargets(state: MasterState, targetPlayerId: string, s
   const attacker = activeMasterPlayer(state);
   const target = state.players.find((candidate) => candidate.id === targetPlayerId);
   if (!target || target.eliminated || target.id === attacker.id || state.phase !== "attack") return [];
+  if (stat === "zeal" && !canConvertCivilization(attacker.factionId, target.factionId)) return [];
   const candidateIds = masterArmySize(target) ? target.army.map((pile) => pile.id) : [target.heir.id];
   return state.effectsMode === "on" && stat === "zeal" ? candidateIds.filter((id) => !findUnit(target, id)!.cards.some((card) => immuneToConversion(state, target, card))) : candidateIds;
 }
@@ -999,7 +1001,7 @@ export function resolveMasterAttack(state: MasterState, action: MasterAttack): M
   const defender = state.players.find((player) => player.id === action.targetPlayerId);
   if (!defender) throw new Error("Unknown target player");
   if (!legalMasterAttackers(state).includes(action.attackerUnitId)) throw new Error("Illegal attacker");
-  if (!legalMasterTargets(state, defender.id).includes(action.targetUnitId)) throw new Error("Illegal target");
+  if (!legalMasterTargets(state, defender.id, action.stat).includes(action.targetUnitId)) throw new Error("Illegal target");
   if (!["strength", "zeal", "wealth"].includes(action.stat)) throw new Error("Illegal statistic");
   const attacker = findUnit(attackerPlayer, action.attackerUnitId)!;
   const target = findUnit(defender, action.targetUnitId)!;

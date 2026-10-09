@@ -1,3 +1,4 @@
+import { canConvertCivilization } from "./conversion";
 import data from "../data/cards.json";
 import { createRandomState, randomSource } from "./random";
 import { FACTIONS } from "./setup";
@@ -213,10 +214,11 @@ export function legalAttackers(state: AmateurState, playerId = activePlayer(stat
   return player.army.length ? [...player.army] : [player.heir];
 }
 
-export function legalTargets(state: AmateurState, targetPlayerId: string) {
+export function legalTargets(state: AmateurState, targetPlayerId: string, stat?: Stat) {
   const attacker = activePlayer(state);
   const target = state.players.find((candidate) => candidate.id === targetPlayerId);
   if (!target || target.eliminated || target.id === attacker.id || state.phase !== "attack") return [];
+  if (stat === "zeal" && !canConvertCivilization(attacker.factionId, target.factionId)) return [];
   return target.army.length ? target.army : [target.heir];
 }
 
@@ -277,7 +279,7 @@ export function resolveAmateurAttack(state: AmateurState, action: AmateurAttack)
   const defender = state.players.find((player) => player.id === action.targetPlayerId);
   if (!defender) throw new Error("Unknown target player");
   if (!legalAttackers(state).some((card) => card.id === action.attackerId)) throw new Error("Illegal attacker");
-  if (!legalTargets(state, defender.id).some((card) => card.id === action.targetId)) throw new Error("Illegal target");
+  if (!legalTargets(state, defender.id, action.stat).some((card) => card.id === action.targetId)) throw new Error("Illegal target");
   if (!["strength", "zeal", "wealth"].includes(action.stat)) throw new Error("Illegal statistic");
 
   const attacker = findOwnedCard(attackerPlayer, action.attackerId)!;
@@ -395,7 +397,7 @@ export function chooseNpcAttack(state: AmateurState): AmateurAttack {
   const target = visibleTargets.length && rng() < 0.75
     ? [...visibleTargets].sort((a, b) => (a.strength + a.zeal + a.wealth) - (b.strength + b.zeal + b.wealth))[0]
     : targets[Math.floor(rng() * targets.length)];
-  const stats: Stat[] = ["strength", "zeal", "wealth"];
+  const stats: Stat[] = (["strength", "zeal", "wealth"] as Stat[]).filter(stat => stat !== "zeal" || canConvertCivilization(player.factionId, targetPlayer.factionId));
   const stat = attacker.face === "up"
     ? [...stats].sort((a, b) => attacker[b] - attacker[a])[0]
     : stats[Math.floor(rng() * stats.length)];
