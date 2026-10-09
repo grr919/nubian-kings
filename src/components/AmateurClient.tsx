@@ -295,7 +295,7 @@ export default function AmateurClient() {
         <EparchCrownMark className="royalMark" />
         <h1>Nubian Kings</h1>
         <p className="subtitle">Protected heirs and targeted attacks</p>
-        <p>Command a ten-card army, expose an enemy heir, and eliminate it before your own falls.</p>
+        <p>Command a ten-card army, expose an enemy heir, and eliminate it before your own heir falls.</p>
         <div className="actions">
           <button onClick={() => setScreen("setup")}>New Amateur Game</button>
           <button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Amateur Game</button>
