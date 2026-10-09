@@ -636,7 +636,7 @@ export function masterInterruptAvailable(card: MasterCard, playerId: string, att
   const number = Number(card.artFile?.match(/^\d+/)?.[0] ?? 0);
   return card.face === "up" && !card.effectSpent && (stat === "zeal"
     ? playerId !== attackerPlayerId && [16, 82, 112].includes(number)
-    : number === 109);
+    : stat === "strength" && number === 109);
 }
 
 /** An interrupt cancels a pending attempt; it refreshes at the next turn boundary. */

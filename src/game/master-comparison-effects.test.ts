@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activateMasterArmyEffect, activateMasterClockBackward, activateMasterClockForward, activateMasterRandomDiscard, activateMasterSupport, applyMasterNileFlood, availableMasterGuarantees, availableMasterSupporters, beginMasterEffectComparison, chooseMasterNpcArmyEffect, chooseMasterNpcEffect, createMasterMercenaryReserve, eligibleMasterEliminationTargets, eliminateWithMasterEffect, finishMasterEffectComparison, interruptMasterComparison, passMasterEffectOpportunity, recordMasterTurnBoundary, spendMasterGuarantee, type MasterCard, type MasterPlayer, type MasterState } from "./master";
+import { masterInterruptAvailable, activateMasterArmyEffect, activateMasterClockBackward, activateMasterClockForward, activateMasterRandomDiscard, activateMasterSupport, applyMasterNileFlood, availableMasterGuarantees, availableMasterSupporters, beginMasterEffectComparison, chooseMasterNpcArmyEffect, chooseMasterNpcEffect, createMasterMercenaryReserve, eligibleMasterEliminationTargets, eliminateWithMasterEffect, finishMasterEffectComparison, interruptMasterComparison, passMasterEffectOpportunity, recordMasterTurnBoundary, spendMasterGuarantee, type MasterCard, type MasterPlayer, type MasterState } from "./master";
 import { reviewMultiplayerEffectResult } from "./master-multiplayer";
 import { interruptedOutcomeText } from "./player-language";
 import { createRandomState, randomSource } from "./random";
@@ -14,6 +14,23 @@ function game(attacker: MasterCard, defender: MasterCard, support: MasterCard[] 
 const attack = { attackerUnitId: "a", targetPlayerId: "defender", targetUnitId: "d", stat: "strength" as const };
 
 describe("paused Master comparisons", () => {
+  it.each(["strength", "zeal", "wealth"] as const)("restricts Kebra Negast interrupts in %s conflicts", stat => {
+    const source = card("kebra", 109, 1);
+    const state = game(card("a1", 0, 5), card("d1", 0, 1));
+    state.players[1].controller = "npc";
+    state.players[1].army.push({ id: "kebra-support", cards: [source] });
+    beginMasterEffectComparison(state, { ...attack, stat });
+    passMasterEffectOpportunity(state, "attacker");
+    expect(masterInterruptAvailable(source, "defender", "attacker", stat)).toBe(stat === "strength");
+    expect(chooseMasterNpcEffect(state)).toEqual(stat === "strength" ? { kind: "interrupt", cardId: "kebra" } : { kind: "pass" });
+    if (stat === "strength") expect(interruptMasterComparison(state, "defender", "kebra")).toContainEqual(expect.objectContaining({ type: "cancelled", reason: "interrupt" }));
+    else {
+      expect(() => interruptMasterComparison(state, "defender", "kebra")).toThrow("unavailable");
+      expect(source.effectSpent).not.toBe(true);
+      expect(state.phase).toBe("effects");
+    }
+  });
+
   it("names the civilization and card for interruptions of NPC contests", () => {
     const source = card("interrupt-card", 109, 1);
     source.name = "Test interrupt card";
@@ -22,7 +39,7 @@ describe("paused Master comparisons", () => {
     state.players.forEach(p => p.controller = "npc");
     state.players[1].factionId = "egyptian-christians";
     state.players[1].army.push({ id: "support", cards: [source] });
-    beginMasterEffectComparison(state, { ...attack, stat: "wealth" });
+    beginMasterEffectComparison(state, { ...attack, stat: "strength" });
     passMasterEffectOpportunity(state, "attacker");
     const before = structuredClone(state.pendingEffectComparison!);
     const result = reviewMultiplayerEffectResult(before, interruptMasterComparison(state, "defender", source.id));
