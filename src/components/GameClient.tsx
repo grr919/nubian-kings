@@ -1,4 +1,5 @@
 "use client";
+import { canResumeGame } from "@/game/resumable-game";
 import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
@@ -94,15 +95,16 @@ export default function GameClient() {
   const profiles = useMemo(() => Object.fromEntries(FACTIONS.map((id) => [id, factionProfile(cardData.cards.filter((c) => c.factionId === id))])), []);
   const eliminationPending = humanMayEndEliminatedGame(state) && !watchAfterElimination;
 
-  useEffect(() => setHasSave(Boolean(parseGame(localStorage.getItem(SAVE_KEY) ?? ""))), []);
+  useEffect(() => setHasSave(canResumeGame(parseGame(localStorage.getItem(SAVE_KEY) ?? ""))), []);
 
   useEffect(() => {
     if (review) window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [review]);
 
   function persist(next: BeginnerState) {
-    localStorage.setItem(SAVE_KEY, serializeGame(next));
-    setHasSave(true);
+    if (canResumeGame(next)) localStorage.setItem(SAVE_KEY, serializeGame(next));
+    else localStorage.removeItem(SAVE_KEY);
+    setHasSave(canResumeGame(next));
   }
 
   function start() {
@@ -113,7 +115,7 @@ export default function GameClient() {
 
   function continueGame() {
     const saved = parseGame(localStorage.getItem(SAVE_KEY) ?? "");
-    if (saved) { const savedReview = localStorage.getItem(REVIEW_KEY); const legacyChoice = localStorage.getItem(NPC_CHOICE_KEY); const choice = saved.pendingNpcChoice ?? (legacyChoice ? JSON.parse(legacyChoice) : undefined); if (choice && !saved.pendingNpcChoice) { saved.pendingNpcChoice = choice; persist(saved); } setReview(savedReview ? JSON.parse(savedReview) : undefined); setNpcChoice(choice); setWatchAfterElimination(false); setState(saved); setHistory(["Saved game restored."]); setScreen("game"); }
+    if (saved && canResumeGame(saved)) { const savedReview = localStorage.getItem(REVIEW_KEY); const legacyChoice = localStorage.getItem(NPC_CHOICE_KEY); const choice = saved.pendingNpcChoice ?? (legacyChoice ? JSON.parse(legacyChoice) : undefined); if (choice && !saved.pendingNpcChoice) { saved.pendingNpcChoice = choice; persist(saved); } setReview(savedReview ? JSON.parse(savedReview) : undefined); setNpcChoice(choice); setWatchAfterElimination(false); setState(saved); setHistory(["Saved game restored."]); setScreen("game"); }
   }
 
   function choose(stat: Stat, sourceState = state) {
@@ -186,7 +188,7 @@ export default function GameClient() {
     <main className="landing"><section className="panel titlePanel">
       <p className="kicker">BEGINNER LEVEL: THE AL-AZHAR MOSQUE</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
       <p>Lead a medieval African civilization through a contest of strength, zeal, and wealth.</p>
-      <div className="actions"><button onClick={() => setScreen("setup")}>New Solo Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Solo Game</button><a className="buttonLink" href="/beginner/multiplayer">Multiplayer</a></div>
+      <div className="actions"><button onClick={() => setScreen("setup")}>New Solo Game</button>{hasSave && <button className="secondary" onClick={continueGame}>Continue Solo Game</button>}<a className="buttonLink" href="/beginner/multiplayer">Multiplayer</a></div>
       <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><footer className="landingFooter">© 2026 Nile South Games</footer>
     </section>{help && <Help onClose={() => setHelp(false)} />}</main>
   );

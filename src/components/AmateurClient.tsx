@@ -1,4 +1,5 @@
 "use client";
+import { canResumeGame } from "@/game/resumable-game";
 import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
@@ -132,15 +133,16 @@ export default function AmateurClient() {
   const [watchAfterElimination, setWatchAfterElimination] = useState(false);
   const eliminationPending = humanMayEndEliminatedGame(state) && !watchAfterElimination;
 
-  useEffect(() => setHasSave(Boolean(parseAmateurGame(localStorage.getItem(AMATEUR_SAVE_KEY) ?? ""))), []);
+  useEffect(() => setHasSave(canResumeGame(parseAmateurGame(localStorage.getItem(AMATEUR_SAVE_KEY) ?? ""))), []);
 
   useEffect(() => {
     if (review) window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [review]);
 
   function persist(next: AmateurState) {
-    localStorage.setItem(AMATEUR_SAVE_KEY, serializeAmateurGame(next));
-    setHasSave(true);
+    if (canResumeGame(next)) localStorage.setItem(AMATEUR_SAVE_KEY, serializeAmateurGame(next));
+    else localStorage.removeItem(AMATEUR_SAVE_KEY);
+    setHasSave(canResumeGame(next));
   }
 
   function assemble() {
@@ -171,7 +173,7 @@ export default function AmateurClient() {
 
   function continueGame() {
     const saved = parseAmateurGame(localStorage.getItem(AMATEUR_SAVE_KEY) ?? "");
-    if (!saved) return;
+    if (!saved || !canResumeGame(saved)) return;
     try {
       const pending = JSON.parse(localStorage.getItem(AMATEUR_NPC_ATTACK_KEY) ?? "null");
       if (pending && typeof pending.attackerId === "string" && typeof pending.targetPlayerId === "string" && typeof pending.targetId === "string" && STATS.includes(pending.stat)) setNpcAttack(pending);
@@ -298,7 +300,7 @@ export default function AmateurClient() {
         <p>Command a ten-card army, expose an enemy heir, and eliminate it before your own heir falls.</p>
         <div className="actions">
           <button onClick={() => setScreen("setup")}>New Amateur Game</button>
-          <button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Amateur Game</button>
+          {hasSave && <button className="secondary" onClick={continueGame}>Continue Amateur Game</button>}
           <a className="buttonLink" href="/amateur/multiplayer">Multiplayer</a>
         </div>
         <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">Return to Main</a></div>

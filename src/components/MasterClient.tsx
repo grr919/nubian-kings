@@ -1,4 +1,5 @@
 "use client";
+import { canResumeGame } from "@/game/resumable-game";
 import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 import { getCardArtwork } from "@/game/card-artwork";
 import CardBack from "./CardBack";
@@ -163,12 +164,13 @@ export default function MasterClient() {
   const [watchAfterElimination, setWatchAfterElimination] = useState(false);
   const eliminationPending = humanMayEndEliminatedGame(state) && !watchAfterElimination;
 
-  useEffect(() => setHasSave(Boolean(parseMasterGame(localStorage.getItem(MASTER_SAVE_KEY) ?? ""))), []);
+  useEffect(() => setHasSave(canResumeGame(parseMasterGame(localStorage.getItem(MASTER_SAVE_KEY) ?? ""))), []);
   useEffect(() => { if (review) window.scrollTo({ top: 0, left: 0, behavior: "auto" }); }, [review]);
 
   function persist(next: MasterState) {
-    localStorage.setItem(MASTER_SAVE_KEY, serializeMasterGame(next));
-    setHasSave(true);
+    if (canResumeGame(next)) localStorage.setItem(MASTER_SAVE_KEY, serializeMasterGame(next));
+    else localStorage.removeItem(MASTER_SAVE_KEY);
+    setHasSave(canResumeGame(next));
   }
 
   function assemble() {
@@ -233,7 +235,7 @@ export default function MasterClient() {
 
   function continueGame() {
     const saved = parseMasterGame(localStorage.getItem(MASTER_SAVE_KEY) ?? "");
-    if (!saved) return;
+    if (!saved || !canResumeGame(saved)) return;
     try {
       const pending = JSON.parse(localStorage.getItem(MASTER_NPC_ATTACK_KEY) ?? "null");
       if (pending && typeof pending.attackerUnitId === "string" && typeof pending.targetPlayerId === "string" && typeof pending.targetUnitId === "string" && STATS.includes(pending.stat)) setNpcAttack(pending);
@@ -416,7 +418,7 @@ export default function MasterClient() {
   if (screen === "home") return <main className="landing masterLanding"><section className="panel titlePanel">
     <p className="kicker">MASTER LEVEL: THE ROCK CHURCH OF LALIBELA</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">Armies assembled in hidden formations</p>
     <p>Build twenty cards into legal piles, protect your heir, and defeat opposing formations as complete units.</p>
-    <div className="actions"><button onClick={() => setScreen("setup")}>New Master Game</button><button className="secondary" disabled={!hasSave} onClick={continueGame}>Continue Master Game</button><a className="buttonLink secondary" href="/master/multiplayer">Multiplayer</a></div>
+    <div className="actions"><button onClick={() => setScreen("setup")}>New Master Game</button>{hasSave && <button className="secondary" onClick={continueGame}>Continue Master Game</button>}<a className="buttonLink secondary" href="/master/multiplayer">Multiplayer</a></div>
     <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Master Rules</button><a className="landingBack" href="/">Return to Main</a></div>
     <small>Build your army and challenge the other kingdoms.</small>
     <footer className="landingFooter">© 2026 Nile South Games</footer>
