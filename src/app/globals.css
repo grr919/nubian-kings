@@ -243,3 +243,8 @@ body{background:#efd49b}
 .masterHeir .masterUnit{padding-top:30px}
 
 .chooser .replenishmentActions{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:12px}.chooser .replenishmentActions>button{flex:1;min-width:0}
+
+/* Discard thumbnails keep their size independent of the number of cards. */
+.masterGame .discardViewer>div{align-items:flex-start}
+.masterGame .discardViewer>div>.bareCardButton{flex:0 0 120px;width:120px;min-width:120px;max-width:120px}
+.masterGame .discardViewer .masterCard{width:100%;min-width:0;max-width:100%}
