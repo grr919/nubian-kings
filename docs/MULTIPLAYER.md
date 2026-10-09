@@ -199,7 +199,7 @@ The following design is approved for implementation.
 ### Replenishment
 
 - After a non-tied battle, the winning player receives any available replenishment decision.
-- A human winner may draw one hidden reserve card as a new standalone unit, up to the twenty-card army limit, or skip.
+- A human winner may recover one chosen card from their own public discard pile, draw one hidden reserve card, or skip. Recovered and drawn cards enter face down as new standalone units, up to the army limit. Eliminated mercenaries cannot be recovered.
 - The replenishment card does not join or reopen an existing pile.
 - The server makes computer replenishment decisions.
 - Play remains paused until replenishment is completed or skipped.

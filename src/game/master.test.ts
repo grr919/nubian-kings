@@ -138,6 +138,58 @@ describe("Master attacks", () => {
     expect(legalMasterTargets(game, "npc")).toEqual([game.players[1].heir.id]);
   });
 
+  it("recovers a chosen defeated card face down without consuming reserve or recovering its old pile", () => {
+    const human = player("human", "human", []);
+    human.discard.push(card("old-person", "person"), card("old-place", "place"));
+    human.unused.push(card("reserve", "person"));
+    const game = state([human, player("npc", "npc", [])]);
+    game.phase = "replenish";
+    game.pendingReplenishmentPlayerId = "human";
+    replenishMasterArmy(game, "old-person");
+    expect(human.army).toHaveLength(1);
+    expect(human.army[0].cards).toHaveLength(1);
+    expect(human.army[0].cards[0]).toMatchObject({ id: "old-person", face: "down" });
+    expect(human.discard.map(c => c.id)).toEqual(["old-place"]);
+    expect(human.unused).toHaveLength(1);
+    expect(game.phase).toBe("attack");
+  });
+
+  it("rejects another player's discarded card and eliminated mercenaries", () => {
+    const human = player("human", "human", []), npc = player("npc", "npc", []);
+    npc.discard.push(card("enemy", "person"));
+    human.discard.push({ ...card("mercenary", "person"), mercenary: true });
+    const game = state([human, npc]);
+    game.phase = "replenish";
+    game.pendingReplenishmentPlayerId = "human";
+    expect(() => replenishMasterArmy(game, "enemy")).toThrow("recoverable discard");
+    expect(() => replenishMasterArmy(game, "mercenary")).toThrow("recoverable discard");
+    expect(human.army).toHaveLength(0);
+    expect(human.discard).toHaveLength(1);
+  });
+
+  it("offers replenishment with an empty reserve when the winner has defeated cards", () => {
+    const human = player("human", "human", [pile("h", [card("hp", "person", [9,9,9])])]);
+    human.discard.push(card("recover", "person"));
+    const game = state([human, player("npc", "npc", [pile("n", [card("np", "person", [1,1,1])])])]);
+    resolveMasterAttack(game, { attackerUnitId: "h", targetPlayerId: "npc", targetUnitId: "n", stat: "strength" });
+    expect(game.phase).toBe("replenish");
+    expect(game.pendingReplenishmentPlayerId).toBe("human");
+  });
+
+  it("respects the army limit when recovering and lets the computer recover without a reserve", () => {
+    const npc = player("npc", "npc", [pile("n", [card("np", "person")])]);
+    npc.armyLimit = 1;
+    npc.discard.push(card("recover", "person"));
+    const game = state([player("human", "human", []), npc]);
+    game.phase = "replenish";
+    game.pendingReplenishmentPlayerId = "npc";
+    expect(() => replenishMasterArmy(game, "recover")).toThrow("full");
+    npc.armyLimit = 20;
+    resolveMasterNpcReplenishment(game);
+    expect(npc.discard).toHaveLength(0);
+    expect(npc.army[1].cards[0]).toMatchObject({ id: "recover", face: "down" });
+  });
+
   it("adds a random reserve card as a legal standalone pile, including a Thing", () => {
     const human = player("human", "human", []);
     human.unused.push(card("hidden-thing", "thing"));

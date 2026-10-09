@@ -136,7 +136,7 @@ export type MasterEvent =
   | { type: "cancelled"; reason: "interrupt" | "immunity" }
   | { type: "defeated"; playerId: string; unitId: string; cardIds: string[]; heir: boolean }
   | { type: "replenishment-available"; playerId: string }
-  | { type: "replenished"; playerId: string }
+  | { type: "replenished"; playerId: string; source?: "unused" | "discard"; cardId?: string }
   | { type: "replenishment-skipped"; playerId: string }
   | { type: "player-eliminated"; playerId: string }
   | { type: "turn-advanced"; playerId: string }
@@ -713,7 +713,7 @@ export function finishMasterEffectComparison(state: MasterState): MasterEvent[] 
       if (eliminateHeir(state, loser, winner, events)) return events;
     }
     normalizeMasterPiles(state);
-    if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && winner.unused.length) {
+    if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && (winner.unused.length || winner.discard.some(card => !card.mercenary))) {
       state.phase = "replenish";
       state.pendingReplenishmentPlayerId = winner.id;
       events.push({ type: "replenishment-available", playerId: winner.id });
@@ -749,7 +749,7 @@ export function finishMasterEffectComparison(state: MasterState): MasterEvent[] 
     for (const card of losingUnit.cards) if (!card.mercenary) loser.discard.push({ ...card, face: "up" });
   }
   normalizeMasterPiles(state);
-  if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && winner.unused.length) {
+  if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && (winner.unused.length || winner.discard.some(card => !card.mercenary))) {
     state.phase = "replenish";
     state.pendingReplenishmentPlayerId = winner.id;
     events.push({ type: "replenishment-available", playerId: winner.id });
@@ -1029,7 +1029,7 @@ export function resolveMasterAttack(state: MasterState, action: MasterAttack): M
     loser.army = loser.army.filter((pile) => pile.id !== losingUnit.id);
     loser.discard.push(...losingUnit.cards.map((card) => ({ ...card, face: "up" as const })));
   }
-  if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && winner.unused.length) {
+  if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && (winner.unused.length || winner.discard.some(card => !card.mercenary))) {
     state.phase = "replenish";
     state.pendingReplenishmentPlayerId = winner.id;
     events.push({ type: "replenishment-available", playerId: winner.id });
@@ -1044,14 +1044,16 @@ function pendingPlayer(state: MasterState) {
   return player;
 }
 
-export function replenishMasterArmy(state: MasterState): MasterEvent[] {
+export function replenishMasterArmy(state: MasterState, discardedCardId?: string): MasterEvent[] {
   const player = pendingPlayer(state);
   if (masterArmySize(player) >= (player.armyLimit ?? 20)) throw new Error("Army is already full");
-  const card = player.unused.shift();
+  const discardIndex = discardedCardId === undefined ? -1 : player.discard.findIndex(card => card.id === discardedCardId && !card.mercenary);
+  if (discardedCardId !== undefined && discardIndex < 0) throw new Error("Card is not in your recoverable discard pile");
+  const card = discardedCardId === undefined ? player.unused.shift() : player.discard.splice(discardIndex, 1)[0];
   if (!card) throw new Error("Unused deck is empty");
   card.face = "down";
   player.army.push({ id: `${player.id}-reserve-${state.round}-${card.id}`, cards: [card] });
-  const events: MasterEvent[] = [{ type: "replenished", playerId: player.id }];
+  const events: MasterEvent[] = [{ type: "replenished", playerId: player.id, source: discardedCardId === undefined ? "unused" : "discard", ...(discardedCardId === undefined ? {} : { cardId: card.id }) }];
   advanceTurn(state, events);
   return events;
 }
@@ -1093,5 +1095,7 @@ export function chooseMasterNpcAttack(state: MasterState): MasterAttack {
 export function resolveMasterNpcReplenishment(state: MasterState) {
   const player = pendingPlayer(state);
   if (player.controller !== "npc") throw new Error("The pending player is not an NPC");
-  return replenishMasterArmy(state);
+  const best = player.discard.filter(card => !card.mercenary).sort((a, b) => (b.strength + b.zeal + b.wealth) - (a.strength + a.zeal + a.wealth))[0];
+  if (best) return replenishMasterArmy(state, best.id);
+  return player.unused.length ? replenishMasterArmy(state) : skipMasterReplenishment(state);
 }
