@@ -255,3 +255,8 @@ body{background:#efd49b}
 .masterGame .replenishmentPanel>.recoveryCards{display:flex;flex-wrap:nowrap;justify-content:safe center;gap:12px;width:min(1100px,100%);margin:12px auto 0;overflow-x:auto;padding:4px 0 8px}
 .masterGame .recoveryCards>.bareCardButton{flex:0 0 120px;width:120px;min-width:120px;max-width:120px;padding:0}
 .masterGame .recoveryCards .masterCard{width:100%;min-width:0;max-width:100%}
+
+/* Amateur replenishment actions sit centered beneath the question. */
+.amateurReplenishment .replenishmentHeading{justify-content:center;text-align:center}
+.amateurReplenishment .replenishmentChoices{justify-content:safe center!important}
+.amateurReplenishment .replenishmentActions>button{flex:0 1 220px;width:220px;min-width:0!important;align-items:center;text-align:center}

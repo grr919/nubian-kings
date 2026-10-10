@@ -399,10 +399,12 @@ export default function AmateurClient() {
       )}
 
       {!review && state.phase === "replenish" && pending?.controller === "human" && (
-        <section className="chooser replenishmentPanel">
-          <div className="replenishmentHeading"><div><p className="kicker">VICTORIOUS PLAYER</p><b>Replenish your army?</b></div><button onClick={() => applyReplenishment("skip")}>Skip</button></div>
-          <div className="replenishmentChoices">
+        <section className="chooser replenishmentPanel amateurReplenishment">
+          <div className="replenishmentHeading"><div><p className="kicker">VICTORIOUS PLAYER</p><b>Replenish your army?</b></div></div>
+          <div className="replenishmentChoices replenishmentActions"><button onClick={() => applyReplenishment("skip")}>Skip</button>
             {pending.unused.length > 0 && <button onClick={() => applyReplenishment("unused")}><b>Draw hidden card</b><small>{pending.unused.length} cards remain unused.</small></button>}
+          </div>
+          <div className="replenishmentChoices">
             {pending.discard.map((card) => <button key={card.id} onClick={() => applyReplenishment("discard", card.id)}><b>Restore {card.name}</b><small>{card.strength} Strength · {card.zeal} Zeal · {card.wealth} Wealth</small></button>)}
           </div>
         </section>
