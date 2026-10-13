@@ -4,6 +4,7 @@ import EparchCrownMark from "@/components/EparchCrownMark";
 
 export default function GameStateBanner({
   title,
+  opening,
   detail,
   meta,
   thinking = false,
@@ -12,6 +13,7 @@ export default function GameStateBanner({
   viewerId,
 }: {
   title: ReactNode;
+  opening?: ReactNode;
   detail?: ReactNode;
   meta?: ReactNode;
   thinking?: boolean;
@@ -24,6 +26,7 @@ export default function GameStateBanner({
       <div className="gameStateCopy">
         <span className={`turnDot ${thinking ? "thinking" : ""}`} />
         <div>
+          {opening && <p className="gameOpening">{opening}</p>}
           <b>{title}</b>
           {detail && <small>{detail}</small>}
         </div>

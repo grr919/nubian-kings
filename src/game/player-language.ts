@@ -157,3 +157,13 @@ export function beginnerEventText(event: GameEvent, state: BeginnerState) {
   if (event.type === "game-won") return `${who} won the game.`;
   return "";
 }
+
+export function conflictStatisticPrompt(round: number) {
+  return `Which statistic will resolve the ${round === 1 ? "first" : "next"} conflict?`;
+}
+
+export function openingWarText(players: readonly { factionId: string }[]) {
+  const names = players.map(player => NAMES[player.factionId] ?? player.factionId);
+  const list = names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+  return `Open war has broken out between the ${list}.`;
+}

@@ -260,3 +260,5 @@ body{background:#efd49b}
 .amateurReplenishment .replenishmentHeading{justify-content:center;text-align:center}
 .amateurReplenishment .replenishmentChoices{justify-content:safe center!important}
 .amateurReplenishment .replenishmentActions>button{flex:0 1 220px;width:220px;min-width:0!important;align-items:center;text-align:center}
+
+.gameStateBanner .gameOpening{margin:0 0 8px;font-weight:600;line-height:1.4;color:inherit}

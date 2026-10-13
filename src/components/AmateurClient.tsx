@@ -1,4 +1,5 @@
 "use client";
+import { openingWarText, conflictStatisticPrompt } from "@/game/player-language";
 import { canResumeGame } from "@/game/resumable-game";
 import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
 import { getCardArtwork } from "@/game/card-artwork";
@@ -364,7 +365,7 @@ export default function AmateurClient() {
 
   return (
     <main className="gamePage amateurGame">
-      <GameStateBanner players={state.players} viewerId={human.id}
+      <GameStateBanner opening={state.round === 1 && state.phase !== "complete" ? openingWarText(state.players) : undefined} players={state.players} viewerId={human.id}
         thinking={thinking}
         title={review ? "Review the comparison:" : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
         detail={npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
@@ -385,7 +386,7 @@ export default function AmateurClient() {
 
       {!review && humanTurn && (
         <section className="chooser amateurChooser">
-          <p>{!selectedStat ? "Which statistic will resolve the next conflict?" : !attackerId ? human.army.length ? "Now choose one of your army cards to initiate the comparison." : "Your heir is your last card. Choose it to initiate the comparison." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
+          <p>{!selectedStat ? conflictStatisticPrompt(state.round) : !attackerId ? human.army.length ? "Now choose one of your army cards to initiate the comparison." : "Your heir is your last card. Choose it to initiate the comparison." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
           <div>{STATS.map((stat) => <button key={stat} disabled={!state.players.some(player => legalTargets(state, player.id, stat).length)} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
         </section>
       )}
