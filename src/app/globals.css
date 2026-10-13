@@ -262,3 +262,6 @@ body{background:#efd49b}
 .amateurReplenishment .replenishmentActions>button{flex:0 1 220px;width:220px;min-width:0!important;align-items:center;text-align:center}
 
 .gameStateBanner .gameOpening{margin:0 0 8px;font-weight:600;line-height:1.4;color:inherit}
+
+.rulesEffectsOutline{fill:none;stroke:#136e68;stroke-width:8}
+.rulesEffectsNote{margin:14px 0 0;padding:10px 12px;border:2px solid #136e68;border-radius:6px;background:#e0f0e7;color:#164c46;font-size:.95rem;line-height:1.5}
