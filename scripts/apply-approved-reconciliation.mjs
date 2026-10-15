@@ -21,7 +21,7 @@ const christianJpegOverrides = {
   "NK-ROW-002": { strength: 5, zeal: 2, wealth: 5 },
   "NK-ROW-004": { strength: 3, zeal: 6, wealth: 6 },
   "NK-ROW-005": { strength: 4, zeal: 7, wealth: 8 },
-  "NK-ROW-006": { strength: 4, zeal: 9, wealth: 9 },
+  "NK-ROW-006": { strength: 4, zeal: 9, wealth: 8 },
   "NK-ROW-007": { strength: 3, zeal: 4, wealth: 5 },
   "NK-ROW-008": { strength: 2, zeal: 2, wealth: 4 },
   "NK-ROW-023": { strength: 7, zeal: 3, wealth: 5 },
