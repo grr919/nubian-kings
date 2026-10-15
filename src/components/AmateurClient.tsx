@@ -483,7 +483,7 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
   const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
   return (
     <section className="comparisonStage amateurReview" aria-live="polite">
-      <header><h2>{headline}</h2>{review.secondStrike && <p><strong>Second strike: {review.tie ? "the attempt ended without eliminating either side." : "the losing side is eliminated in full."}</strong></p>}{review.secondStrike && <p><strong>Second strike: {review.tie ? "the attempt ended without eliminating either side." : "the losing side is eliminated in full."}</strong></p>}</header>
+      <header><h2>{headline}</h2>{review.secondStrike && <p><strong>Second strike: {review.tie ? "the attempt ended without eliminating either side." : "the losing side is eliminated in full."}</strong></p>}</header>
       <ComparisonHighlights>{[
         { player: attackerPlayer, card: review.attacker, role: review.stat === "strength" ? "Attacking card" : review.stat === "zeal" ? "Converting card" : "Influencing card" },
         { player: targetPlayer, card: review.target, role: review.stat === "strength" ? "Defending card" : review.stat === "zeal" ? "Conversion target" : "Influence target" },
