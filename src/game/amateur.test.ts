@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  decideAmateurSecondStrike,
+  amateurNpcWantsSecondStrike,
   chooseNpcAttack,
   heirChoices,
   legalAttackers,
@@ -123,9 +125,11 @@ describe("Amateur attacks", () => {
     expect(human.army[0].face).toBe("up");
     expect(npc.army).toHaveLength(0);
     expect(npc.discard.map((candidate) => candidate.id)).toEqual(["npc-a"]);
+    expect(game.phase).toBe("second-strike");
+    const declineEvents = decideAmateurSecondStrike(game, game.secondStrike!.playerId, false);
     expect(game.phase).toBe("replenish");
     expect(game.pendingReplenishmentPlayerId).toBe("human");
-    expect(events.some((event) => event.type === "replenishment-available")).toBe(true);
+    expect(declineEvents.some((event) => event.type === "replenishment-available")).toBe(true);
   });
 
   it("treats a successful defender as the victorious player for replenishment", () => {
@@ -140,6 +144,8 @@ describe("Amateur attacks", () => {
       stat: "strength",
     });
     expect(human.discard.map((candidate) => candidate.id)).toEqual(["human-a"]);
+    expect(game.phase).toBe("second-strike");
+    const declineEvents = decideAmateurSecondStrike(game, game.secondStrike!.playerId, false);
     expect(game.phase).toBe("replenish");
     expect(game.pendingReplenishmentPlayerId).toBe("npc");
   });
@@ -247,7 +253,8 @@ describe("complete Amateur games", () => {
       for (const participant of game.players) participant.controller = "npc";
       let actions = 0;
       while (game.phase !== "complete" && actions < 5000) {
-        if (game.phase === "replenish") resolveNpcReplenishment(game);
+        if (game.phase === "second-strike") decideAmateurSecondStrike(game, game.secondStrike!.playerId, amateurNpcWantsSecondStrike(game));
+        else if (game.phase === "replenish") resolveNpcReplenishment(game);
         else resolveAmateurAttack(game, chooseNpcAttack(game));
         actions++;
       }

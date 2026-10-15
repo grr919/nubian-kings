@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  decideMasterSecondStrike,
+  masterNpcWantsSecondStrike,
   autoArrangeMasterCards,
   beginMasterConstruction,
   chooseMasterNpcAttack,
@@ -127,6 +129,8 @@ describe("Master attacks", () => {
     const events = resolveMasterAttack(game, { attackerUnitId: "human-pile", targetPlayerId: "npc", targetUnitId: "npc-pile", stat: "strength" });
     expect(npc.army).toHaveLength(0);
     expect(npc.discard.map((candidate) => candidate.id)).toEqual(["npc-person", "npc-thing"]);
+    expect(game.phase).toBe("second-strike");
+    const declineEvents = decideMasterSecondStrike(game, game.secondStrike!.playerId, false);
     expect(game.phase).toBe("replenish");
     expect(events.find((event) => event.type === "score" && event.playerId === "human")).toMatchObject({ base: 7, total: 7 });
   });
@@ -172,6 +176,8 @@ describe("Master attacks", () => {
     human.discard.push(card("recover", "person"));
     const game = state([human, player("npc", "npc", [pile("n", [card("np", "person", [1,1,1])])])]);
     resolveMasterAttack(game, { attackerUnitId: "h", targetPlayerId: "npc", targetUnitId: "n", stat: "strength" });
+    expect(game.phase).toBe("second-strike");
+    const declineEvents = decideMasterSecondStrike(game, game.secondStrike!.playerId, false);
     expect(game.phase).toBe("replenish");
     expect(game.pendingReplenishmentPlayerId).toBe("human");
   });
@@ -212,7 +218,8 @@ describe("complete Master games", () => {
       human.controller = "npc";
       let actions = 0;
       while (game.phase !== "complete" && actions < 10000) {
-        if (game.phase === "replenish") resolveMasterNpcReplenishment(game);
+        if (game.phase === "second-strike") decideMasterSecondStrike(game, game.secondStrike!.playerId, masterNpcWantsSecondStrike(game));
+        else if (game.phase === "replenish") resolveMasterNpcReplenishment(game);
         else resolveMasterAttack(game, chooseMasterNpcAttack(game));
         actions++;
       }

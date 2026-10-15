@@ -1,3 +1,4 @@
+import type { SecondStrike } from "./second-strike";
 import { canConvertCivilization } from "./conversion";
 import data from "../data/cards.json";
 import { createRandomState, randomSource } from "./random";
@@ -47,7 +48,8 @@ export interface AmateurState {
   mode: "amateur";
   players: AmateurPlayer[];
   activePlayerIndex: number;
-  phase: "attack" | "replenish" | "complete";
+  phase: "attack" | "replenish" | "second-strike" | "complete";
+  secondStrike?: SecondStrike;
   nileFloods: boolean;
   victoryMode: AmateurVictoryMode;
   round: number;
@@ -215,6 +217,7 @@ export function legalAttackers(state: AmateurState, playerId = activePlayer(stat
 }
 
 export function legalTargets(state: AmateurState, targetPlayerId: string, stat?: Stat) {
+  if (state.secondStrike?.accepted && state.secondStrike.targetPlayerId !== targetPlayerId) return [];
   const attacker = activePlayer(state);
   const target = state.players.find((candidate) => candidate.id === targetPlayerId);
   if (!target || target.eliminated || target.id === attacker.id || state.phase !== "attack") return [];
@@ -246,6 +249,11 @@ function advanceTurn(state: AmateurState, events: AmateurEvent[]) {
 }
 
 function eliminateHeir(state: AmateurState, defeated: AmateurPlayer, winner: AmateurPlayer, events: AmateurEvent[]) {
+  if (state.secondStrike?.accepted) {
+    state.activePlayerIndex = state.secondStrike.turnPlayerIndex;
+    delete state.secondStrike;
+  }
+
   defeated.eliminated = true;
   events.push({ type: "player-eliminated", playerId: defeated.id });
   if (state.victoryMode === "standard") {
@@ -307,7 +315,7 @@ export function resolveAmateurAttack(state: AmateurState, action: AmateurAttack)
 
   if (attackerTotal === targetTotal) {
     events.push({ type: "tie" });
-    advanceTurn(state, events);
+    finishAmateurTiedContest(state, events);
     return events;
   }
 
@@ -323,13 +331,54 @@ export function resolveAmateurAttack(state: AmateurState, action: AmateurAttack)
     events.push({ type: "defeated", playerId: loser.id, cardId: losingEntry.card.id, heir: false });
   }
 
-  const canReplenish = !winner.eliminated && winner.army.length < 10 && (winner.discard.length > 0 || winner.unused.length > 0);
-  if (canReplenish) {
+  finishAmateurVictory(state, winner, events, loser, losingEntry.heir);
+  return events;
+}
+
+
+function finishAmateurVictory(state: AmateurState, winner: AmateurPlayer, events: AmateurEvent[], loser?: AmateurPlayer, heir = false) {
+  if (state.secondStrike?.accepted) {
+    state.activePlayerIndex = state.secondStrike.turnPlayerIndex;
+    delete state.secondStrike;
+    if (loser && !loser.eliminated) {
+      if (eliminateHeir(state, loser, winner, events)) return;
+    }
+  } else if (loser && !heir && !loser.eliminated && !winner.eliminated && loser.army.length === 0) {
+    state.secondStrike = { playerId: winner.id, targetPlayerId: loser.id, turnPlayerIndex: state.activePlayerIndex, accepted: false };
+    delete state.pendingReplenishmentPlayerId;
+    state.phase = "second-strike";
+    return;
+  }
+  if (!winner.eliminated && winner.army.length < 10 && (winner.discard.length || winner.unused.length)) {
     state.phase = "replenish";
     state.pendingReplenishmentPlayerId = winner.id;
     events.push({ type: "replenishment-available", playerId: winner.id });
+  } else advanceTurn(state, events);
+}
+
+function finishAmateurTiedContest(state: AmateurState, events: AmateurEvent[]) {
+  const strike = state.secondStrike;
+  if (!strike?.accepted) { advanceTurn(state, events); return; }
+  state.activePlayerIndex = strike.turnPlayerIndex;
+  delete state.secondStrike;
+  finishAmateurVictory(state, state.players.find(player => player.id === strike.playerId)!, events);
+}
+
+export function decideAmateurSecondStrike(state: AmateurState, playerId: string, accept: boolean): AmateurEvent[] {
+  const strike = state.secondStrike;
+  if (state.phase !== "second-strike" || !strike || strike.accepted || strike.playerId !== playerId) throw new Error("Only the victorious side may decide this second strike");
+  const player = state.players.find(candidate => candidate.id === playerId)!;
+  const target = state.players.find(candidate => candidate.id === strike.targetPlayerId)!;
+  if (player.eliminated || target.eliminated || target.army.length) throw new Error("The second strike is no longer available");
+  const events: AmateurEvent[] = [];
+  if (accept) {
+    strike.accepted = true;
+    state.activePlayerIndex = state.players.indexOf(player);
+    state.phase = "attack";
   } else {
-    advanceTurn(state, events);
+    state.activePlayerIndex = strike.turnPlayerIndex;
+    delete state.secondStrike;
+    finishAmateurVictory(state, player, events);
   }
   return events;
 }
@@ -378,9 +427,25 @@ export function skipReplenishment(state: AmateurState): AmateurEvent[] {
   return events;
 }
 
+function bestAmateurSecondStrike(state: AmateurState): AmateurAttack | undefined {
+  const strike = state.secondStrike;
+  if (!strike) return;
+  const player = state.players.find(p => p.id === strike.playerId)!;
+  const target = state.players.find(p => p.id === strike.targetPlayerId)!;
+  const cards = player.army.length ? player.army : [player.heir];
+  const options = cards.filter(c => c.face === "up").flatMap(card => (["strength", "zeal", "wealth"] as Stat[]).filter(stat => stat !== "zeal" || canConvertCivilization(player.factionId, target.factionId)).map(stat => ({ action: { attackerId: card.id, targetPlayerId: target.id, targetId: target.heir.id, stat }, margin: card[stat] - target.heir[stat] })));
+  return options.sort((a,b) => b.margin-a.margin).find(o => o.margin > (state.nileFloods ? 5 : 0))?.action;
+}
+export function amateurNpcWantsSecondStrike(state: AmateurState) { return Boolean(bestAmateurSecondStrike(state)); }
+
 export function chooseNpcAttack(state: AmateurState): AmateurAttack {
   const player = activePlayer(state);
   if (player.controller !== "npc") throw new Error("The active player is not an NPC");
+  if (state.secondStrike?.accepted) {
+    const strike = bestAmateurSecondStrike(state);
+    if (!strike) throw new Error("No safe NPC second strike is available");
+    return strike;
+  }
   const rng = randomSource(state.random);
   const opponents = state.players.filter((candidate) => !candidate.eliminated && candidate.id !== player.id);
   const exposedHeirs = opponents.filter((candidate) => candidate.army.length === 0);

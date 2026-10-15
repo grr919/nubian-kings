@@ -1,3 +1,4 @@
+import type { SecondStrike } from "./second-strike";
 import { canConvertCivilization } from "./conversion";
 import data from "../data/cards.json";
 import effectText from "../data/card-effects.json";
@@ -80,7 +81,8 @@ export interface MasterState {
   mode: "master";
   players: MasterPlayer[];
   activePlayerIndex: number;
-  phase: "attack" | "effects" | "replenish" | "complete";
+  phase: "attack" | "effects" | "replenish" | "second-strike" | "complete";
+  secondStrike?: SecondStrike;
   nileFloods: boolean;
   victoryMode: MasterVictoryMode;
   effectsMode?: MasterEffectsMode;
@@ -96,6 +98,7 @@ export interface MasterState {
 }
 
 export interface PendingMasterComparison {
+  secondStrike?: boolean;
   attack: MasterAttack;
   round: number;
   attackerPlayerId: string;
@@ -388,6 +391,7 @@ export function recordMasterTurnBoundary(state: MasterState): void {
 
 /** Moving forward queues another full turn for that effect's controller. */
 export function activateMasterClockForward(state: MasterState, playerId: string, sourceCardId: string): void {
+  if (state.secondStrike?.accepted && state.phase === "attack") throw new Error("Declare the second strike before using comparison effects");
   if (state.effectsMode !== "on" || !["attack", "effects"].includes(state.phase)) throw new Error("The game clock cannot advance now");
   if (state.pendingEffectComparison?.floodPending) throw new Error("Roll the Nile Flood first");
   const player = state.players.find((candidate) => candidate.id === playerId);
@@ -402,6 +406,7 @@ export function activateMasterClockForward(state: MasterState, playerId: string,
 
 /** Restores the beginning of the preceding turn, retaining today's random stream. */
 export function activateMasterClockBackward(state: MasterState, playerId: string, sourceCardId: string): void {
+  if (state.secondStrike?.accepted && state.phase === "attack") throw new Error("Declare the second strike before using comparison effects");
   if (state.effectsMode !== "on" || !["attack", "effects"].includes(state.phase)) throw new Error("The game clock cannot retreat now");
   if (state.pendingEffectComparison?.floodPending) throw new Error("Roll the Nile Flood first");
   const player = state.players.find((candidate) => candidate.id === playerId);
@@ -440,6 +445,7 @@ export function legalMasterAttackers(state: MasterState, playerId = activeMaster
 }
 
 export function legalMasterTargets(state: MasterState, targetPlayerId: string, stat?: Stat) {
+  if (state.secondStrike?.accepted && state.secondStrike.targetPlayerId !== targetPlayerId) return [];
   const attacker = activeMasterPlayer(state);
   const target = state.players.find((candidate) => candidate.id === targetPlayerId);
   if (!target || target.eliminated || target.id === attacker.id || state.phase !== "attack") return [];
@@ -479,6 +485,7 @@ export function beginMasterEffectComparison(state: MasterState, action: MasterAt
   ];
   const dice: [number, number] = [0, 0];
   const comparison: PendingMasterComparison = {
+    secondStrike: Boolean(state.secondStrike?.accepted),
     attack: action,
     round: state.round,
     attackerPlayerId: attackerPlayer.id,
@@ -596,6 +603,7 @@ export function activateMasterSupport(state: MasterState, playerId: string, sour
 }
 
 export function designateMasterPriestProtection(state: MasterState, playerId: string, sourceCardId: string, targetCardId: string): void {
+  if (state.secondStrike?.accepted && state.phase === "attack") throw new Error("Declare the second strike before using comparison effects");
   if (state.effectsMode !== "on" || !["attack", "effects"].includes(state.phase)) throw new Error("Protection cannot be designated now");
   if (state.pendingEffectComparison?.floodPending) throw new Error("Roll the Nile Flood first");
   const player = state.players.find((candidate) => candidate.id === playerId);
@@ -715,22 +723,21 @@ export function finishMasterEffectComparison(state: MasterState): MasterEvent[] 
   if (pending.forcedWinnerId) {
     const winner = state.players.find((player) => player.id === pending.forcedWinnerId)!;
     const loser = winner.id === defender.id ? attackPlayer : defender;
+    const losingId = winner.id === defender.id ? pending.attack.attackerUnitId : pending.attack.targetUnitId;
+    const losingCards = winner.id === defender.id ? pending.attackerCards : pending.defenderCards;
+    events.push({ type: "defeated", playerId: loser.id, unitId: losingId, cardIds: losingCards.map(card => card.id), heir: loser.heir.id === losingId });
     if (loser.heir.id === (winner.id === defender.id ? pending.attack.attackerUnitId : pending.attack.targetUnitId)) {
       if (eliminateHeir(state, loser, winner, events)) return events;
     }
     normalizeMasterPiles(state);
-    if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && (winner.unused.length || winner.discard.some(card => !card.mercenary))) {
-      state.phase = "replenish";
-      state.pendingReplenishmentPlayerId = winner.id;
-      events.push({ type: "replenishment-available", playerId: winner.id });
-    } else advanceTurn(state, events);
+    finishMasterVictory(state, winner, events, loser, loser.heir.id === (winner.id === defender.id ? pending.attack.attackerUnitId : pending.attack.targetUnitId));
     return events;
   }
   if (!attacker || !target) throw new Error("A comparison unit disappeared without an elimination result");
   if (pending.cancelled || (pending.attack.stat === "zeal" && target.cards.some((card) => immuneToConversion(state, defender, card)))) {
     events.push({ type: "cancelled", reason: pending.cancelReason ?? "immunity", ...(pending.interruptedBy ? { interruptedBy: pending.interruptedBy, stat: pending.attack.stat } : {}) });
     normalizeMasterPiles(state);
-    advanceTurn(state, events);
+    finishMasterTiedContest(state, events);
     return events;
   }
   const [attackTotal, defenseTotal] = pending.scores.map((score, index) => score + pending.dice[index]);
@@ -740,7 +747,7 @@ export function finishMasterEffectComparison(state: MasterState): MasterEvent[] 
   if (!forcedWinner && attackTotal === defenseTotal) {
     events.push({ type: "tie" });
     normalizeMasterPiles(state);
-    advanceTurn(state, events);
+    finishMasterTiedContest(state, events);
     return events;
   }
   const attackerWon = forcedWinner ? forcedWinner === attackPlayer.id : attackTotal > defenseTotal;
@@ -755,11 +762,7 @@ export function finishMasterEffectComparison(state: MasterState): MasterEvent[] 
     for (const card of losingUnit.cards) if (!card.mercenary) loser.discard.push({ ...card, face: "up" });
   }
   normalizeMasterPiles(state);
-  if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && (winner.unused.length || winner.discard.some(card => !card.mercenary))) {
-    state.phase = "replenish";
-    state.pendingReplenishmentPlayerId = winner.id;
-    events.push({ type: "replenishment-available", playerId: winner.id });
-  } else advanceTurn(state, events);
+  finishMasterVictory(state, winner, events, loser, losingUnit.heir);
   return events;
 }
 
@@ -787,6 +790,7 @@ export function eligibleMasterEliminationTargets(state: MasterState, playerId: s
 }
 
 export function eliminateWithMasterEffect(state: MasterState, playerId: string, sourceCardId: string, targetPlayerId: string, targetCardId: string): MasterCard {
+  if (state.secondStrike?.accepted && state.phase === "attack") throw new Error("Declare the second strike before using comparison effects");
   if (state.phase === "effects" && state.players[state.pendingEffectComparison!.priorityIndex].id !== playerId) throw new Error("It is another player's effect opportunity");
   const eligible = eligibleMasterEliminationTargets(state, playerId, sourceCardId);
   if (!eligible.some((item) => item.playerId === targetPlayerId && item.card.id === targetCardId)) throw new Error("That elimination target is unavailable");
@@ -802,6 +806,7 @@ export function eliminateWithMasterEffect(state: MasterState, playerId: string, 
       state.winnerId = state.victoryMode === "standard" ? playerId : surviving[0]?.id;
       state.phase = "complete";
       delete state.pendingEffectComparison;
+      delete state.secondStrike;
     }
   } else {
     const pile = targetPlayer.army.find((candidate) => candidate.cards.some((part) => part.id === target.id))!;
@@ -831,6 +836,7 @@ export type MasterArmyEffectResult = "deployed" | "recovered" | "drawn" | "no-re
 
 /** One-time army actions, activated on the controller's turn before the main comparison. */
 export function activateMasterArmyEffect(state: MasterState, playerId: string, sourceCardId: string, destinationPileId?: string): MasterArmyEffectResult {
+  if (state.secondStrike?.accepted && state.phase === "attack") throw new Error("Declare the second strike before using comparison effects");
   if (state.effectsMode !== "on" || !["attack", "effects"].includes(state.phase)) throw new Error("This effect is unavailable now");
   if (state.pendingEffectComparison?.floodPending) throw new Error("Roll the Nile Flood first");
   const player = state.players.find((candidate) => candidate.id === playerId);
@@ -889,6 +895,7 @@ function normalizeMasterPiles(state: MasterState): void {
 
 /** Random discard selects only unrevealed army cards, never the heir or reserve. */
 export function activateMasterRandomDiscard(state: MasterState, playerId: string, sourceCardId: string, targetPlayerId: string): MasterCard | undefined {
+  if (state.secondStrike?.accepted && state.phase === "attack") throw new Error("Declare the second strike before using comparison effects");
   if (state.effectsMode !== "on" || state.phase !== "attack" || activeMasterPlayer(state).id !== playerId) throw new Error("This effect is available on its controller's turn");
   const player = activeMasterPlayer(state);
   const source = [player.heir, ...player.army.flatMap((pile) => pile.cards)].find((card) => card.id === sourceCardId);
@@ -913,6 +920,7 @@ export type MasterNpcArmyAction =
   | { kind: "priest"; cardId: string; targetCardId: string };
 
 export function chooseMasterNpcArmyEffect(state: MasterState): MasterNpcArmyAction | undefined {
+  if (state.secondStrike?.accepted) return undefined;
   if (state.effectsMode !== "on" || state.phase !== "attack" || activeMasterPlayer(state).controller !== "npc") return;
   const player = activeMasterPlayer(state);
   const deployed = [player.heir, ...player.army.flatMap((pile) => pile.cards)];
@@ -976,6 +984,11 @@ function advanceTurn(state: MasterState, events: MasterEvent[]) {
 }
 
 function eliminateHeir(state: MasterState, defeated: MasterPlayer, winner: MasterPlayer, events: MasterEvent[]) {
+  if (state.secondStrike?.accepted) {
+    state.activePlayerIndex = state.secondStrike.turnPlayerIndex;
+    delete state.secondStrike;
+  }
+
   defeated.eliminated = true;
   events.push({ type: "player-eliminated", playerId: defeated.id });
   if (state.victoryMode === "standard") {
@@ -1021,7 +1034,7 @@ export function resolveMasterAttack(state: MasterState, action: MasterAttack): M
   events.push({ type: "score", playerId: defender.id, unitId: target.id, base: targetBase, die: targetDie, total: targetTotal });
   if (attackerTotal === targetTotal) {
     events.push({ type: "tie" });
-    advanceTurn(state, events);
+    finishMasterTiedContest(state, events);
     return events;
   }
   const attackerWon = attackerTotal > targetTotal;
@@ -1035,11 +1048,55 @@ export function resolveMasterAttack(state: MasterState, action: MasterAttack): M
     loser.army = loser.army.filter((pile) => pile.id !== losingUnit.id);
     loser.discard.push(...losingUnit.cards.map((card) => ({ ...card, face: "up" as const })));
   }
+  finishMasterVictory(state, winner, events, loser, losingUnit.heir);
+  return events;
+}
+
+
+function finishMasterVictory(state: MasterState, winner: MasterPlayer, events: MasterEvent[], loser?: MasterPlayer, heir = false) {
+  if (state.secondStrike?.accepted) {
+    state.activePlayerIndex = state.secondStrike.turnPlayerIndex;
+    delete state.secondStrike;
+    if (loser && !loser.eliminated) {
+      if (eliminateHeir(state, loser, winner, events)) return;
+    }
+  } else if (loser && !heir && !loser.eliminated && !winner.eliminated && masterArmySize(loser) === 0) {
+    state.secondStrike = { playerId: winner.id, targetPlayerId: loser.id, turnPlayerIndex: state.activePlayerIndex, accepted: false };
+    delete state.pendingReplenishmentPlayerId;
+    state.phase = "second-strike";
+    return;
+  }
   if (!winner.eliminated && masterArmySize(winner) < (winner.armyLimit ?? 20) && (winner.unused.length || winner.discard.some(card => !card.mercenary))) {
     state.phase = "replenish";
     state.pendingReplenishmentPlayerId = winner.id;
     events.push({ type: "replenishment-available", playerId: winner.id });
   } else advanceTurn(state, events);
+}
+
+function finishMasterTiedContest(state: MasterState, events: MasterEvent[]) {
+  const strike = state.secondStrike;
+  if (!strike?.accepted) { advanceTurn(state, events); return; }
+  state.activePlayerIndex = strike.turnPlayerIndex;
+  delete state.secondStrike;
+  finishMasterVictory(state, state.players.find(player => player.id === strike.playerId)!, events);
+}
+
+export function decideMasterSecondStrike(state: MasterState, playerId: string, accept: boolean): MasterEvent[] {
+  const strike = state.secondStrike;
+  if (state.phase !== "second-strike" || !strike || strike.accepted || strike.playerId !== playerId) throw new Error("Only the victorious side may decide this second strike");
+  const player = state.players.find(candidate => candidate.id === playerId)!;
+  const target = state.players.find(candidate => candidate.id === strike.targetPlayerId)!;
+  if (player.eliminated || target.eliminated || masterArmySize(target)) throw new Error("The second strike is no longer available");
+  const events: MasterEvent[] = [];
+  if (accept) {
+    strike.accepted = true;
+    state.activePlayerIndex = state.players.indexOf(player);
+    state.phase = "attack";
+  } else {
+    state.activePlayerIndex = strike.turnPlayerIndex;
+    delete state.secondStrike;
+    finishMasterVictory(state, player, events);
+  }
   return events;
 }
 
@@ -1076,9 +1133,25 @@ function unitScore(player: MasterPlayer, unitId: string) {
   return Math.max(...(["strength", "zeal", "wealth"] as Stat[]).map((stat) => unitValue(unit, stat)));
 }
 
+function bestMasterSecondStrike(state: MasterState): MasterAttack | undefined {
+  const strike = state.secondStrike;
+  if (!strike) return;
+  const player = state.players.find(p => p.id === strike.playerId)!;
+  const target = state.players.find(p => p.id === strike.targetPlayerId)!;
+  const units = masterArmySize(player) ? player.army.map(p => ({ id: p.id, cards: p.cards })) : [{ id: player.heir.id, cards: [player.heir] }];
+  const options = units.filter(u => u.cards.every(c => c.face === "up")).flatMap(u => (["strength", "zeal", "wealth"] as Stat[]).filter(stat => stat !== "zeal" || (canConvertCivilization(player.factionId, target.factionId) && !(state.effectsMode === "on" && immuneToConversion(state, target, target.heir)))).map(stat => ({ action: { attackerUnitId: u.id, targetPlayerId: target.id, targetUnitId: target.heir.id, stat }, margin: u.cards.reduce((n,c) => n + c[stat], 0) - target.heir[stat] })));
+  return options.sort((a,b) => b.margin-a.margin).find(o => o.margin > (state.nileFloods ? 5 : 0))?.action;
+}
+export function masterNpcWantsSecondStrike(state: MasterState) { return Boolean(bestMasterSecondStrike(state)); }
+
 export function chooseMasterNpcAttack(state: MasterState): MasterAttack {
   const player = activeMasterPlayer(state);
   if (player.controller !== "npc") throw new Error("The active player is not an NPC");
+  if (state.secondStrike?.accepted) {
+    const strike = bestMasterSecondStrike(state);
+    if (!strike) throw new Error("No safe NPC second strike is available");
+    return strike;
+  }
   const rng = randomSource(state.random);
   const opponents = state.players.filter((candidate) => !candidate.eliminated && candidate.id !== player.id);
   const exposed = opponents.filter((candidate) => masterArmySize(candidate) === 0);

@@ -1,4 +1,6 @@
 "use client";
+import SecondStrikePrompt from "./SecondStrikePrompt";
+import { SECOND_STRIKE_RULE } from "@/game/second-strike";
 import ReadingCardGuide from "./ReadingCardGuide";
 import { openingWarText, conflictStatisticPrompt } from "@/game/player-language";
 import { canResumeGame } from "@/game/resumable-game";
@@ -15,6 +17,8 @@ import FactionPortrait from "@/components/FactionPortrait";
 import GameStateBanner from "@/components/GameStateBanner";
 import cardData from "@/data/cards.json";
 import {
+  decideAmateurSecondStrike,
+  amateurNpcWantsSecondStrike,
   activePlayer,
   chooseNpcAttack,
   heirChoices,
@@ -52,6 +56,7 @@ const INFO: Record<string, { name: string; mark: string }> = {
 };
 
 interface AmateurReview {
+  secondStrike?: boolean;
   stat: Stat;
   attacker: AmateurCard;
   target: AmateurCard;
@@ -215,7 +220,7 @@ export default function AmateurClient() {
     const scores = events
       .filter((event): event is Extract<AmateurEvent, { type: "score" }> => event.type === "score")
       .map(({ playerId, cardId, base, die, total }) => ({ playerId, cardId, base, die, total }));
-    setReview({
+    setReview({ secondStrike: Boolean(state.secondStrike?.accepted),
       stat,
       attacker: beforeAttacker,
       target: beforeTarget,
@@ -230,6 +235,25 @@ export default function AmateurClient() {
     setState(next);
     addEvents(events, next);
   }
+
+  function decideSecondStrike(accept: boolean) {
+    if (!state?.secondStrike) return;
+    const next = structuredClone(state);
+    const events = decideAmateurSecondStrike(next, next.secondStrike!.playerId, accept);
+    setSelectedStat(undefined);
+    setAttackerId(undefined);
+    persist(next);
+    setState(next);
+    addEvents(events, next);
+  }
+
+  useEffect(() => {
+    if (!state || review || eliminationPending || state.phase !== "second-strike" || !state.secondStrike) return;
+    const chooser = state.players.find(player => player.id === state.secondStrike!.playerId);
+    if (chooser?.controller !== "npc") return;
+    const timer = window.setTimeout(() => decideSecondStrike(amateurNpcWantsSecondStrike(state)), 700);
+    return () => window.clearTimeout(timer);
+  }, [state, review, eliminationPending]);
 
   function applyReplenishment(kind: "unused" | "discard" | "skip", cardId?: string) {
     if (!state) return;
@@ -368,10 +392,12 @@ export default function AmateurClient() {
     <main className="gamePage amateurGame">
       <GameStateBanner opening={state.round === 1 && state.phase !== "complete" ? openingWarText(state.players) : undefined} players={state.players} viewerId={human.id}
         thinking={thinking}
-        title={review ? "Review the comparison:" : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
+        title={review ? "Review the comparison:" : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : state.secondStrike?.accepted ? "Choose the exposed heir:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
         detail={npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
       />
 
+      {!review && state.phase === "second-strike" && state.secondStrike && <SecondStrikePrompt isYou={state.secondStrike.playerId === human.id} playerName={INFO[state.players.find(p => p.id === state.secondStrike!.playerId)!.factionId].name} targetName={INFO[state.players.find(p => p.id === state.secondStrike!.targetPlayerId)!.factionId].name} victoryMode={state.victoryMode} onDecide={decideSecondStrike} />}
+      {!review && state.secondStrike?.accepted && <section className="chooser secondStrikePrompt"><h2>Second strike against the exposed heir</h2><p><strong>The challenger’s entire side is eliminated if this contest is lost.</strong> Choose a statistic and an eligible card, then select the exposed heir.</p></section>}
       {review ? <AmateurReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : (
         <section className="amateurBoard">
           <AmateurPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onCard={(id) => setAttackerId(id)} />
@@ -457,7 +483,7 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
   const headline = roundOutcomeText(state.players, winnerId, [review.attackerPlayerId, review.targetPlayerId], review.stat, review.tie);
   return (
     <section className="comparisonStage amateurReview" aria-live="polite">
-      <header><h2>{headline}</h2></header>
+      <header><h2>{headline}</h2>{review.secondStrike && <p><strong>Second strike: {review.tie ? "the attempt ended without eliminating either side." : "the losing side is eliminated in full."}</strong></p>}{review.secondStrike && <p><strong>Second strike: {review.tie ? "the attempt ended without eliminating either side." : "the losing side is eliminated in full."}</strong></p>}</header>
       <ComparisonHighlights>{[
         { player: attackerPlayer, card: review.attacker, role: review.stat === "strength" ? "Attacking card" : review.stat === "zeal" ? "Converting card" : "Influencing card" },
         { player: targetPlayer, card: review.target, role: review.stat === "strength" ? "Defending card" : review.stat === "zeal" ? "Conversion target" : "Influence target" },
@@ -472,6 +498,6 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
 }
 
 function AmateurHelp({ onClose }: { onClose: () => void }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal beginnerRules"><button className="modalClose" onClick={onClose}>×</button><div className="beginnerRulesText"><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one initiating card, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot initiate a comparison until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an initiating heir loses, it is eliminated immediately.</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol></div><ReadingCardGuide /></section></div>;
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal beginnerRules"><button className="modalClose" onClick={onClose}>×</button><div className="beginnerRulesText"><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one initiating card, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot initiate a comparison until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded; on a tie, both remain face up.</li><li>After a non-tied win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an initiating heir loses, it is eliminated immediately.</li><li>{SECOND_STRIKE_RULE}</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol></div><ReadingCardGuide /></section></div>;
 }
 
