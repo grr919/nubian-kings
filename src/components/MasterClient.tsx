@@ -1,5 +1,6 @@
 "use client";
 import SecondStrikePrompt from "./SecondStrikePrompt";
+import { acknowledgeSecondStrikeExplanation } from "@/game/second-strike";
 import { SECOND_STRIKE_RULE } from "@/game/second-strike";
 import ReadingCardGuide from "./ReadingCardGuide";
 import { openingWarText, conflictStatisticPrompt } from "@/game/player-language";
@@ -341,6 +342,14 @@ export default function MasterClient() {
     setState(next);
   }
 
+  function continueSecondStrikeExplanation() {
+    if (!state?.secondStrike) return;
+    const next = structuredClone(state);
+    acknowledgeSecondStrikeExplanation(next.secondStrike!, "solo");
+    persist(next);
+    setState(next);
+  }
+
   function decideSecondStrike(accept: boolean) {
     if (!state?.secondStrike) return;
     const next = structuredClone(state);
@@ -355,7 +364,7 @@ export default function MasterClient() {
   useEffect(() => {
     if (!state || review || eliminationPending || state.phase !== "second-strike" || !state.secondStrike) return;
     const chooser = state.players.find(player => player.id === state.secondStrike!.playerId);
-    if (chooser?.controller !== "npc") return;
+    if (chooser?.controller !== "npc" || !state.secondStrike.explanationAcks?.includes("solo")) return;
     const timer = window.setTimeout(() => decideSecondStrike(masterNpcWantsSecondStrike(state)), 700);
     return () => window.clearTimeout(timer);
   }, [state, review, eliminationPending]);
@@ -511,7 +520,7 @@ export default function MasterClient() {
 
     {state.awaitingStart && <section className="chooser"><p>Let the first conflict begin when you are ready.</p><button onClick={() => { const next = { ...state, awaitingStart: false }; persist(next); setState(next); }}>Begin play</button></section>}
 
-      {!review && state.phase === "second-strike" && state.secondStrike && <SecondStrikePrompt isYou={state.secondStrike.playerId === human.id} playerName={INFO[state.players.find(p => p.id === state.secondStrike!.playerId)!.factionId].name} targetName={INFO[state.players.find(p => p.id === state.secondStrike!.targetPlayerId)!.factionId].name} victoryMode={state.victoryMode} onDecide={decideSecondStrike} />}
+      {!review && state.phase === "second-strike" && state.secondStrike && <SecondStrikePrompt explanationReady={state.secondStrike.explanationAcks?.includes("solo") ?? false} onContinue={continueSecondStrikeExplanation} isYou={state.secondStrike.playerId === human.id} playerName={INFO[state.players.find(p => p.id === state.secondStrike!.playerId)!.factionId].name} targetName={INFO[state.players.find(p => p.id === state.secondStrike!.targetPlayerId)!.factionId].name} victoryMode={state.victoryMode} onDecide={decideSecondStrike} />}
       {!review && state.secondStrike?.accepted && <section className="chooser secondStrikePrompt"><h2>Second strike against the exposed heir</h2><p><strong>The challenger’s entire side is eliminated if this contest is lost.</strong> Choose a statistic and an eligible formation, then select the exposed heir.</p></section>}
     {review ? <MasterReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : <section className="amateurBoard masterBoard">
       <MasterPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetUnitId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onUnit={setAttackerId} />

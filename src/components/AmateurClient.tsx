@@ -1,5 +1,6 @@
 "use client";
 import SecondStrikePrompt from "./SecondStrikePrompt";
+import { acknowledgeSecondStrikeExplanation } from "@/game/second-strike";
 import { AMATEUR_TIE_RULE, AMATEUR_TIE_EXPLANATION, AMATEUR_SECOND_STRIKE_RULE as SECOND_STRIKE_RULE } from "@/game/amateur-rules";
 import ReadingCardGuide from "./ReadingCardGuide";
 import { openingWarText, conflictStatisticPrompt } from "@/game/player-language";
@@ -238,6 +239,14 @@ export default function AmateurClient() {
     addEvents(events, next);
   }
 
+  function continueSecondStrikeExplanation() {
+    if (!state?.secondStrike) return;
+    const next = structuredClone(state);
+    acknowledgeSecondStrikeExplanation(next.secondStrike!, "solo");
+    persist(next);
+    setState(next);
+  }
+
   function decideSecondStrike(accept: boolean) {
     if (!state?.secondStrike) return;
     const next = structuredClone(state);
@@ -252,7 +261,7 @@ export default function AmateurClient() {
   useEffect(() => {
     if (!state || review || eliminationPending || state.phase !== "second-strike" || !state.secondStrike) return;
     const chooser = state.players.find(player => player.id === state.secondStrike!.playerId);
-    if (chooser?.controller !== "npc") return;
+    if (chooser?.controller !== "npc" || !state.secondStrike.explanationAcks?.includes("solo")) return;
     const timer = window.setTimeout(() => decideSecondStrike(amateurNpcWantsSecondStrike(state)), 700);
     return () => window.clearTimeout(timer);
   }, [state, review, eliminationPending]);
@@ -398,7 +407,7 @@ export default function AmateurClient() {
         detail={npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
       />
 
-      {!review && state.phase === "second-strike" && state.secondStrike && <SecondStrikePrompt attackerWinsTies={!state.nileFloods} isYou={state.secondStrike.playerId === human.id} playerName={INFO[state.players.find(p => p.id === state.secondStrike!.playerId)!.factionId].name} targetName={INFO[state.players.find(p => p.id === state.secondStrike!.targetPlayerId)!.factionId].name} victoryMode={state.victoryMode} onDecide={decideSecondStrike} />}
+      {!review && state.phase === "second-strike" && state.secondStrike && <SecondStrikePrompt explanationReady={state.secondStrike.explanationAcks?.includes("solo") ?? false} onContinue={continueSecondStrikeExplanation} attackerWinsTies={!state.nileFloods} isYou={state.secondStrike.playerId === human.id} playerName={INFO[state.players.find(p => p.id === state.secondStrike!.playerId)!.factionId].name} targetName={INFO[state.players.find(p => p.id === state.secondStrike!.targetPlayerId)!.factionId].name} victoryMode={state.victoryMode} onDecide={decideSecondStrike} />}
       {!review && state.secondStrike?.accepted && <section className="chooser secondStrikePrompt"><h2>Second strike against the exposed heir</h2><p><strong>The challenger’s entire side is eliminated if this contest is lost.</strong> Choose a statistic and an eligible card, then select the exposed heir.</p></section>}
       {review ? <AmateurReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : (
         <section className="amateurBoard">

@@ -1,3 +1,4 @@
+import { acknowledgeSecondStrikeExplanation, secondStrikeExplanationReady, type SecondStrike } from "./second-strike";
 import { describe, expect, it } from "vitest";
 import { createRandomState } from "./random";
 import { decideAmateurSecondStrike, resolveAmateurAttack, legalTargets, amateurNpcWantsSecondStrike, skipReplenishment, type AmateurState } from "./amateur";
@@ -161,5 +162,38 @@ describe("Master second strike with special effects",()=>{
   it("requires a contest rather than allowing army actions to bypass the accepted risk",()=>{
     const {game,attack,decide}=fixture("master",true);attack();decide(true);
     expect(()=>activateMasterArmyEffect(game as unknown as MasterState,"a","a-one")).toThrow("Declare the second strike");
+  });
+});
+
+
+describe("second-strike explanation pause", () => {
+  const offer=():SecondStrike=>({playerId:"npc",targetPlayerId:"a",turnPlayerIndex:0,accepted:false});
+  it("waits for every human, including when a computer is choosing",()=>{
+    const strike=offer();
+    expect(secondStrikeExplanationReady(strike,["a","b"])).toBe(false);
+    acknowledgeSecondStrikeExplanation(strike,"a");
+    expect(secondStrikeExplanationReady(strike,["a","b"])).toBe(false);
+    acknowledgeSecondStrikeExplanation(strike,"b");
+    expect(secondStrikeExplanationReady(strike,["a","b"])).toBe(true);
+  });
+  it("does not let repeated acknowledgements replace a different human's acknowledgement",()=>{
+    const strike=offer();acknowledgeSecondStrikeExplanation(strike,"a");acknowledgeSecondStrikeExplanation(strike,"a");
+    expect(strike.explanationAcks).toEqual(["a"]);expect(secondStrikeExplanationReady(strike,["a","b"])).toBe(false);
+  });
+  it("pauses again for each new offer and supports older saved offers",()=>{
+    const strike=offer();acknowledgeSecondStrikeExplanation(strike,"solo");
+    expect(secondStrikeExplanationReady(strike,["solo"])).toBe(true);
+    expect(secondStrikeExplanationReady(offer(),["solo"])).toBe(false);
+    expect(secondStrikeExplanationReady(undefined,["solo"])).toBe(false);
+  });
+  it("stops waiting for a human seat transferred to a computer",()=>{
+    const strike=offer();acknowledgeSecondStrikeExplanation(strike,"a");
+    expect(secondStrikeExplanationReady(strike,["a","b"])).toBe(false);
+    expect(secondStrikeExplanationReady(strike,["a"])).toBe(true);
+  });
+  it.each(["amateur","master"] as const)("retains %s acknowledgement across save and reload",mode=>{
+    const {game,attack}=fixture(mode);attack();acknowledgeSecondStrikeExplanation(game.secondStrike!,"solo");
+    const restored=mode==="amateur"?parseAmateurGame(serializeAmateurGame(game as unknown as AmateurState)):parseMasterGame(serializeMasterGame(game as unknown as MasterState));
+    expect(secondStrikeExplanationReady(restored?.secondStrike,["solo"])).toBe(true);
   });
 });
