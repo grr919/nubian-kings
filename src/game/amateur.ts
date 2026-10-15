@@ -79,6 +79,7 @@ export type AmateurEvent =
   | { type: "reveal"; playerId: string; cardId: string }
   | { type: "score"; playerId: string; cardId: string; base: number; die: number; total: number }
   | { type: "tie" }
+  | { type: "tie-break"; winnerId: string }
   | { type: "defeated"; playerId: string; cardId: string; heir: boolean }
   | { type: "replenishment-available"; playerId: string }
   | { type: "replenished"; playerId: string; cardId?: string; source: "discard" | "unused" }
@@ -313,13 +314,14 @@ export function resolveAmateurAttack(state: AmateurState, action: AmateurAttack)
   events.push({ type: "score", playerId: attackerPlayer.id, cardId: attacker.card.id, base: attacker.card[action.stat], die: attackerDie, total: attackerTotal });
   events.push({ type: "score", playerId: defender.id, cardId: target.card.id, base: target.card[action.stat], die: targetDie, total: targetTotal });
 
-  if (attackerTotal === targetTotal) {
+  if (attackerTotal === targetTotal && state.nileFloods) {
     events.push({ type: "tie" });
     finishAmateurTiedContest(state, events);
     return events;
   }
 
-  const attackerWon = attackerTotal > targetTotal;
+  if (attackerTotal === targetTotal) events.push({ type: "tie-break", winnerId: attackerPlayer.id });
+  const attackerWon = attackerTotal >= targetTotal;
   const winner = attackerWon ? attackerPlayer : defender;
   const loser = attackerWon ? defender : attackerPlayer;
   const losingEntry = attackerWon ? target : attacker;
@@ -434,7 +436,7 @@ function bestAmateurSecondStrike(state: AmateurState): AmateurAttack | undefined
   const target = state.players.find(p => p.id === strike.targetPlayerId)!;
   const cards = player.army.length ? player.army : [player.heir];
   const options = cards.filter(c => c.face === "up").flatMap(card => (["strength", "zeal", "wealth"] as Stat[]).filter(stat => stat !== "zeal" || canConvertCivilization(player.factionId, target.factionId)).map(stat => ({ action: { attackerId: card.id, targetPlayerId: target.id, targetId: target.heir.id, stat }, margin: card[stat] - target.heir[stat] })));
-  return options.sort((a,b) => b.margin-a.margin).find(o => o.margin > (state.nileFloods ? 5 : 0))?.action;
+  return options.sort((a,b) => b.margin-a.margin).find(o => state.nileFloods ? o.margin > 5 : o.margin >= 0)?.action;
 }
 export function amateurNpcWantsSecondStrike(state: AmateurState) { return Boolean(bestAmateurSecondStrike(state)); }
 

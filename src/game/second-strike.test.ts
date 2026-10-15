@@ -68,10 +68,17 @@ for (const mode of ["amateur", "master"] as const) describe(`${mode} second stri
     expect(game.players[0].eliminated).toBe(true);
     expect(game.winnerId).toBe("b");expect(game.phase).toBe("complete");expect(game.secondStrike).toBeUndefined();
   });
-  it("ends a tied second strike without elimination or another offer", () => {
+  it("resolves equal second-strike scores according to the level", () => {
     const {game,attack,decide} = fixture(mode);attack();game.players[1].heir.strength=6;decide(true);
-    const events=attack("a-one","b-heir");expect(events.some(e=>e.type==="tie")).toBe(true);
-    expect(game.players.every(p=>!p.eliminated)).toBe(true);expect(game.secondStrike).toBeUndefined();expect(game.activePlayerIndex).toBe(1);
+    const events=attack("a-one","b-heir");
+    if(mode === "amateur") {
+      expect(events.some(e=>e.type==="tie-break")).toBe(true);
+      expect(game.winnerId).toBe("a");expect(game.players[1].eliminated).toBe(true);
+    } else {
+      expect(events.some(e=>e.type==="tie")).toBe(true);
+      expect(game.players.every(p=>!p.eliminated)).toBe(true);expect(game.activePlayerIndex).toBe(1);
+    }
+    expect(game.secondStrike).toBeUndefined();
   });
   it("offers to a successful defender and restores turn order afterwards", () => {
     const {game,attack,decide,units,card} = fixture(mode);
@@ -111,7 +118,7 @@ for (const mode of ["amateur", "master"] as const) describe(`${mode} second stri
   });
   it("does not let NPCs use hidden strength to decide whether to risk a strike", () => {
     const {game,attack,npcWants,units,card}=fixture(mode);game.players[0].army=units([card("a-one",6,1),card("hidden",99,99,"down")]);
-    game.players[1].heir.strength=7;attack();expect(npcWants()).toBe(false);
+    game.players[1].heir.strength=7;game.players[1].heir.zeal=3;game.players[1].heir.wealth=2;attack();expect(npcWants()).toBe(false);
     game.players[1].heir.strength=3;expect(npcWants()).toBe(true);
     game.nileFloods=true;expect(npcWants()).toBe(false);
   });

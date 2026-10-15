@@ -150,11 +150,13 @@ describe("Amateur attacks", () => {
     expect(game.pendingReplenishmentPlayerId).toBe("npc");
   });
 
-  it("leaves tied cards face up, defeats neither, and advances the turn", () => {
+  it("leaves a Nile Flood tie unresolved and advances the turn", () => {
     const game = state([
       player("human", "human", [card("human-a", [4, 1, 1])]),
       player("npc", "npc", [card("npc-a", [4, 2, 2])]),
     ]);
+    game.nileFloods = true;
+    game.random = { seed: "FLOOD", state: 5, calls: 0 };
     const events = resolveAmateurAttack(game, {
       attackerId: "human-a",
       targetPlayerId: "npc",
@@ -263,4 +265,26 @@ describe("complete Amateur games", () => {
       expect(actions).toBeLessThan(5000);
     });
   }
+});
+
+
+describe("Amateur ties without Nile Floods", () => {
+  it.each(["strength", "zeal", "wealth"] as const)("awards an equal %s score to the attacker and offers replenishment", stat => {
+    const a=player("human","human",[card("human-a",[4,4,4])]);
+    const b=player("npc","npc",[card("npc-a",[4,4,4]),card("npc-b",[1,1,1])]);
+    a.unused=[card("reserve",[1,1,1])];
+    const game=state([a,b]);
+    const events=resolveAmateurAttack(game,{attackerId:"human-a",targetPlayerId:"npc",targetId:"npc-a",stat});
+    expect(events).toContainEqual({type:"tie-break",winnerId:"human"});
+    expect(events.some(e=>e.type==="tie")).toBe(false);
+    expect(a.army.map(c=>c.id)).toEqual(["human-a"]);
+    expect(b.discard.map(c=>c.id)).toEqual(["npc-a"]);
+    expect(game.phase).toBe("replenish");expect(game.pendingReplenishmentPlayerId).toBe("human");
+  });
+  it("lets an attacking heir defeat an equally scored defending heir", () => {
+    const a=player("human","human",[],[4,4,4]),b=player("npc","npc",[],[4,4,4]);
+    const game=state([a,b]);
+    resolveAmateurAttack(game,{attackerId:a.heir.id,targetPlayerId:b.id,targetId:b.heir.id,stat:"wealth"});
+    expect(game.winnerId).toBe(a.id);expect(b.eliminated).toBe(true);expect(a.eliminated).toBe(false);
+  });
 });
