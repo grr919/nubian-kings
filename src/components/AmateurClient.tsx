@@ -1,5 +1,6 @@
 "use client";
 import SecondStrikePrompt from "./SecondStrikePrompt";
+import SecondStrikeNotice from "./SecondStrikeNotice";
 import { acknowledgeSecondStrikeExplanation } from "@/game/second-strike";
 import { AMATEUR_TIE_RULE, AMATEUR_TIE_EXPLANATION, AMATEUR_SECOND_STRIKE_RULE as SECOND_STRIKE_RULE } from "@/game/amateur-rules";
 import ReadingCardGuide from "./ReadingCardGuide";
@@ -408,7 +409,6 @@ export default function AmateurClient() {
       />
 
       {!review && state.phase === "second-strike" && state.secondStrike && <SecondStrikePrompt explanationReady={state.secondStrike.explanationAcks?.includes("solo") ?? false} onContinue={continueSecondStrikeExplanation} attackerWinsTies={!state.nileFloods} isYou={state.secondStrike.playerId === human.id} playerName={INFO[state.players.find(p => p.id === state.secondStrike!.playerId)!.factionId].name} targetName={INFO[state.players.find(p => p.id === state.secondStrike!.targetPlayerId)!.factionId].name} victoryMode={state.victoryMode} onDecide={decideSecondStrike} />}
-      {!review && state.secondStrike?.accepted && <section className="chooser secondStrikePrompt"><h2>Second strike against the exposed heir</h2><p><strong>The challenger’s entire side is eliminated if this contest is lost.</strong> Choose a statistic and an eligible card, then select the exposed heir.</p></section>}
       {review ? <AmateurReviewPanel review={review} state={state} onContinue={() => setReview(undefined)} /> : (
         <section className="amateurBoard">
           <AmateurPlayerArea player={human} active={active.id === human.id} attackerId={attackerId} highlightIds={new Set(npcAttack?.targetPlayerId === human.id ? [npcAttack.targetId] : [])} allowedAttackers={allowedAttackers} targetIds={new Set()} onCard={(id) => setAttackerId(id)} />
@@ -423,14 +423,14 @@ export default function AmateurClient() {
       )}
 
       {!review && humanTurn && (
-        <section className="chooser amateurChooser">
+        <section className="chooser amateurChooser"><SecondStrikeNotice accepted={state.secondStrike?.accepted} />
           <p>{!selectedStat ? conflictStatisticPrompt(state.round) : !attackerId ? human.army.length ? "Now choose one of your army cards to initiate the comparison." : "Your heir is your last card. Choose it to initiate the comparison." : "Now select any enemy army card. An exposed heir may also be selected."}</p>
           <div>{STATS.map((stat) => <button key={stat} disabled={!state.players.some(player => legalTargets(state, player.id, stat).length)} className={selectedStat === stat ? "chosenStat" : ""} onClick={() => { setSelectedStat(stat); setAttackerId(undefined); }}><span>{stat === "strength" ? "⚔" : stat === "zeal" ? "✦" : "◆"}</span>{stat}</button>)}</div>
         </section>
       )}
 
       {!review && npcAttack && (
-        <section className="chooser npcChoicePanel" aria-live="polite">
+        <section className="chooser npcChoicePanel" aria-live="polite"><SecondStrikeNotice accepted={state.secondStrike?.accepted} />
           <h2>{comparisonActionText(npcAttack.stat, factionActor(INFO[active.factionId].name), state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "your forces" : factionForces(INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name), true)}</h2>
           <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
           <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>What happens next?</button>
