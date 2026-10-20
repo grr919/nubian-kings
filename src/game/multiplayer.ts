@@ -9,6 +9,7 @@ export type MultiplayerRoomStatus = "waiting" | "active" | "complete" | "abandon
 export type MultiplayerOpeningPlayer = "random" | "human" | "npc";
 
 export interface MultiplayerRoomSettings {
+  isPublic?: boolean;
   rematchVotes?: Record<string, boolean>;
   totalSeats: number;
   npcCount: number;

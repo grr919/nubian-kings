@@ -12,8 +12,10 @@ This document is the authoritative record of multiplayer decisions for *Nubian K
 - Multiplayer games contain two to five total participants.
 - At least two participants must be human.
 - Any remaining seats may be assigned to computer opponents.
-- Games are private and invitation-only. The host creates a room and shares its six-character room code.
-- Public matchmaking is deferred.
+- Hosts create private rooms by default or opt into a public room. Both retain six-character room codes.
+- Beginner, Amateur, and Master join screens show the shared Nile South Games directory, including game settings and available human seats.
+- Public waiting rooms are listed only while the human host has been seen in the last two minutes and a human seat remains open. Private, started, full, and stale rooms are excluded.
+- Listings disclose room metadata only, never game state, cards, reviews, or account identifiers.
 - Players use temporary display names and do not create conventional accounts.
 - Supabase assigns each browser an anonymous identity for authorization and reconnection.
 - One browser remembers one multiplayer room at a time.
@@ -214,7 +216,6 @@ The following design is approved for implementation.
 
 ## Deferred shared features
 
-- Public matchmaking
 - Built-in player chat
 - Conventional player accounts
 - Cross-device identity recovery
@@ -270,3 +271,7 @@ Required Vercel environment variables:
 - `CRON_SECRET`
 
 No secret values belong in this document, the repository, browser-visible code, or screenshots.
+
+## Public-room directory implementation
+
+Room visibility is stored as settings.isPublic; absent values remain private. The shared directory runs in the Nubian Kings Supabase project as nile-south-lobby; its source is in supabase/functions/nile-south-lobby. The publicNubianRoom projection is copied there from src/game/public-rooms.ts and must stay synchronized. Clients keep joining through the existing authenticated API, which rechecks capacity and game status. Host heartbeats continue through existing room polling. No schema migration or additional public table policy is needed.

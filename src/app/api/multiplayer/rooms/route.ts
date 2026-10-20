@@ -1,3 +1,25 @@
+import { publicNubianRoom, type PublicRoomRow, type PublicPlayerRow } from "@/game/public-rooms";
+
+export async function GET() {
+  const headers = { "Cache-Control": "no-store" };
+  if (!multiplayerConfigured()) return Response.json({ error: "Multiplayer has not been configured yet." }, { status: 503, headers });
+  const db = adminSupabase(), rooms = [];
+  try {
+    for (let offset = 0; ; offset += 200) {
+      const { data, error } = await db.from("nk_multiplayer_rooms").select("code,host_user_id,level,status,settings").eq("status", "waiting").eq("settings->>isPublic", "true").order("code").range(offset, offset + 199);
+      if (error) throw error;
+      if (!data?.length) break;
+      const { data: players, error: playerError } = await db.from("nk_multiplayer_players").select("room_code,user_id,display_name,controller,last_seen_at").in("room_code", data.map(r => r.code));
+      if (playerError) throw playerError;
+      for (const room of data) { const listing = publicNubianRoom(room as PublicRoomRow, (players ?? []) as PublicPlayerRow[]); if (listing) rooms.push(listing); }
+      if (data.length < 200) break;
+    }
+    return Response.json({ schemaVersion: 1, rooms }, { headers });
+  } catch {
+    return Response.json({ error: "Available rooms could not be loaded. Please refresh." }, { status: 503, headers });
+  }
+}
+
 import { adminSupabase, multiplayerConfigured, requestUser } from "@/lib/supabase-server";
 import type { MultiplayerOpeningPlayer, MultiplayerRoomSettings } from "@/game/multiplayer";
 
@@ -27,7 +49,7 @@ export async function POST(request: Request) {
   if (!Number.isInteger(npcCount) || npcCount < 0 || npcCount > totalSeats - 2) return Response.json({ error: "A multiplayer game must leave room for at least two people." }, { status: 400 });
   if (openingPlayer === "npc" && npcCount === 0) return Response.json({ error: "A computer cannot open a game without computer opponents." }, { status: 400 });
   const level = body.level === "master" ? "master" : body.level === "amateur" ? "amateur" : "beginner";
-  const settings: MultiplayerRoomSettings = { totalSeats, npcCount, nileFloods: Boolean(body.nileFloods), openingPlayer, ...(level !== "beginner" ? { victoryMode: body.victoryMode === "long" ? "long" : "standard" } : {}), ...(level === "master" ? { effectsMode: body.effectsMode === "on" ? "on" : "off" } : {}) };
+  const settings: MultiplayerRoomSettings = { isPublic: body.isPublic === true, totalSeats, npcCount, nileFloods: Boolean(body.nileFloods), openingPlayer, ...(level !== "beginner" ? { victoryMode: body.victoryMode === "long" ? "long" : "standard" } : {}), ...(level === "master" ? { effectsMode: body.effectsMode === "on" ? "on" : "off" } : {}) };
   const supabase = adminSupabase();
 
   for (let attempt = 0; attempt < 5; attempt++) {
