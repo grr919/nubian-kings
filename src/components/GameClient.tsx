@@ -190,7 +190,7 @@ export default function GameClient() {
     <main className="landing"><section className="panel titlePanel">
       <p className="kicker">BEGINNER LEVEL: THE AL-AZHAR MOSQUE</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">The Battle for Africa</p>
       <p>Lead a medieval African civilization through a contest of strength, zeal, and wealth.</p>
-      <div className="actions"><button onClick={() => setScreen("setup")}>New Solo Game</button>{hasSave && <button className="secondary" onClick={continueGame}>Continue Solo Game</button>}<a className="buttonLink" href="/beginner/multiplayer">Multiplayer</a></div>
+      <div className="actions"><button onClick={() => setScreen("setup")}>Play against the computer</button>{hasSave && <button className="secondary" onClick={continueGame}>Continue Solo Game</button>}<a className="buttonLink" href="/beginner/multiplayer">Play against other players</a></div>
       <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><footer className="landingFooter">© 2026 Nile South Games</footer>
     </section>{help && <Help onClose={() => setHelp(false)} />}</main>
   );
