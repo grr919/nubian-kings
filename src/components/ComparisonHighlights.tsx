@@ -26,13 +26,20 @@ export function ComparisonStatCard({ card, stat, result, pile = false, children 
   </span>;
 }
 
-export function ComparisonScoreDetail({ cancelled = false, guarantees, playerId, winnerId, effectDecided = false }: {
+export function ComparisonScoreDetail({ score, cancelled = false, guarantees, playerId, winnerId, effectDecided = false }: {
   cards: HighlightCard[]; stat: Stat; score: Score; cancelled?: boolean; guarantees?: string[]; playerId?: string; winnerId?: string; effectDecided?: boolean;
 }) {
   const uniqueGuarantees = new Set(guarantees);
   const guaranteed = uniqueGuarantees.size === 1;
-  if (!cancelled && !guaranteed && !effectDecided && uniqueGuarantees.size < 2) return null;
+  const flooded = Number.isInteger(score.die) && score.die >= 1 && score.die <= 6;
+  if (!flooded && !cancelled && !guaranteed && !effectDecided && uniqueGuarantees.size < 2) return null;
   return <p className="comparisonScoreDetail">
+    {flooded && <span className="nileFloodScore">
+      <span className="nileFloodRoll"><span>Nile Flood d6</span><b>{score.die}</b></span>
+      <span className="nileFloodEquation" aria-label={`Base score ${score.base} plus Nile Flood roll ${score.die} equals total ${score.total}.`}>
+        <span>Base {score.base}</span><span>+</span><span>Flood {score.die}</span><span>=</span><strong>{score.total}</strong>
+      </span>
+    </span>}
     {cancelled ? <strong>Cancelled — scores do not decide this result.</strong>
       : guaranteed ? <strong>{playerId === winnerId ? "Wins by one-time guarantee." : "Opponent wins by one-time guarantee."}</strong>
       : effectDecided ? <strong>A card effect decides this result.</strong>
