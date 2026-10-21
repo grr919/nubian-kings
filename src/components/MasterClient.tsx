@@ -456,7 +456,7 @@ export default function MasterClient() {
   if (screen === "home") return <main className="landing masterLanding"><section className="panel titlePanel">
     <p className="kicker">MASTER LEVEL: THE ROCK CHURCH OF LALIBELA</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">Armies assembled in hidden formations</p>
     <p>Build twenty cards into legal piles, protect your heir, and defeat opposing formations as complete units.</p>
-    <div className="actions"><button onClick={() => setScreen("setup")}>New Master Game</button>{hasSave && <button className="secondary" onClick={continueGame}>Continue Master Game</button>}<a className="buttonLink secondary" href="/master/multiplayer">Multiplayer</a></div>
+    <div className="actions"><button onClick={() => setScreen("setup")}>Play against the computer</button>{hasSave && <button className="secondary" onClick={continueGame}>Continue Master Game</button>}<a className="buttonLink secondary" href="/master/multiplayer">Play against other players</a></div>
     <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Master Rules</button><a className="landingBack" href="/">Return to Main</a></div>
     <small>Build your army and challenge the other kingdoms.</small>
     <footer className="landingFooter">© 2026 Nile South Games</footer>
