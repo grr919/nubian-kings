@@ -337,9 +337,9 @@ export default function AmateurClient() {
         <p className="subtitle">Protected heirs and targeted attacks</p>
         <p>Command a ten-card army, expose an enemy heir, and eliminate it before your own heir falls.</p>
         <div className="actions">
-          <button onClick={() => setScreen("setup")}>New Amateur Game</button>
+          <button onClick={() => setScreen("setup")}>Play against the computer</button>
           {hasSave && <button className="secondary" onClick={continueGame}>Continue Amateur Game</button>}
-          <a className="buttonLink" href="/amateur/multiplayer">Multiplayer</a>
+          <a className="buttonLink" href="/amateur/multiplayer">Play against other players</a>
         </div>
         <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">Return to Main</a></div>
         <footer className="landingFooter">© 2026 Nile South Games</footer>
