@@ -433,7 +433,7 @@ export default function AmateurClient() {
         <section className="chooser npcChoicePanel" aria-live="polite"><SecondStrikeNotice accepted={state.secondStrike?.accepted} />
           <h2>{comparisonActionText(npcAttack.stat, factionActor(INFO[active.factionId].name), state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "your forces" : factionForces(INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name), true)}</h2>
           <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
-          <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>What happens next?</button>
+          <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>Who will win?</button>
         </section>
       )}
 
@@ -451,7 +451,7 @@ export default function AmateurClient() {
 
       {winner && !review && <section className="victory"><EparchCrownMark /><p className="kicker">VICTORY</p><h2>{winner.controller === "human" ? "You eliminated your opponent's heir!" : `${INFO[winner.factionId].name} are victorious!`}</h2><a className="buttonLink" href="/amateur">Play Again</a></section>}
       {eliminationPending && !review && <EliminatedGamePrompt onContinue={() => setWatchAfterElimination(true)} onEnd={endEliminatedGame} />}
-      <aside className="history"><h2>Game record</h2><small style={{display:"block",color:"var(--muted)",marginTop:-6,marginBottom:12}}>Amateur · Round {state.round} · Seed {state.random.seed}</small>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}<div className="toolbar" style={{justifyContent:"flex-start",flexWrap:"nowrap",overflowX:"auto",marginTop:16}}><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/amateur">Leave</a></div></aside>
+      <details className="history"><summary>Game record</summary><small style={{display:"block",color:"var(--muted)",marginTop:-6,marginBottom:12}}>Amateur · Round {state.round} · Seed {state.random.seed}</small>{history.length ? <ol>{history.map((line, index) => <li key={`${index}-${line}`}>{line}</li>)}</ol> : <p>No attacks yet.</p>}<div className="toolbar" style={{justifyContent:"flex-start",flexWrap:"nowrap",overflowX:"auto",marginTop:16}}><button className="iconButton" onClick={() => navigator.clipboard?.writeText(state.random.seed)}>Copy Seed</button><button className="iconButton" onClick={() => setHelp(true)}>Rules</button><FeedbackButton diagnostics={feedbackDiagnostics} /><a className="iconButton linkButton" href="/amateur">Leave</a></div></details>
       <footer className="abandonGameFooter"><button className="secondary" onClick={() => { if (window.confirm("Abandon this game? Your saved game will be deleted.")) endEliminatedGame(); }}>Abandon this game</button></footer>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
     </main>
