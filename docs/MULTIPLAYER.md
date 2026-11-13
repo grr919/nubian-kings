@@ -57,6 +57,10 @@ This document is the authoritative record of multiplayer decisions for *Nubian K
 - Defeated cards use the same **Defeated** banner as solo play.
 - Multiplayer should preserve the established sunlit Nubian Kings visual design.
 
+## November 13, 2026 — Amateur and Master army visibility
+
+This change marks the switch from hiding each player’s unrevealed army cards from that player to letting each player see their own cards before play, in both solo and online games. Opponents still see card backs until the normal reveal. Reserve cards stay hidden until drawn. Private inspection does not turn a card face up for combat or Master effect eligibility. Beginner visibility and all comparison and tie rules continue as before.
+
 ## Server authority and hidden information
 
 - The server owns the complete, authoritative game state.
@@ -64,7 +68,7 @@ This document is the authoritative record of multiplayer decisions for *Nubian K
 - Clients send intentions, never replacement game states.
 - Optimistic revision checks reject simultaneous or stale actions.
 - Each client receives only information that participant is entitled to see.
-- Face-down card names, statistics, canonical identifiers, reserve order, deck order, and other hidden data remain on the server.
+- Amateur and Master room responses include unrevealed army card details only for the authenticated human who owns those cards. Reserve and deck order remain server-side.
 - Multiplayer card identifiers are opaque and do not reveal the underlying card.
 - Computer decisions are made on the server using only information legally available under the game rules.
 - Database tables have Row Level Security enabled and no direct public table policies.
@@ -118,7 +122,7 @@ The following behavior is implemented.
 
 - On the active player's turn, that player selects a statistic, an attacking card, an opponent, and a target card.
 - The player confirms the complete selection to declare the attack.
-- Every human then sees the declared attacker, target, and statistic while both selected cards remain hidden.
+- Every human then sees the declared attacker, target, and statistic while unrevealed cards are visible only to their owners.
 - The attacking player deliberately chooses **Resolve Attack** after the declaration pause.
 - Both cards are then revealed and the attack is resolved on the server.
 - An heir cannot attack until its army is empty.
@@ -182,11 +186,11 @@ The following design is approved for implementation.
 ### Public information and attacks
 
 - When play begins, each participant may see every faction, revealed heir, number of army piles, and number of cards in each pile.
-- The identities, types, statistics, and internal order of face-down cards remain hidden.
+- The identities, types, statistics, and internal order of unrevealed cards remain hidden from opponents.
 - On the active player's turn, that player selects a statistic, an attacking pile, an opponent, and a target pile, then confirms the complete attack.
 - An heir cannot attack until every card in its army is gone.
 - An enemy heir cannot be targeted until every card in its army is gone.
-- Every human sees the declared units and statistic while their cards remain hidden.
+- Every human sees the declared units and statistic while unrevealed cards are visible only to their owners.
 - The attacker deliberately chooses **Resolve Attack** after the declaration pause.
 
 ### Resolution and acknowledgement

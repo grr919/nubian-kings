@@ -38,5 +38,12 @@ describe("Master multiplayer setup",()=>{
   const hidden=state.players.flatMap(p=>p.army.flatMap(x=>x.cards));
   expect(hidden.every(c=>!("name"in c)&&!("definitionId"in c)&&!("strength"in c))).toBe(true);
   expect("turnBoundaries"in state).toBe(false);
+  const ownerView=publicMasterState(privateGame,"human-1");
+  for(const player of ownerView.players){
+   const cards=player.army.flatMap(pile=>pile.cards);
+   expect(cards.length).toBeGreaterThan(0);
+   expect(cards.every(card=>("name"in card)===(player.id==="human-1")&&card.face==="down")).toBe(true);
+   expect(player.unused.every(card=>!("name"in card))).toBe(true);
+  }
  });
 });

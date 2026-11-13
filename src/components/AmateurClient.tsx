@@ -177,7 +177,7 @@ export default function AmateurClient() {
     setState(next);
     setWatchAfterElimination(false);
     setPrepared(undefined);
-    setHistory(["Ten hidden cards form each army. The heirs stand ready behind them."]);
+    setHistory(["Ten cards form each army. Each player can see their own cards. The heirs stand ready behind them."]);
     setScreen("game");
   }
 
@@ -354,7 +354,7 @@ export default function AmateurClient() {
         <button className="backButton" onClick={() => setScreen("home")}>← Back</button>
         <p className="kicker">AMATEUR GAME</p>
         <h1>Assemble your army:</h1>
-        <p className="lede">Each civilization receives ten hidden non-Leader army cards and deliberately chooses any Leader as heir.</p>
+        <p className="lede">Each civilization receives ten non-Leader army cards visible to that army’s owner and deliberately chooses any Leader as heir.</p>
         <h2>Choose a civilization:</h2>
         <div className="factionGrid">{FACTIONS.map((id) => (
           <button key={id} className={`faction faction-${id} ${faction === id ? "selected" : ""}`} onClick={() => setFaction(id)}>
@@ -405,7 +405,7 @@ export default function AmateurClient() {
       <GameStateBanner opening={state.round === 1 && state.phase !== "complete" ? openingWarText(state.players) : undefined} players={state.players} viewerId={human.id}
         thinking={thinking}
         title={review ? "Review the comparison:" : npcAttack ? declaredActionText(npcAttack.stat) : state.phase === "complete" ? "Game complete." : thinking ? `${INFO[active.factionId].name} are deciding…` : state.phase === "replenish" ? `${pending?.controller === "human" ? "You may" : INFO[pending!.factionId].name + " may"} replenish.` : humanTurn ? !selectedStat ? "Choose a statistic:" : !attackerId ? "Choose your initiating card:" : state.secondStrike?.accepted ? "Choose the exposed heir:" : "Choose an enemy target:" : `${INFO[active.factionId].name}'s turn`}
-        detail={npcAttack ? "The selected cards remain hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
+        detail={npcAttack ? "Unrevealed opposing cards stay hidden until you resolve the attack." : humanTurn ? "An heir may attack only after its army is empty. Enemy heirs are protected by the same rule." : "Every army position may be targeted."}
       />
 
       {!review && state.phase === "second-strike" && state.secondStrike && <SecondStrikePrompt explanationReady={state.secondStrike.explanationAcks?.includes("solo") ?? false} onContinue={continueSecondStrikeExplanation} attackerWinsTies={!state.nileFloods} isYou={state.secondStrike.playerId === human.id} playerName={INFO[state.players.find(p => p.id === state.secondStrike!.playerId)!.factionId].name} targetName={INFO[state.players.find(p => p.id === state.secondStrike!.targetPlayerId)!.factionId].name} victoryMode={state.victoryMode} onDecide={decideSecondStrike} />}
@@ -432,7 +432,7 @@ export default function AmateurClient() {
       {!review && npcAttack && (
         <section className="chooser npcChoicePanel" aria-live="polite"><SecondStrikeNotice accepted={state.secondStrike?.accepted} />
           <h2>{comparisonActionText(npcAttack.stat, factionActor(INFO[active.factionId].name), state.players.find((player) => player.id === npcAttack.targetPlayerId)?.controller === "human" ? "your forces" : factionForces(INFO[state.players.find((player) => player.id === npcAttack.targetPlayerId)!.factionId].name), true)}</h2>
-          <p>The attacker and target are highlighted. Their cards remain hidden until you are ready.</p>
+          <p>The attacker and target are highlighted. Resolve the attack to reveal any hidden opposing cards.</p>
           <button onClick={() => attack(npcAttack.targetPlayerId, npcAttack.targetId, { attackerId: npcAttack.attackerId, stat: npcAttack.stat })}>Who will win?</button>
         </section>
       )}
@@ -480,7 +480,7 @@ function AmateurPlayerArea({
     <section className={`playerArea amateurPlayer faction-${player.factionId} ${player.controller === "human" ? "humanArea" : "npcArea"} ${player.eliminated ? "eliminated" : ""}`}>
       <header><FactionPortrait factionId={player.factionId} leader={player.heir} compact /><div><h2>{label(player)}</h2><small>{player.eliminated ? "Heir eliminated" : `${player.army.length} army · ${player.discard.length} discarded · ${player.unused.length} unused`}</small></div>{active && !player.eliminated && <span className="selectorBadge">Active</span>}</header>
       <div className="heirRow"><span>Heir</span><AmateurCardView card={player.heir} visible selected={attackerId === player.heir.id || highlightIds.has(player.heir.id)} enabled={enabled(player.heir.id)} badge={player.eliminated ? "Eliminated" : undefined} onClick={() => onCard(player.heir.id)} /></div>
-      <div className="amateurArmy">{player.army.map((card) => <AmateurCardView key={card.id} card={card} selected={attackerId === card.id || highlightIds.has(card.id)} enabled={enabled(card.id)} onClick={() => onCard(card.id)} />)}</div>
+      <div className="amateurArmy">{player.army.map((card) => <AmateurCardView key={card.id} card={card} visible={player.controller === "human" || card.face === "up"} selected={attackerId === card.id || highlightIds.has(card.id)} enabled={enabled(card.id)} onClick={() => onCard(card.id)} />)}</div>
       {player.discard.length > 0 && <details className="discardViewer"><summary>View discard pile ({player.discard.length})</summary><div>{player.discard.map((card) => <AmateurCardView key={card.id} card={card} visible />)}</div></details>}
     </section>
   );
@@ -509,6 +509,6 @@ function AmateurReviewPanel({ review, state, onContinue }: { review: AmateurRevi
 }
 
 function AmateurHelp({ onClose }: { onClose: () => void }) {
-  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal beginnerRules"><button className="modalClose" onClick={onClose}>×</button><div className="beginnerRulesText"><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten hidden non-Leader army cards and chooses one face-up Leader heir.</li><li>On your turn, choose a statistic, one initiating card, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot initiate a comparison until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded. {AMATEUR_TIE_RULE}</li><li>After a win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an initiating heir loses, it is eliminated immediately.</li><li>{SECOND_STRIKE_RULE}</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol></div><ReadingCardGuide /></section></div>;
+  return <div className="modalShade" role="dialog" aria-modal="true"><section className="modal beginnerRules"><button className="modalClose" onClick={onClose}>×</button><div className="beginnerRulesText"><p className="kicker">THE CATHEDRAL AT QASR IBRIM</p><h2>Amateur Rules</h2><ol><li>Every Leader is reserved from the initial deal. Each player begins with ten non-Leader army cards and chooses one face-up Leader heir. You can inspect your own army at any time. Opponents’ cards are hidden until revealed.</li><li>On your turn, choose a statistic, one initiating card, an opponent, and any card in that opponent’s army.</li><li>Your heir cannot initiate a comparison until your army is empty. An enemy heir cannot be targeted until its army is empty.</li><li>Reveal the two cards. The lower score is discarded. {AMATEUR_TIE_RULE}</li><li>After a win, the winning card’s owner may add one face-down card from their public discard pile or hidden unused deck, provided their army has fewer than ten cards.</li><li>If an initiating heir loses, it is eliminated immediately.</li><li>{SECOND_STRIKE_RULE}</li><li>Standard play ends when the first heir is eliminated. Long play continues until only one heir remains.</li></ol></div><ReadingCardGuide /></section></div>;
 }
 
