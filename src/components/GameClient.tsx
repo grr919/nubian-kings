@@ -1,4 +1,5 @@
 "use client";
+import { playDiceSound } from "./dice-sound";
 import ReadingCardGuide from "./ReadingCardGuide";
 import { openingWarText, conflictStatisticPrompt } from "@/game/player-language";
 import { canResumeGame } from "@/game/resumable-game";
@@ -127,6 +128,7 @@ export default function GameClient() {
     const next = structuredClone(sourceState);
     const events = playComparison(next, stat);
     const scores = events.filter((event): event is Extract<GameEvent, { type: "score" }> => event.type === "score").map(({ playerId, cardId, base, die, total }) => ({ playerId, cardId, base, die, total }));
+    if (scores.some(score => score.die > 0)) playDiceSound();
     const discarded = events.filter((event): event is Extract<GameEvent, { type: "cards-discarded" }> => event.type === "cards-discarded").flatMap((event) => event.cardIds);
     const winnerEvent = events.find((event): event is Extract<GameEvent, { type: "comparison-won" }> => event.type === "comparison-won");
     const sequenceCardIds = [...new Set([...priorSequence, ...scores.map((score) => score.cardId)])];
