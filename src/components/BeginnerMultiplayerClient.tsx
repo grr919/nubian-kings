@@ -1,4 +1,5 @@
 "use client";
+import { useRoomDiceSound } from "./dice-sound";
 import PublicRoomDirectory from "./PublicRoomDirectory";
 import { openingWarText, conflictStatisticPrompt } from "@/game/player-language";
 import { ComparisonHighlights, ComparisonStatCard, ComparisonScoreDetail } from "./ComparisonHighlights";
@@ -68,6 +69,8 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   const [nileFloods, setNileFloods] = useState(false);
   const [openingPlayer, setOpeningPlayer] = useState<"random" | "human" | "npc">("random");
   const [room, setRoom] = useState<Room>();
+  useRoomDiceSound(room?.code, room?.review?.scores?.some(score => score.die > 0) ? JSON.stringify(room.review.scores) : undefined);
+  
   const [busy, setBusy] = useState(false);
   useEffect(()=>{const selected=new URLSearchParams(window.location.search).get("room");if(selected&&/^[A-Z2-9]{6}$/.test(selected.toUpperCase())){setJoinCode(selected.toUpperCase());setMode("join");}},[]);
   const [error, setError] = useState("");
