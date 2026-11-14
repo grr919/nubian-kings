@@ -1,4 +1,5 @@
 "use client";
+import { playDiceSound } from "./dice-sound";
 import SecondStrikePrompt from "./SecondStrikePrompt";
 import SecondStrikeNotice from "./SecondStrikeNotice";
 import { acknowledgeSecondStrikeExplanation } from "@/game/second-strike";
@@ -295,6 +296,7 @@ export default function MasterClient() {
     }
     const events = resolveMasterAttack(next, { attackerUnitId: currentAttackerId, targetPlayerId, targetUnitId, stat });
     const scores = events.filter((event): event is Extract<MasterEvent, { type: "score" }> => event.type === "score").map(({ playerId, unitId, base, die, total }) => ({ playerId, unitId, base, die, total }));
+    if (scores.some(score => score.die > 0)) playDiceSound();
     setReview({ secondStrike: Boolean(state.secondStrike?.accepted), stat, attacker: beforeAttacker, target: beforeTarget, attackerUnitId: currentAttackerId, targetUnitId, attackerPlayerId, targetPlayerId, scores, tie: events.some((event) => event.type === "tie") });
     setSelectedStat(undefined);
     setAttackerId(undefined);
@@ -310,7 +312,10 @@ export default function MasterClient() {
     const before = structuredClone(pendingComparison);
     const playerId = next.players[pendingComparison.priorityIndex].id;
     let events: MasterEvent[] | undefined;
-    if (kind === "flood") applyMasterNileFlood(next, playerId);
+    if (kind === "flood") {
+      applyMasterNileFlood(next, playerId);
+      if (pendingComparison.dice.some(die => die > 0)) playDiceSound();
+    }
     else if (kind === "guarantee") spendMasterGuarantee(next, playerId, cardId!);
     else if (kind === "interrupt") events = interruptMasterComparison(next, playerId, cardId!);
     else if (kind === "eliminate") eliminateWithMasterEffect(next, playerId, cardId!, targetPlayerId!, targetCardId!);
