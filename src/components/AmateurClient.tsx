@@ -1,4 +1,5 @@
 "use client";
+import { playDiceSound } from "./dice-sound";
 import SecondStrikePrompt from "./SecondStrikePrompt";
 import SecondStrikeNotice from "./SecondStrikeNotice";
 import { acknowledgeSecondStrikeExplanation } from "@/game/second-strike";
@@ -223,6 +224,7 @@ export default function AmateurClient() {
     const scores = events
       .filter((event): event is Extract<AmateurEvent, { type: "score" }> => event.type === "score")
       .map(({ playerId, cardId, base, die, total }) => ({ playerId, cardId, base, die, total }));
+    if (scores.some(score => score.die > 0)) playDiceSound();
     setReview({ secondStrike: Boolean(state.secondStrike?.accepted),
       stat,
       attacker: beforeAttacker,
