@@ -12,10 +12,8 @@ describe("multiplayer controller response contract", () => {
       // A move must return the authoritative controller status as well as
       // updated game state. Without it, a valid controller sees a false
       // view-only banner immediately after every successful move.
-      const ending = source.slice(source.lastIndexOf("const fresh=") >= 0
-        ? source.lastIndexOf("const fresh=")
-        : source.lastIndexOf("const refreshed="));
-      expect(ending).toMatch(/control\s*:\s*\{\s*canControl\s*:\s*true\s*\}/);
+      const patch = source.slice(source.indexOf("export async function PATCH"));
+      expect(patch).toMatch(/control\s*:\s*\{\s*canControl\s*:\s*true\s*\}/);
     });
   }
 });
