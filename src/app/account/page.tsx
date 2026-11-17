@@ -99,7 +99,7 @@ export default function AccountPage() {
     <p className="kicker">NILE SOUTH GAMES</p>
     <h1>Player account</h1>
     <p className="subtitle">Keep one player identity as more Nile South games join the account system.</p>
-    <p><Link href="/">Return to Nubian Kings</Link></p>
+    <p><Link href="/">Return to Nubian Kings</Link> · <Link href="/account/games">My Games — Resume on another device</Link></p>
     {!client ? <p role="alert">Account preview is not configured. Please check its Vercel Supabase environment variables.</p>
       : loading ? <p>Checking your player session…</p> : <>
       {user?.is_anonymous && <section aria-label="Upgrade guest account"><h2>Upgrade your guest account</h2>
