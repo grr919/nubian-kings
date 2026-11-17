@@ -24,9 +24,15 @@ export default function MyGames() {
       const verified = Boolean(user && !user.is_anonymous && user.email_confirmed_at);
       setPermanent(verified);
       if (!verified) { setGames([]); return; }
-      const { data, error: queryError } = await client.rpc("nsg_my_nubian_games");
-      if (queryError) throw queryError;
-      setGames((data ?? []) as NubianGameSummary[]);
+      const { data: { session }, error: sessionError } = await client.auth.getSession();
+      if (sessionError || !session) throw Error("Your session has expired. Please sign in again.");
+      const response = await fetch("/api/account/games", {
+        cache: "no-store",
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw Error(body.error ?? "Could not retrieve your games.");
+      setGames((body.games ?? []) as NubianGameSummary[]);
     } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load your games."); }
     finally { setLoading(false); }
   }
