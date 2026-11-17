@@ -38,3 +38,12 @@ Status: code prepared on feature branch; NOT activated in production.
 - Guest rooms made under a *different* anonymous identity are not automatically linked to a newly created permanent account. In-place guest upgrades keep the same user ID. Previously transferred/removed seats are excluded.
 - This milestone does not sync solo localStorage saves or create a cross-game account portal.
 - Before production release: provision branch-only server secret without exposing it publicly, run positive and negative (another user's room) cross-device tests for all three levels, check inactive/expired games and disconnected-host replacement behavior, and keep existing room-table permissions unchanged.
+
+
+## November 17 — Consistent account names in all multiplayer levels
+
+- Beginner, Amateur and Master create/join screens use `MultiplayerPlayerName` to show the permanent Nile South profile display name as read-only text; registered players do not enter a separate name for each room.
+- Guests retain editable temporary room names. A signed-in player with an unverified email or a missing profile is directed to /account and cannot create/join until the account is complete.
+- Both `POST /api/multiplayer/rooms` and `POST /api/multiplayer/rooms/join` resolve the displayed player name from the verified account and server-side profile table. Submitted client names cannot override registered identities.
+- Extended `nk_multiplayer_players.display_name` from 24 to 40 characters, matching the existing profile display-name limit. No game state or player ID was modified; zero multiplayer seats existed at the time of migration.
+- The stable pilot Preview built successfully. Positive/negative live browser tests with both registered and guest accounts remain to be completed.
