@@ -74,7 +74,7 @@ export default function AccountPage() {
   async function createAccount() {
     if (!client) { setMessage("The authentication service is unavailable."); return; }
     const address = email.trim();
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(address)) { setMessage("Enter a valid email address first."); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) { setMessage("Enter a valid email address first."); return; }
     if (password.length < 12) { setMessage("Choose a password with at least 12 characters."); return; }
     await run(
       () => client.auth.signUp({ email: address, password, options: { emailRedirectTo: window.location.origin + "/account" } }),
