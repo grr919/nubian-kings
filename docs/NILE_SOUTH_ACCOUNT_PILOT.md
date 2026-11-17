@@ -47,3 +47,18 @@ Status: code prepared on feature branch; NOT activated in production.
 - Both `POST /api/multiplayer/rooms` and `POST /api/multiplayer/rooms/join` resolve the displayed player name from the verified account and server-side profile table. Submitted client names cannot override registered identities.
 - Extended `nk_multiplayer_players.display_name` from 24 to 40 characters, matching the existing profile display-name limit. No game state or player ID was modified; zero multiplayer seats existed at the time of migration.
 - The stable pilot Preview built successfully. Positive/negative live browser tests with both registered and guest accounts remain to be completed.
+
+
+## November 17 — Single controlling browser per multiplayer seat
+
+- Added `public.nk_seat_control_leases` and service-only, atomic lease RPC `nk_seat_control_lease`. The lease is scoped to an individual (room code, user UUID), has a 45-second expiry, and stores only a SHA-256 hash of a random 256-bit browser token.
+- The three level-specific multiplayer GET endpoints attempt to acquire a vacant/expired lease or renew the browser's existing one. GETs from another browser remain read-only and do not refresh the participant's `last_seen_at`.
+- All Beginner, Amateur, and Master multiplayer PATCH actions require current controller status checked on the server before any mutations, including host operations and NPC-turn triggers. A stale browser receives HTTP 409 `VIEW_ONLY`.
+- A dedicated POST `/api/multiplayer/controller` endpoint accepts only an existing human participant's verified Supabase identity and an explicit `takeover` action. The database switches controller atomically; the previous browser's controller token immediately stops authorizing new PATCH requests.
+- Clients use room-specific, browser-session-scoped tokens in the `X-NK-Controller` request header. The token is never sent in a URL or logged by the app. A secondary browser still receives only the account-authorized private view and sees a banner with `Take control here`, `My Games`, and `Return to game selection`. Controls inside the game are inert until control returns.
+- The lease is per multiplayer room, not global account: one account may control other games simultaneously. Guests are likewise protected from accidentally simultaneous actions on cloned sessions where tokens differ.
+- Verified by a synthetic SQL test: claim A succeeds; claim B while A active fails; renewing A succeeds; explicit takeover by B succeeds; renewing A then fails and renewing B succeeds. The synthetic room was deleted in the same transaction block.
+- Permission checks confirm direct lease table SELECT and lease RPC execution are denied to both `anon` and `authenticated` Postgres roles; only the server-side `service_role` can execute the RPC. RLS remains enabled.
+- Pending real-browser acceptance tests: two browser/device sessions for each of Beginner, Amateur, Master; take-control transfer, original device view-only, 45-second lease expiration, games under multiple rooms, guest behavior, and elimination/host replacement.
+- The implementation is on a draft Vercel preview, not merged to production. Historical immutable preview deployments or other older backends may still accept actions without a lease; production enforcement requires deploying the updated routes and retiring or access-protecting older vulnerable deployments.
+- Extremely close in-flight concurrent actions around an explicit takeover remain protected by existing room revision checks, but require an additional transactional fencing review before promising strict ordering across the takeover boundary.
