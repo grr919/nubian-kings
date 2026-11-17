@@ -4,9 +4,10 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 
 export default function RoomControlBoundary({
-  canControl, onTakeControl, children
+  canControl, reason, onTakeControl, children
 }: {
   canControl: boolean;
+  reason?: "reload" | "unavailable" | "other-device";
   onTakeControl: () => Promise<void>;
   children: ReactNode;
 }) {
@@ -21,11 +22,13 @@ export default function RoomControlBoundary({
   }
   return <>
     {!canControl && <div role="status" className="roomControlBanner">
-      <strong>This game is being controlled from another device.</strong>
-      <p>You can continue watching here. To make moves in this browser, transfer control here.</p>
-      <button disabled={busy} type="button" onClick={() => void takeControl()}>
-        {busy ? "Taking control…" : "Take control here"}
-      </button>
+      <strong>{reason === "reload" ? "This game tab needs to reload." : reason === "unavailable" ? "Controller service is temporarily unavailable." : "This game is being controlled from another device."}</strong>
+      <p>{reason === "reload" ? "The game has been updated. Reload this tab to initialize its controller session." : reason === "unavailable" ? "Your seat has not been taken by another device. Try reloading when the connection is restored." : "You can continue watching here. To make moves in this browser, transfer control here."}</p>
+      {reason === "reload" || reason === "unavailable"
+        ? <button type="button" onClick={() => window.location.reload()}>Reload game</button>
+        : <button disabled={busy} type="button" onClick={() => void takeControl()}>
+            {busy ? "Taking control…" : "Take control here"}
+          </button>}
       <Link href="/account/games">My Games</Link>
       <Link href="/">Return to game selection</Link>
       {error && <p role="alert">{error}</p>}
