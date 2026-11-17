@@ -59,7 +59,7 @@ export default function AccountPage() {
         throw new Error("Your verified account session has expired. Please sign in again.");
       }
       const normalized = username.trim().toLowerCase();
-      const shownName = displayName.trim().replace(/\\s+/g, " ");
+      const shownName = displayName.trim().replace(/\s+/g, " ");
       if (!/^[a-z][a-z0-9_]{2,23}$/.test(normalized)) {
         throw new Error("Username must be 3–24 characters, start with a letter, and contain only lowercase letters, digits, or underscores.");
       }
