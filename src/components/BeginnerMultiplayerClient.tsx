@@ -16,6 +16,7 @@ import MultiplayerPresenceControls from "@/components/MultiplayerPresenceControl
 import cardData from "@/data/cards.json";
 import { comparisonActionText, factionActor, multiplayerRoundOutcomeText } from "@/game/player-language";
 import { browserSupabase } from "@/lib/supabase-browser";
+import { MultiplayerResponseGate } from "@/lib/multiplayer-response-gate";
 import { controllerHeaders, takeoverHeaders } from "@/lib/room-controller-browser";
 import RoomControlBoundary from "./RoomControlBoundary";
 import MultiplayerPlayerName, { useMultiplayerPlayerName } from "./MultiplayerPlayerName";
@@ -81,12 +82,18 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   useEffect(()=>{const selected=new URLSearchParams(window.location.search).get("room");if(selected&&/^[A-Z2-9]{6}$/.test(selected.toUpperCase())){setJoinCode(selected.toUpperCase());setMode("join");}},[]);
   const [error, setError] = useState("");
   const npcRevision = useRef<number | undefined>(undefined);
+  const responseGate = useRef(new MultiplayerResponseGate());
 
   const refresh = useCallback(async (code: string, quiet = false) => {
+    const ticket = responseGate.current.begin();
     try {
       const next = await api(`/api/multiplayer/rooms/${code}`) as Room;
+      if (!responseGate.current.accept(ticket, next)) return;
       setRoom(next); setMode("room"); if (!quiet) setError("");
-    } catch (caught) { if (!quiet) setError(caught instanceof Error ? caught.message : "The room could not be loaded."); }
+    } catch (caught) {
+      if (!quiet && responseGate.current.isCurrent(ticket))
+        setError(caught instanceof Error ? caught.message : "The room could not be loaded.");
+    }
   }, []);
 
   useEffect(() => {
@@ -102,14 +109,19 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
 
   const act = useCallback(async (body: object) => {
     if (!room) return;
+    const ticket = responseGate.current.begin();
     setBusy(true); setError("");
     try {
       const next = await api(`/api/multiplayer/rooms/${room.code}`, { method: "PATCH", body: JSON.stringify(body) });
-      if (next.transferred) { localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); }
-      else setRoom(next);
-    }
-    catch (caught) { setError(caught instanceof Error ? caught.message : "The action could not be completed."); await refresh(room.code, true); }
-    finally { setBusy(false); }
+      if (!responseGate.current.isCurrent(ticket)) return;
+      if (next.transferred) { responseGate.current.clear(); localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); }
+      else if (responseGate.current.accept(ticket, next)) setRoom(next);
+    } catch (caught) {
+      if (responseGate.current.isCurrent(ticket)) {
+        setError(caught instanceof Error ? caught.message : "The action could not be completed.");
+        await refresh(room.code, true);
+      }
+    } finally { setBusy(false); }
   }, [room, refresh]);
 
   useEffect(() => {
@@ -123,12 +135,14 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
 
   async function takeControl() {
     if (!room) return;
+    responseGate.current.invalidate();
     const result = await api("/api/multiplayer/controller", {
       method: "POST",
       headers: takeoverHeaders(room.code),
       body: JSON.stringify({ code: room.code, action: "takeover" })
     });
     if (!result.canControl) throw new Error("Unable to take control of this game.");
+    responseGate.current.invalidate();
     await refresh(room.code);
   }
 
@@ -150,7 +164,7 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
     finally { setBusy(false); }
   }
 
-  function leaveView() { localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); setError(""); }
+  function leaveView() { responseGate.current.clear(); localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); setError(""); }
 
   if (mode === "entry") return <Shell><section className="panel multiplayerEntry"><p className="kicker">BEGINNER MULTIPLAYER</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">Play together by room code.</p><div className="actions"><button onClick={() => setMode("create")}>Create Game</button><button className="secondary" onClick={() => setMode("join")}>Join Game</button></div><a className="landingBack" href="/beginner">← Beginner Game</a></section></Shell>;
 
