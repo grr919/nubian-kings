@@ -7,7 +7,7 @@ const headers = { "Cache-Control": "private, no-store" };
 function profileSupabase(request: Request) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  const token = request.headers.get("authorization")?.replace(/^Bearer\\s+/i, "");
+  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!url || !key || !token) return;
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
