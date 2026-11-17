@@ -17,6 +17,7 @@ import cardData from "@/data/cards.json";
 import { comparisonActionText, factionActor, multiplayerRoundOutcomeText } from "@/game/player-language";
 import { browserSupabase } from "@/lib/supabase-browser";
 import { MultiplayerResponseGate } from "@/lib/multiplayer-response-gate";
+import { shouldPollMultiplayerRoom } from "@/lib/multiplayer-visibility";
 import { controllerHeaders, takeoverHeaders } from "@/lib/room-controller-browser";
 import RoomControlBoundary from "./RoomControlBoundary";
 import MultiplayerPlayerName, { useMultiplayerPlayerName } from "./MultiplayerPlayerName";
@@ -103,8 +104,19 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
 
   useEffect(() => {
     if (!room?.code) return;
-    const timer = window.setInterval(() => refresh(room.code, true), 1800);
-    return () => window.clearInterval(timer);
+    const code = room.code;
+    const poll = () => {
+      if (shouldPollMultiplayerRoom(document.visibilityState)) void refresh(code, true);
+    };
+    const timer = window.setInterval(poll, 1800);
+    const onVisibilityChange = () => { if (shouldPollMultiplayerRoom(document.visibilityState)) poll(); };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pageshow", onVisibilityChange);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pageshow", onVisibilityChange);
+    };
   }, [room?.code, refresh]);
 
   const act = useCallback(async (body: object) => {
@@ -125,7 +137,7 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   }, [room, refresh]);
 
   useEffect(() => {
-    if (!room?.control?.canControl || !room?.state || room.review || room.status !== "active") return;
+    if (!shouldPollMultiplayerRoom(document.visibilityState) || !room?.control?.canControl || !room?.state || room.review || room.status !== "active") return;
     const selector = room.state.players[room.state.selectorIndex];
     if (selector.controller !== "npc" || npcRevision.current === room.revision) return;
     npcRevision.current = room.revision;
