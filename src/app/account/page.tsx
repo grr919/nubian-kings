@@ -9,7 +9,7 @@ type Mode = "create" | "login" | "guest";
 export default function AccountPage() {
   const [user, setUser] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
-  const [mode, setMode] = useState<Mode>("create");
+  const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -71,6 +71,17 @@ export default function AccountPage() {
     finally { setBusy(false); }
   }
 
+  async function createAccount() {
+    if (!client) { setMessage("The authentication service is unavailable."); return; }
+    const address = email.trim();
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(address)) { setMessage("Enter a valid email address first."); return; }
+    if (password.length < 12) { setMessage("Choose a password with at least 12 characters."); return; }
+    await run(
+      () => client.auth.signUp({ email: address, password, options: { emailRedirectTo: window.location.origin + "/account" } }),
+      "Signup request accepted. Check your email (including spam) for a verification message. If no email arrives, registration email delivery or redirect settings need administrator attention."
+    );
+  }
+
   const permanent = Boolean(user && !user.is_anonymous && user.email_confirmed_at);
   return <main className="landing levelLanding"><section className="panel levelSelectPanel" style={{ maxWidth: 600 }}>
     <p className="kicker">NILE SOUTH GAMES</p>
@@ -88,27 +99,25 @@ export default function AccountPage() {
       </section>}
       {!user && <>
         <nav aria-label="Account options">
-          <button type="button" disabled={busy} aria-pressed={mode === "create"} onClick={() => { setMode("create"); setMessage(""); }}>Create account</button>{" "}
-          <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage(""); }}>Sign in</button>{" "}
-          <button type="button" disabled={busy} aria-pressed={mode === "guest"} onClick={() => { setMode("guest"); setMessage(""); }}>Continue as guest</button>
+          <button type="button" disabled={busy} aria-pressed={mode === "create"} onClick={() => { setMode("create"); setMessage("Create account selected. Enter an email address and a password of at least 12 characters below."); }}>Create account</button>{" "}
+          <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage("Sign in selected. Enter your existing email and password below."); }}>Sign in</button>{" "}
+          <button type="button" disabled={busy} aria-pressed={mode === "guest"} onClick={() => { setMode("guest"); setMessage("Guest mode selected. Start a guest session below."); }}>Continue as guest</button>
         </nav>
         {mode === "guest" && <section><h2>Play without an account</h2><p>You can register later without changing this new guest's ID.</p>
           <button disabled={busy} onClick={() => void run(() => client.auth.signInAnonymously(), "Guest session created. You can now upgrade your guest account.")}>Start guest session</button>
         </section>}
         {(mode === "create" || mode === "login") && <section><h2>{mode === "create" ? "Create Nile South account" : "Sign in"}</h2>
-          {mode === "create" && <p>Already playing Nubian Kings as a guest on another site or browser? Open that original game session and upgrade it there to preserve its multiplayer seats. Guest sessions do not transfer between preview URLs automatically.</p>}
+          {mode === "create" && <p>Enter a valid email and a password of at least 12 characters. Already playing as a guest on another domain? Upgrade on that original domain to preserve the existing seat.</p>}
           <label htmlFor="login-email">Email</label>
           <input id="login-email" type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} />
           <label htmlFor="login-password">Password</label>
           <input id="login-password" type="password" autoComplete={mode === "create" ? "new-password" : "current-password"} minLength={mode === "create" ? 12 : undefined} value={password} onChange={event => setPassword(event.target.value)} />
-          {mode === "create" ? <button disabled={busy || !email.trim() || password.length < 12} onClick={() => void run(
-            () => client.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: window.location.origin + "/account" } }),
-            "Check your email to verify your new account, then return here to choose a username."
-          )}>Create account and verify email</button> :
+          {mode === "create" && <p aria-live="polite">{password.length === 0 ? "Password required: minimum 12 characters." : password.length < 12 ? `Password needs ${12 - password.length} more character(s).` : "Password length requirement met."}</p>}
+          {mode === "create" ? <button type="button" disabled={busy} onClick={() => void createAccount()}>{busy ? "Submitting registration…" : "Create account and verify email"}</button> :
             <button disabled={busy || !email.trim() || !password} onClick={() => void run(() => client.auth.signInWithPassword({ email: email.trim(), password }), "Signed in.")}>Sign in</button>}
         </section>}
       </>}
-      {user && !permanent && !user.is_anonymous && <p>Verify your email address to finish creating your permanent account.</p>}
+      {user && !permanent && !user.is_anonymous && <p>Verify your email address to finish creating your permanent account. Check the inbox for {user.email}.</p>}
       {permanent && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p>
         <label htmlFor="player-name">Unique username (3–24 characters)</label>
         <input id="player-name" maxLength={24} autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} />
@@ -123,6 +132,6 @@ export default function AccountPage() {
       </>}
       {user && !user.is_anonymous && <p><button disabled={busy} onClick={() => void run(() => client.auth.signOut(), "Signed out.")}>Sign out</button></p>}
     </>}
-    {message && <p role="status">{message}</p>}
+    {message && <p role="status" aria-live="polite" style={{ padding: "0.75rem", border: "1px solid currentColor", borderRadius: "0.5rem", marginTop: "1rem" }}>{message}</p>}
   </section></main>;
 }
