@@ -9,6 +9,7 @@ export default function Home() {
         <EparchCrownMark className="royalMark" />
         <h1>Nubian Kings</h1>
         <p className="subtitle">Choose a level:</p>
+        <p><Link href="/account">Nile South player account</Link></p>
         <div className="levelGrid">
           <Link href="/beginner" className="levelOption">
             <span className="levelName">Beginner</span>
