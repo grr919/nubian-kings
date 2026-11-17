@@ -1,3 +1,4 @@
+import { multiplayerDisplayName } from "@/lib/multiplayer-display-name";
 import { adminSupabase, multiplayerConfigured, requestUser } from "@/lib/supabase-server";
 import type { MultiplayerRoomSettings } from "@/game/multiplayer";
 
@@ -11,9 +12,10 @@ export async function POST(request: Request) {
   if (!user) return Response.json({ error: "Your guest session could not be verified. Refresh and try again." }, { status: 401 });
   const body = await request.json().catch(() => ({}));
   const code = text(body.code, 6).toUpperCase();
-  const displayName = text(body.displayName, 24);
+  const name = await multiplayerDisplayName(user, body.displayName);
+  if ("error" in name) return Response.json({ error: name.error }, { status: name.status });
+  const displayName = name.displayName;
   if (!/^[A-Z2-9]{6}$/.test(code)) return Response.json({ error: "Enter the six-character room code." }, { status: 400 });
-  if (!displayName) return Response.json({ error: "Enter your name." }, { status: 400 });
   const supabase = adminSupabase();
   const { data: room } = await supabase.from("nk_multiplayer_rooms").select("code,status,settings").eq("code", code).maybeSingle();
   if (!room) return Response.json({ error: "No game was found with that room code." }, { status: 404 });
