@@ -70,3 +70,12 @@ Status: code prepared on feature branch; NOT activated in production.
 - The most likely cause is a browser tab retaining an older preview JavaScript bundle that does not send `X-NK-Controller`, though a server-side lease service error cannot be excluded without request-level evidence.
 - Updated Beginner, Amateur, Master GET responses and UI to distinguish `reload`, `unavailable`, and `other-device`. Missing header now displays a reload instruction, not a false assertion of another device; RPC failure says the controller service is unavailable.
 - DB-side service-role RPC claim/rollback verified operation without persistent test mutations. Vercel updated preview built successfully; a genuine logged-in browser test is still pending.
+
+## November 17 — Amateur/Master validation and automated checks
+
+- User independently verified Beginner control transfer across devices and completed a multiplayer game successfully.
+- Reviewed Amateur and Master request handlers: every PATCH is guarded by server-side `controlRoom(...,"renew")`; GETs report `roomControlState`; heir selection, army construction, effects, host actions and NPC actions all traverse those routes. View-only controls are disabled client-side.
+- Added `.github/workflows/nile-south-account-pilot.yml` to run the existing `pnpm test` suite on feature-branch pushes and relevant pull requests.
+- Initial run: 247 passed, one failed because the existing Beginner rematch-route test fixture lacked a mocked controller lease after the new server-side guard. Updated the fixture to mock an authorized controller and added a test proving view-only rematch requests are denied.
+- Subsequent GitHub Actions run 44124289257 **passed**. Vercel preview was READY on feature commit `c29f11e7111ff975f0f9ccaab0d7756dbf1dd164` before this documentation update.
+- Still not verified: live two-device testing of Amateur heir selection and Master heir selection, army construction, effects and ordinary turns. Do not mark those as completed solely on the strength of unit tests.
