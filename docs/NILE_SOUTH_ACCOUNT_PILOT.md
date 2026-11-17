@@ -79,3 +79,12 @@ Status: code prepared on feature branch; NOT activated in production.
 - Initial run: 247 passed, one failed because the existing Beginner rematch-route test fixture lacked a mocked controller lease after the new server-side guard. Updated the fixture to mock an authorized controller and added a test proving view-only rematch requests are denied.
 - Subsequent GitHub Actions run 44124289257 **passed**. Vercel preview was READY on feature commit `c29f11e7111ff975f0f9ccaab0d7756dbf1dd164` before this documentation update.
 - Still not verified: live two-device testing of Amateur heir selection and Master heir selection, army construction, effects and ordinary turns. Do not mark those as completed solely on the strength of unit tests.
+
+## November 17 — Stabilize controller banner during asynchronous room updates
+
+- Live user test confirmed cross-device takeover for Amateur and Master. User reported the Master "Take control" banner intermittently returning after moves, even though the device had taken control; Amateur recurrence was not confirmed.
+- Root-cause candidate in all three clients: independent 1.8-second GET polling, PATCH responses and explicit takeover refreshes called `setRoom` without checking whether a newer response had already been applied. This permits stale view-only snapshots to overwrite more recent room/control data.
+- Introduced shared `MultiplayerResponseGate` with monotonic request tickets and nondecreasing room revision checks. A room response is accepted only if it is not older than the last applied response and does not regress the room revision.
+- Beginner, Amateur, Master now gate GET/PATCH response application, invalidate outstanding responses on explicit controller takeover, and clear pending responses when leaving a room. Server-side controller lease enforcement remains unchanged.
+- Added regression tests covering: poll-before-action reorder, newer request with older revision, takeover after a view-only poll, legitimate later loss of control, and leaving/changing rooms.
+- GitHub Actions unit tests passed on commit `2170ec5a3263f1f365d42891b3e4826abeeeb5f7` and Vercel Preview build was READY. A live Master session replay remains needed to verify banner stability under the user's network conditions.
