@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Link from "next/link";
 
 export default function RoomControlBoundary({
   canControl, onTakeControl, children
@@ -25,6 +26,8 @@ export default function RoomControlBoundary({
       <button disabled={busy} type="button" onClick={() => void takeControl()}>
         {busy ? "Taking control…" : "Take control here"}
       </button>
+      <Link href="/account/games">My Games</Link>
+      <Link href="/">Return to game selection</Link>
       {error && <p role="alert">{error}</p>}
     </div>}
     <div inert={!canControl}>{children}</div>
