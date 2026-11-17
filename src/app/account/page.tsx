@@ -24,14 +24,12 @@ export default function AccountPage() {
       const { data } = await client.auth.getUser();
       setUser(data.user);
       if (data.user && !data.user.is_anonymous && data.user.email_confirmed_at) {
-        const session = (await client.auth.getSession()).data.session;
-        if (session) {
-          const res = await fetch("/api/account/profile", { headers: { Authorization: `Bearer ${session.access_token}` }, cache: "no-store" });
-          if (res.ok) {
-            const { profile } = await res.json();
-            if (profile) { setUsername(profile.username); setDisplayName(profile.display_name); }
-          }
-        }
+        const { data: profile, error } = await client.from("nsg_player_profiles")
+          .select("username,display_name")
+          .eq("user_id", data.user.id)
+          .maybeSingle();
+        if (error) setMessage("Could not load your profile: " + error.message);
+        if (profile) { setUsername(profile.username); setDisplayName(profile.display_name); }
       }
     } finally { setLoading(false); }
   }
@@ -53,21 +51,33 @@ export default function AccountPage() {
   }
 
   async function saveProfile() {
-    if (!client) return;
+    if (!client || !user) { setMessage("Sign in again to save your profile."); return; }
     setBusy(true); setMessage("");
     try {
-      const session = (await client.auth.getSession()).data.session;
-      if (!session) throw Error("Session expired.");
-      const res = await fetch("/api/account/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ username, displayName })
-      });
-      const data = await res.json();
-      if (!res.ok) throw Error(data.error ?? "Save failed.");
-      setMessage("Profile saved.");
-      await refresh();
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Profile could not be saved."); }
+      const { data: auth, error: authError } = await client.auth.getUser();
+      if (authError || !auth.user || auth.user.is_anonymous || !auth.user.email_confirmed_at) {
+        throw new Error("Your verified account session has expired. Please sign in again.");
+      }
+      const normalized = username.trim().toLowerCase();
+      const shownName = displayName.trim().replace(/\\s+/g, " ");
+      if (!/^[a-z][a-z0-9_]{2,23}$/.test(normalized)) {
+        throw new Error("Username must be 3–24 characters, start with a letter, and contain only lowercase letters, digits, or underscores.");
+      }
+      if (shownName.length < 1 || shownName.length > 40) {
+        throw new Error("Display name must be between 1 and 40 characters.");
+      }
+      const { error } = await client.from("nsg_player_profiles")
+        .upsert({
+          user_id: auth.user.id,
+          username: normalized,
+          display_name: shownName,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "user_id" });
+      if (error) throw new Error(error.code === "23505" ? "That username is already taken." : "Profile save failed: " + error.message);
+      setUsername(normalized);
+      setDisplayName(shownName);
+      setMessage("Profile saved successfully.");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Profile save failed."); }
     finally { setBusy(false); }
   }
 
