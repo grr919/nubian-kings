@@ -22,8 +22,8 @@ export default function RoomControlBoundary({
   }
   return <>
     {!canControl && <div role="status" className="roomControlBanner">
-      <strong>{reason === "reload" ? "This game tab needs to reload." : reason === "unavailable" ? "Controller service is temporarily unavailable." : "This game is being controlled from another device."}</strong>
-      <p>{reason === "reload" ? "The game has been updated. Reload this tab to initialize its controller session." : reason === "unavailable" ? "Your seat has not been taken by another device. Try reloading when the connection is restored." : "You can continue watching here. To make moves in this browser, transfer control here."}</p>
+      <strong>{reason === "reload" ? "This game tab needs to reload." : reason === "unavailable" ? "Controller service is temporarily unavailable." : "This game is being controlled from another tab or device."}</strong>
+      <p>{reason === "reload" ? "The game has been updated. Reload this tab to initialize its controller session." : reason === "unavailable" ? "Your seat has not been taken by another device. Try reloading when the connection is restored." : "Another open browser session may still have control, even on this device. You can watch here or transfer control to this tab."}</p>
       {reason === "reload" || reason === "unavailable"
         ? <button type="button" onClick={() => window.location.reload()}>Reload game</button>
         : <button disabled={busy} type="button" onClick={() => void takeControl()}>
