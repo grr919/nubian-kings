@@ -16,6 +16,11 @@ import MultiplayerPresenceControls from "@/components/MultiplayerPresenceControl
 import cardData from "@/data/cards.json";
 import { comparisonActionText, factionActor, multiplayerRoundOutcomeText } from "@/game/player-language";
 import { browserSupabase } from "@/lib/supabase-browser";
+import { MultiplayerResponseGate } from "@/lib/multiplayer-response-gate";
+import { shouldPollMultiplayerRoom } from "@/lib/multiplayer-visibility";
+import { controllerHeaders, takeoverHeaders } from "@/lib/room-controller-browser";
+import RoomControlBoundary from "./RoomControlBoundary";
+import MultiplayerPlayerName, { useMultiplayerPlayerName } from "./MultiplayerPlayerName";
 import type { Stat } from "@/game/types";
 
 const FACTIONS = ["nubian-christians", "egyptian-christians", "ethiopian-christians", "egyptian-muslims", "ethiopian-jews"] as const;
@@ -34,7 +39,7 @@ type PublicCard = { id: string; definitionId?: string; name?: string; factionId?
 type PublicPlayer = { id: string; factionId: string; controller: "human" | "npc"; cards: PublicCard[]; cursor: number; eliminated: boolean };
 type PublicState = { players: PublicPlayer[]; selectorIndex: number; phase: "select" | "tie" | "complete"; selectedStat?: Stat; winnerId?: string; nileFloods: boolean; round: number; random: { seed: string }; tie?: { participantIds: string[]; usedCardIds: Record<string, string[]> } };
 type Review = { stat: Stat; actorPlayerId?: string; scores: Array<{ playerId: string; cardId: string; base: number; die: number; total: number }>; cardIds: string[]; sequenceCardIds: string[]; winnerId?: string; cards: Record<string, PublicCard> };
-type Room = { code: string; status: "waiting" | "active" | "complete" | "abandoned"; isHost: boolean; settings: { isPublic?: boolean; rematchVotes?: Record<string, boolean>; totalSeats: number; npcCount: number; nileFloods: boolean; openingPlayer: "random" | "human" | "npc" }; revision: number; acknowledged: boolean; seats: Seat[]; state?: PublicState; review?: Review };
+type Room = { control?: { canControl: boolean; reason?: "reload" | "unavailable" | "other-device" }; code: string; status: "waiting" | "active" | "complete" | "abandoned"; isHost: boolean; settings: { isPublic?: boolean; rematchVotes?: Record<string, boolean>; totalSeats: number; npcCount: number; nileFloods: boolean; openingPlayer: "random" | "human" | "npc" }; revision: number; acknowledged: boolean; seats: Seat[]; state?: PublicState; review?: Review };
 
 async function accessToken() {
   const client = browserSupabase();
@@ -50,7 +55,7 @@ async function accessToken() {
 
 async function api(path: string, init?: RequestInit) {
   const token = await accessToken();
-  const response = await fetch(path, { ...init, cache: "no-store", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...init?.headers } });
+  const response = await fetch(path, { ...init, cache: "no-store", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...controllerHeaders(path), ...init?.headers } });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error ?? "The multiplayer service could not complete that request.");
   return data;
@@ -69,18 +74,27 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   const [nileFloods, setNileFloods] = useState(false);
   const [openingPlayer, setOpeningPlayer] = useState<"random" | "human" | "npc">("random");
   const [room, setRoom] = useState<Room>();
+  const playerIdentity = useMultiplayerPlayerName();
+  const multiplayerName = playerIdentity.status === "registered" ? playerIdentity.name : displayName;
+  const canEnter = playerIdentity.status !== "missing" && playerIdentity.status !== "loading" && Boolean(multiplayerName.trim());
   useRoomDiceSound(room?.code, room?.review?.scores?.some(score => score.die > 0) ? JSON.stringify(room.review.scores) : undefined);
   
   const [busy, setBusy] = useState(false);
   useEffect(()=>{const selected=new URLSearchParams(window.location.search).get("room");if(selected&&/^[A-Z2-9]{6}$/.test(selected.toUpperCase())){setJoinCode(selected.toUpperCase());setMode("join");}},[]);
   const [error, setError] = useState("");
   const npcRevision = useRef<number | undefined>(undefined);
+  const responseGate = useRef(new MultiplayerResponseGate());
 
   const refresh = useCallback(async (code: string, quiet = false) => {
+    const ticket = responseGate.current.begin();
     try {
       const next = await api(`/api/multiplayer/rooms/${code}`) as Room;
+      if (!responseGate.current.accept(ticket, next)) return;
       setRoom(next); setMode("room"); if (!quiet) setError("");
-    } catch (caught) { if (!quiet) setError(caught instanceof Error ? caught.message : "The room could not be loaded."); }
+    } catch (caught) {
+      if (!quiet && responseGate.current.isCurrent(ticket))
+        setError(caught instanceof Error ? caught.message : "The room could not be loaded.");
+    }
   }, []);
 
   useEffect(() => {
@@ -90,24 +104,40 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
 
   useEffect(() => {
     if (!room?.code) return;
-    const timer = window.setInterval(() => refresh(room.code, true), 1800);
-    return () => window.clearInterval(timer);
+    const code = room.code;
+    const poll = () => {
+      if (shouldPollMultiplayerRoom(document.visibilityState)) void refresh(code, true);
+    };
+    const timer = window.setInterval(poll, 1800);
+    const onVisibilityChange = () => { if (shouldPollMultiplayerRoom(document.visibilityState)) poll(); };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pageshow", onVisibilityChange);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pageshow", onVisibilityChange);
+    };
   }, [room?.code, refresh]);
 
   const act = useCallback(async (body: object) => {
     if (!room) return;
+    const ticket = responseGate.current.begin();
     setBusy(true); setError("");
     try {
       const next = await api(`/api/multiplayer/rooms/${room.code}`, { method: "PATCH", body: JSON.stringify(body) });
-      if (next.transferred) { localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); }
-      else setRoom(next);
-    }
-    catch (caught) { setError(caught instanceof Error ? caught.message : "The action could not be completed."); await refresh(room.code, true); }
-    finally { setBusy(false); }
+      if (!responseGate.current.isCurrent(ticket)) return;
+      if (next.transferred) { responseGate.current.clear(); localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); }
+      else if (responseGate.current.accept(ticket, next)) setRoom(next);
+    } catch (caught) {
+      if (responseGate.current.isCurrent(ticket)) {
+        setError(caught instanceof Error ? caught.message : "The action could not be completed.");
+        await refresh(room.code, true);
+      }
+    } finally { setBusy(false); }
   }, [room, refresh]);
 
   useEffect(() => {
-    if (!room?.state || room.review || room.status !== "active") return;
+    if (!shouldPollMultiplayerRoom(document.visibilityState) || !room?.control?.canControl || !room?.state || room.review || room.status !== "active") return;
     const selector = room.state.players[room.state.selectorIndex];
     if (selector.controller !== "npc" || npcRevision.current === room.revision) return;
     npcRevision.current = room.revision;
@@ -115,10 +145,23 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
     return () => window.clearTimeout(timer);
   }, [room, act]);
 
+  async function takeControl() {
+    if (!room) return;
+    responseGate.current.invalidate();
+    const result = await api("/api/multiplayer/controller", {
+      method: "POST",
+      headers: takeoverHeaders(room.code),
+      body: JSON.stringify({ code: room.code, action: "takeover" })
+    });
+    if (!result.canControl) throw new Error("Unable to take control of this game.");
+    responseGate.current.invalidate();
+    await refresh(room.code);
+  }
+
   async function createRoom() {
     setBusy(true); setError("");
     try {
-      const result = await api("/api/multiplayer/rooms", { method: "POST", body: JSON.stringify({ displayName, totalSeats, npcCount, nileFloods, openingPlayer, isPublic }) });
+      const result = await api("/api/multiplayer/rooms", { method: "POST", body: JSON.stringify({ displayName: multiplayerName, totalSeats, npcCount, nileFloods, openingPlayer, isPublic }) });
       localStorage.setItem(ROOM_KEY, result.code); await refresh(result.code);
     } catch (caught) { setError(caught instanceof Error ? caught.message : "The room could not be created."); }
     finally { setBusy(false); }
@@ -127,21 +170,21 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   async function joinRoom(selectedCode = joinCode) {
     setBusy(true); setError("");
     try {
-      const result = await api("/api/multiplayer/rooms/join", { method: "POST", body: JSON.stringify({ displayName, code: selectedCode }) });
+      const result = await api("/api/multiplayer/rooms/join", { method: "POST", body: JSON.stringify({ displayName: multiplayerName, code: selectedCode }) });
       localStorage.setItem(ROOM_KEY, result.code); await refresh(result.code);
     } catch (caught) { setError(caught instanceof Error ? caught.message : "The room could not be joined."); }
     finally { setBusy(false); }
   }
 
-  function leaveView() { localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); setError(""); }
+  function leaveView() { responseGate.current.clear(); localStorage.removeItem(ROOM_KEY); setRoom(undefined); setMode("entry"); setError(""); }
 
   if (mode === "entry") return <Shell><section className="panel multiplayerEntry"><p className="kicker">BEGINNER MULTIPLAYER</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">Play together by room code.</p><div className="actions"><button onClick={() => setMode("create")}>Create Game</button><button className="secondary" onClick={() => setMode("join")}>Join Game</button></div><a className="landingBack" href="/beginner">← Beginner Game</a></section></Shell>;
 
-  if (mode === "create" || mode === "join") return <Shell><section className="setupPanel multiplayerSetup"><button className="backButton" onClick={() => setMode("entry")}>← Back</button><p className="kicker">BEGINNER MULTIPLAYER</p><h1>{mode === "create" ? "Create a game:" : "Join a game:"}</h1><label className="multiplayerField"><span>Your name</span><input value={displayName} maxLength={24} autoComplete="nickname" onChange={(event) => setDisplayName(event.target.value)} /></label>{mode === "join" ? <label className="multiplayerField"><span>Room code</span><input className="roomCodeInput" value={joinCode} maxLength={6} autoCapitalize="characters" onChange={(event) => setJoinCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, ""))} /></label> : <div className="settings"><label><span>Total players</span><select value={totalSeats} onChange={(event) => { const total = Number(event.target.value); setTotalSeats(total); setNpcCount((old) => Math.min(old, total - 2)); }}>{[2,3,4,5].map((count) => <option key={count}>{count}</option>)}</select></label><label><span>Computer opponents</span><select value={npcCount} onChange={(event) => setNpcCount(Number(event.target.value))}>{Array.from({ length: totalSeats - 1 }, (_, count) => <option key={count}>{count}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(event) => setOpeningPlayer(event.target.value as typeof openingPlayer)}><option value="random">Random participant</option><option value="human">Human player</option>{npcCount > 0 && <option value="npc">Computer opponent</option>}</select></label><label className="toggle"><input type="checkbox" checked={isPublic} onChange={event=>setIsPublic(event.target.checked)} /><span><b>Public room</b><small>Allow other players to find and join this room. Off keeps it private.</small></span></label><label className="toggle"><input type="checkbox" checked={nileFloods} onChange={(event) => setNileFloods(event.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label></div>}{error && <p className="formError" role="alert">{error}</p>}<button className="beginButton" disabled={busy || !displayName.trim() || (mode === "join" && joinCode.length !== 6)} onClick={mode === "create" ? createRoom : () => joinRoom()}>{busy ? "Connecting…" : mode === "create" ? "Create Room" : "Join Room"}</button>{mode === "join" && <PublicRoomDirectory level="beginner" displayName={displayName} busy={busy} onJoin={selected=>joinRoom(selected)} />}</section></Shell>;
+  if (mode === "create" || mode === "join") return <Shell><section className="setupPanel multiplayerSetup"><button className="backButton" onClick={() => setMode("entry")}>← Back</button><p className="kicker">BEGINNER MULTIPLAYER</p><h1>{mode === "create" ? "Create a game:" : "Join a game:"}</h1><MultiplayerPlayerName player={playerIdentity} guestName={displayName} onGuestNameChange={setDisplayName} />{mode === "join" ? <label className="multiplayerField"><span>Room code</span><input className="roomCodeInput" value={joinCode} maxLength={6} autoCapitalize="characters" onChange={(event) => setJoinCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, ""))} /></label> : <div className="settings"><label><span>Total players</span><select value={totalSeats} onChange={(event) => { const total = Number(event.target.value); setTotalSeats(total); setNpcCount((old) => Math.min(old, total - 2)); }}>{[2,3,4,5].map((count) => <option key={count}>{count}</option>)}</select></label><label><span>Computer opponents</span><select value={npcCount} onChange={(event) => setNpcCount(Number(event.target.value))}>{Array.from({ length: totalSeats - 1 }, (_, count) => <option key={count}>{count}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(event) => setOpeningPlayer(event.target.value as typeof openingPlayer)}><option value="random">Random participant</option><option value="human">Human player</option>{npcCount > 0 && <option value="npc">Computer opponent</option>}</select></label><label className="toggle"><input type="checkbox" checked={isPublic} onChange={event=>setIsPublic(event.target.checked)} /><span><b>Public room</b><small>Allow other players to find and join this room. Off keeps it private.</small></span></label><label className="toggle"><input type="checkbox" checked={nileFloods} onChange={(event) => setNileFloods(event.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label></div>}{error && <p className="formError" role="alert">{error}</p>}<button className="beginButton" disabled={busy || !canEnter || (mode === "join" && joinCode.length !== 6)} onClick={mode === "create" ? createRoom : () => joinRoom()}>{busy ? "Connecting…" : mode === "create" ? "Create Room" : "Join Room"}</button>{mode === "join" && <PublicRoomDirectory level="beginner" displayName={multiplayerName} busy={busy} onJoin={selected=>joinRoom(selected)} />}</section></Shell>;
 
   if (!room) return null;
-  if (room.status === "waiting") return <><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><Lobby room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></>;
-  return <><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><MultiplayerBoard key={room.state?.random.seed} room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></>;
+  if (room.status === "waiting") return <RoomControlBoundary canControl={room.control?.canControl === true} reason={room.control?.reason} onTakeControl={takeControl}><><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><Lobby room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></></RoomControlBoundary>;
+  return <RoomControlBoundary canControl={room.control?.canControl === true} reason={room.control?.reason} onTakeControl={takeControl}><><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><MultiplayerBoard key={room.state?.random.seed} room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></></RoomControlBoundary>;
 }
 
 function Shell({ children }: { children: React.ReactNode }) { return <main className="landing multiplayerPage">{children}</main>; }

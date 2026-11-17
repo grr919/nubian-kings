@@ -1,3 +1,4 @@
+import { controlRequired, controlRoom, roomControlState } from "@/lib/room-controller-server";
 import { castRematchVote } from "@/game/rematch-consent";
 import { adminSupabase, multiplayerConfigured, requestUser } from "@/lib/supabase-server";
 import { chooseMultiplayerNpcStat, createMultiplayerBeginnerGame, MULTIPLAYER_FACTIONS, playMultiplayerComparison, publicBeginnerState, publicReview, type MultiplayerReview, type MultiplayerRoomSettings, type MultiplayerSeat } from "@/game/multiplayer";
@@ -77,9 +78,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
   const { code } = await params;
   const result = await authenticatedRoom(request, code);
   if ("error" in result) return result.error;
-  await result.supabase.from("nk_multiplayer_players").update({ last_seen_at: new Date().toISOString() }).eq("room_code", result.room.code).eq("user_id", result.user.id);
+  const control = await roomControlState(request, result.room.code, result.user.id);
+  if (control.canControl) await result.supabase.from("nk_multiplayer_players").update({ last_seen_at: new Date().toISOString() }).eq("room_code", result.room.code).eq("user_id", result.user.id);
   const refreshed = await loadRoom(result.room.code);
-  return Response.json(responseRoom(refreshed.room!, refreshed.players, result.user.id));
+  return Response.json({ ...responseRoom(refreshed.room!, refreshed.players, result.user.id), control });
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ code: string }> }) {
@@ -87,6 +89,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ co
   const result = await authenticatedRoom(request, code);
   if ("error" in result) return result.error;
   const { room, players, supabase, user } = result;
+  if (!await controlRoom(request, room.code, user.id, "renew").catch(() => false)) return controlRequired();
   const body = await request.json().catch(() => ({}));
   const action = body.action;
 
@@ -173,5 +176,5 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ co
   }
 
   const refreshed = await loadRoom(room.code);
-  return Response.json(responseRoom(refreshed.room!, refreshed.players, user.id));
+  return Response.json({ ...responseRoom(refreshed.room!, refreshed.players, user.id), control: { canControl: true } });
 }

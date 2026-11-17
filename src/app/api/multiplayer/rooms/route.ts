@@ -1,3 +1,4 @@
+import { multiplayerDisplayName } from "@/lib/multiplayer-display-name";
 import { publicNubianRoom, type PublicRoomRow, type PublicPlayerRow } from "@/game/public-rooms";
 
 export async function GET() {
@@ -40,7 +41,9 @@ export async function POST(request: Request) {
   const user = await requestUser(request);
   if (!user) return Response.json({ error: "Your guest session could not be verified. Refresh and try again." }, { status: 401 });
   const body = await request.json().catch(() => ({}));
-  const displayName = text(body.displayName, 24);
+  const name = await multiplayerDisplayName(user, body.displayName);
+  if ("error" in name) return Response.json({ error: name.error }, { status: name.status });
+  const displayName = name.displayName;
   const totalSeats = Number(body.totalSeats);
   const npcCount = Number(body.npcCount);
   const openingPlayer = (["random", "human", "npc"].includes(body.openingPlayer) ? body.openingPlayer : "random") as MultiplayerOpeningPlayer;
