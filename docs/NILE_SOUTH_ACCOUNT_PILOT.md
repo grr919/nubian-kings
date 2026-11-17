@@ -62,3 +62,11 @@ Status: code prepared on feature branch; NOT activated in production.
 - Pending real-browser acceptance tests: two browser/device sessions for each of Beginner, Amateur, Master; take-control transfer, original device view-only, 45-second lease expiration, games under multiple rooms, guest behavior, and elimination/host replacement.
 - The implementation is on a draft Vercel preview, not merged to production. Historical immutable preview deployments or other older backends may still accept actions without a lease; production enforcement requires deploying the updated routes and retiring or access-protecting older vulnerable deployments.
 - Extremely close in-flight concurrent actions around an explicit takeover remain protected by existing room revision checks, but require an additional transactional fencing review before promising strict ordering across the takeover boundary.
+
+## November 17 — False second-device warning diagnosis
+
+- Neuromancer in active Beginner room W3K5ZJ reported view-only with no other browser. Read-only database audit initially showed **no control lease** for the player's seat, so this was not evidence another device was controlling them.
+- The previous GET handler used `controlRoom(...,"ensure").catch(()=>false)` and reported any missing token or RPC failure as `canControl:false`, indistinguishable from a genuine different-device conflict.
+- The most likely cause is a browser tab retaining an older preview JavaScript bundle that does not send `X-NK-Controller`, though a server-side lease service error cannot be excluded without request-level evidence.
+- Updated Beginner, Amateur, Master GET responses and UI to distinguish `reload`, `unavailable`, and `other-device`. Missing header now displays a reload instruction, not a false assertion of another device; RPC failure says the controller service is unavailable.
+- DB-side service-role RPC claim/rollback verified operation without persistent test mutations. Vercel updated preview built successfully; a genuine logged-in browser test is still pending.
