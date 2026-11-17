@@ -88,3 +88,13 @@ Status: code prepared on feature branch; NOT activated in production.
 - Beginner, Amateur, Master now gate GET/PATCH response application, invalidate outstanding responses on explicit controller takeover, and clear pending responses when leaving a room. Server-side controller lease enforcement remains unchanged.
 - Added regression tests covering: poll-before-action reorder, newer request with older revision, takeover after a view-only poll, legitimate later loss of control, and leaving/changing rooms.
 - GitHub Actions unit tests passed on commit `2170ec5a3263f1f365d42891b3e4826abeeeb5f7` and Vercel Preview build was READY. A live Master session replay remains needed to verify banner stability under the user's network conditions.
+
+## November 17 — Persistent control banner from background tabs
+
+- User retested after stale-poll response ordering fix and still saw Take Control banners for both players, including a player never intentionally opened from another device. The display-only fix was insufficient.
+- Live database inspection of active Master room showed both human seats had **active controller leases refreshed within seconds**, meaning some browser instances were still sending authorized controller heartbeats. This is not consistent with expired leases, and is not proof of different physical devices: an older tab in the same browser/device may still be polling.
+- Identified a design defect: all three clients continued their 1.8-second GET polling in hidden/background tabs. As GET renews the 45-second control lease, a forgotten or hidden tab could retain its seat indefinitely and cause visible new tabs to be view-only.
+- Introduced `shouldPollMultiplayerRoom` and updated Beginner/Amateur/Master to stop polling while `document.visibilityState === 'hidden'`, immediately resume a refresh on `visibilitychange`/ `pageshow`, and avoid initiating automated NPC actions from hidden tabs.
+- Adjusted view-only banner to say another *tab or device* can control the room. Server authorization and explicit takeover semantics remain unchanged.
+- Added visibility helper unit tests. GitHub Actions run `44128870439` passed and Vercel preview deployment `nubian-kings-e8qi6dx12-grr919-6387s-projects.vercel.app` was READY.
+- Still requires a live multi-tab, multi-device retest: background old tabs should relinquish the lease after 45 seconds while inactive, a foreground controller should retain it, and a real explicit takeover should still revoke its predecessor. Do not merge on the strength of the automated test alone.
