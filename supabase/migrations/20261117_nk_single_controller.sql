@@ -10,6 +10,7 @@ create table if not exists public.nk_seat_control_leases (
   primary key (room_code, user_id)
 );
 alter table public.nk_seat_control_leases enable row level security;
+grant select, insert, update, delete on public.nk_seat_control_leases to service_role;
 revoke all on public.nk_seat_control_leases from public, anon, authenticated;
 create index if not exists nk_seat_control_expiry_idx on public.nk_seat_control_leases(expires_at);
 
