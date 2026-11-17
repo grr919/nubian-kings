@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { browserSupabase } from "@/lib/supabase-browser";
+import { recoveryPasswordError, recoveryRedirectUrl } from "@/lib/nile-south-recovery";
 
 type RecoveryState = "checking" | "request" | "ready" | "complete";
 
@@ -50,7 +51,7 @@ export default function RecoverPlayerAccount() {
     setNotice("");
     try {
       const { error } = await client.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: window.location.origin + "/account/recover"
+        redirectTo: recoveryRedirectUrl(window.location.origin)
       });
       if (error) throw error;
       // Do not reveal account existence in the reset-request UI.
@@ -62,8 +63,8 @@ export default function RecoverPlayerAccount() {
 
   async function savePassword() {
     if (!client || step !== "ready" || busy) return;
-    if (newPassword.length < 12) { setNotice("Choose a password containing at least 12 characters."); return; }
-    if (newPassword !== confirmPassword) { setNotice("The new passwords do not match."); return; }
+    const validationError = recoveryPasswordError(newPassword, confirmPassword);
+    if (validationError) { setNotice(validationError); return; }
     setBusy(true);
     setNotice("");
     try {
