@@ -16,6 +16,7 @@ import MultiplayerPresenceControls from "@/components/MultiplayerPresenceControl
 import cardData from "@/data/cards.json";
 import { comparisonActionText, factionActor, multiplayerRoundOutcomeText } from "@/game/player-language";
 import { browserSupabase } from "@/lib/supabase-browser";
+import MultiplayerPlayerName, { useMultiplayerPlayerName } from "./MultiplayerPlayerName";
 import type { Stat } from "@/game/types";
 
 const FACTIONS = ["nubian-christians", "egyptian-christians", "ethiopian-christians", "egyptian-muslims", "ethiopian-jews"] as const;
@@ -69,6 +70,9 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   const [nileFloods, setNileFloods] = useState(false);
   const [openingPlayer, setOpeningPlayer] = useState<"random" | "human" | "npc">("random");
   const [room, setRoom] = useState<Room>();
+  const playerIdentity = useMultiplayerPlayerName();
+  const multiplayerName = playerIdentity.status === "registered" ? playerIdentity.name : displayName;
+  const canEnter = playerIdentity.status !== "missing" && playerIdentity.status !== "loading" && Boolean(multiplayerName.trim());
   useRoomDiceSound(room?.code, room?.review?.scores?.some(score => score.die > 0) ? JSON.stringify(room.review.scores) : undefined);
   
   const [busy, setBusy] = useState(false);
@@ -118,7 +122,7 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   async function createRoom() {
     setBusy(true); setError("");
     try {
-      const result = await api("/api/multiplayer/rooms", { method: "POST", body: JSON.stringify({ displayName, totalSeats, npcCount, nileFloods, openingPlayer, isPublic }) });
+      const result = await api("/api/multiplayer/rooms", { method: "POST", body: JSON.stringify({ displayName: multiplayerName, totalSeats, npcCount, nileFloods, openingPlayer, isPublic }) });
       localStorage.setItem(ROOM_KEY, result.code); await refresh(result.code);
     } catch (caught) { setError(caught instanceof Error ? caught.message : "The room could not be created."); }
     finally { setBusy(false); }
@@ -127,7 +131,7 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
   async function joinRoom(selectedCode = joinCode) {
     setBusy(true); setError("");
     try {
-      const result = await api("/api/multiplayer/rooms/join", { method: "POST", body: JSON.stringify({ displayName, code: selectedCode }) });
+      const result = await api("/api/multiplayer/rooms/join", { method: "POST", body: JSON.stringify({ displayName: multiplayerName, code: selectedCode }) });
       localStorage.setItem(ROOM_KEY, result.code); await refresh(result.code);
     } catch (caught) { setError(caught instanceof Error ? caught.message : "The room could not be joined."); }
     finally { setBusy(false); }
@@ -137,7 +141,7 @@ export default function BeginnerMultiplayerClient() {const [isPublic,setIsPublic
 
   if (mode === "entry") return <Shell><section className="panel multiplayerEntry"><p className="kicker">BEGINNER MULTIPLAYER</p><EparchCrownMark className="royalMark" /><h1>Nubian Kings</h1><p className="subtitle">Play together by room code.</p><div className="actions"><button onClick={() => setMode("create")}>Create Game</button><button className="secondary" onClick={() => setMode("join")}>Join Game</button></div><a className="landingBack" href="/beginner">← Beginner Game</a></section></Shell>;
 
-  if (mode === "create" || mode === "join") return <Shell><section className="setupPanel multiplayerSetup"><button className="backButton" onClick={() => setMode("entry")}>← Back</button><p className="kicker">BEGINNER MULTIPLAYER</p><h1>{mode === "create" ? "Create a game:" : "Join a game:"}</h1><label className="multiplayerField"><span>Your name</span><input value={displayName} maxLength={24} autoComplete="nickname" onChange={(event) => setDisplayName(event.target.value)} /></label>{mode === "join" ? <label className="multiplayerField"><span>Room code</span><input className="roomCodeInput" value={joinCode} maxLength={6} autoCapitalize="characters" onChange={(event) => setJoinCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, ""))} /></label> : <div className="settings"><label><span>Total players</span><select value={totalSeats} onChange={(event) => { const total = Number(event.target.value); setTotalSeats(total); setNpcCount((old) => Math.min(old, total - 2)); }}>{[2,3,4,5].map((count) => <option key={count}>{count}</option>)}</select></label><label><span>Computer opponents</span><select value={npcCount} onChange={(event) => setNpcCount(Number(event.target.value))}>{Array.from({ length: totalSeats - 1 }, (_, count) => <option key={count}>{count}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(event) => setOpeningPlayer(event.target.value as typeof openingPlayer)}><option value="random">Random participant</option><option value="human">Human player</option>{npcCount > 0 && <option value="npc">Computer opponent</option>}</select></label><label className="toggle"><input type="checkbox" checked={isPublic} onChange={event=>setIsPublic(event.target.checked)} /><span><b>Public room</b><small>Allow other players to find and join this room. Off keeps it private.</small></span></label><label className="toggle"><input type="checkbox" checked={nileFloods} onChange={(event) => setNileFloods(event.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label></div>}{error && <p className="formError" role="alert">{error}</p>}<button className="beginButton" disabled={busy || !displayName.trim() || (mode === "join" && joinCode.length !== 6)} onClick={mode === "create" ? createRoom : () => joinRoom()}>{busy ? "Connecting…" : mode === "create" ? "Create Room" : "Join Room"}</button>{mode === "join" && <PublicRoomDirectory level="beginner" displayName={displayName} busy={busy} onJoin={selected=>joinRoom(selected)} />}</section></Shell>;
+  if (mode === "create" || mode === "join") return <Shell><section className="setupPanel multiplayerSetup"><button className="backButton" onClick={() => setMode("entry")}>← Back</button><p className="kicker">BEGINNER MULTIPLAYER</p><h1>{mode === "create" ? "Create a game:" : "Join a game:"}</h1><MultiplayerPlayerName player={playerIdentity} guestName={displayName} onGuestNameChange={setDisplayName} />{mode === "join" ? <label className="multiplayerField"><span>Room code</span><input className="roomCodeInput" value={joinCode} maxLength={6} autoCapitalize="characters" onChange={(event) => setJoinCode(event.target.value.toUpperCase().replace(/[^A-Z2-9]/g, ""))} /></label> : <div className="settings"><label><span>Total players</span><select value={totalSeats} onChange={(event) => { const total = Number(event.target.value); setTotalSeats(total); setNpcCount((old) => Math.min(old, total - 2)); }}>{[2,3,4,5].map((count) => <option key={count}>{count}</option>)}</select></label><label><span>Computer opponents</span><select value={npcCount} onChange={(event) => setNpcCount(Number(event.target.value))}>{Array.from({ length: totalSeats - 1 }, (_, count) => <option key={count}>{count}</option>)}</select></label><label><span>Opening initiative</span><select value={openingPlayer} onChange={(event) => setOpeningPlayer(event.target.value as typeof openingPlayer)}><option value="random">Random participant</option><option value="human">Human player</option>{npcCount > 0 && <option value="npc">Computer opponent</option>}</select></label><label className="toggle"><input type="checkbox" checked={isPublic} onChange={event=>setIsPublic(event.target.checked)} /><span><b>Public room</b><small>Allow other players to find and join this room. Off keeps it private.</small></span></label><label className="toggle"><input type="checkbox" checked={nileFloods} onChange={(event) => setNileFloods(event.target.checked)} /><span><b>Nile Floods</b><small>Add a die roll to every score.</small></span></label></div>}{error && <p className="formError" role="alert">{error}</p>}<button className="beginButton" disabled={busy || !canEnter || (mode === "join" && joinCode.length !== 6)} onClick={mode === "create" ? createRoom : () => joinRoom()}>{busy ? "Connecting…" : mode === "create" ? "Create Room" : "Join Room"}</button>{mode === "join" && <PublicRoomDirectory level="beginner" displayName={multiplayerName} busy={busy} onJoin={selected=>joinRoom(selected)} />}</section></Shell>;
 
   if (!room) return null;
   if (room.status === "waiting") return <><MultiplayerPresenceControls isHost={room.isHost} seats={room.seats} busy={busy} onAct={act} /><Lobby room={room} busy={busy} error={error} onAct={act} onLeave={leaveView} /></>;
