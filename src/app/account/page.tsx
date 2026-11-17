@@ -125,6 +125,7 @@ export default function AccountPage() {
           <label htmlFor="login-password">Password</label>
           <input id="login-password" type="password" autoComplete={mode === "create" ? "new-password" : "current-password"} minLength={mode === "create" ? 12 : undefined} value={password} onChange={event => setPassword(event.target.value)} />
           {mode === "create" && <p aria-live="polite">{password.length === 0 ? "Password required: minimum 12 characters." : password.length < 12 ? `Password needs ${12 - password.length} more character(s).` : "Password length requirement met."}</p>}
+          {mode === "login" && <p><Link href="/account/recover">Forgot your password?</Link></p>}
           {mode === "create" ? <button type="button" disabled={busy} onClick={() => void createAccount()}>{busy ? "Submitting registration…" : "Create account and verify email"}</button> :
             <button disabled={busy || !email.trim() || !password} onClick={() => void run(() => client.auth.signInWithPassword({ email: email.trim(), password }), "Signed in.")}>Sign in</button>}
         </section>}
