@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createMultiplayerBeginnerGame } from "./multiplayer";
 
-const db = vi.hoisted(() => ({ room: {} as any, players: [] as any[], userId: "host", conflict: false }));
+const db = vi.hoisted(() => ({ room: {} as any, players: [] as any[], userId: "host", conflict: false, controls: true }));
 vi.mock("@/lib/supabase-server", () => ({
   multiplayerConfigured: () => true,
   requestUser: async () => ({ id: db.userId }),
@@ -23,6 +23,11 @@ vi.mock("@/lib/supabase-server", () => ({
   } }),
 }));
 
+vi.mock("@/lib/room-controller-server", () => ({
+  controlRoom: async () => db.controls,
+  controlRequired: () => Response.json({ error: "VIEW_ONLY" }, { status: 409 }),
+}));
+
 import { PATCH } from "../app/api/multiplayer/rooms/[code]/route";
 const context = { params: Promise.resolve({ code: "TEST22" }) };
 const vote = async (body: object) => {
@@ -32,7 +37,7 @@ const vote = async (body: object) => {
 };
 
 beforeEach(() => {
-  db.userId = "host"; db.conflict = false;
+  db.userId = "host"; db.conflict = false; db.controls = true;
   db.players = ["host", "guest"].map((id, index) => ({ id, user_id: id, controller: "human", display_name: id, faction_id: index ? "egyptian-christians" : "nubian-christians", seat_order: index }));
   const settings = { totalSeats: 2, npcCount: 0, nileFloods: true, openingPlayer: "human" as const };
   const state = createMultiplayerBeginnerGame(db.players.map(p => ({ id:p.id, userId:p.user_id, displayName:p.display_name, controller:p.controller, factionId:p.faction_id, seatOrder:p.seat_order })), settings, "FINISHED");
@@ -59,6 +64,12 @@ describe("Beginner rematch endpoint", () => {
     expect((await vote({ action:"rematch", accept:true, revision:9 })).status).toBe(409);
     db.userId = "outsider";
     expect((await vote({ action:"rematch", accept:true, revision:10 })).status).toBe(403);
+    expect(db.room).toEqual(before);
+  });
+  it("rejects a rematch action from a view-only browser", async () => {
+    const before = structuredClone(db.room);
+    db.controls = false;
+    expect((await vote({ action:"rematch", accept:true, revision:10 })).status).toBe(409);
     expect(db.room).toEqual(before);
   });
   it("uses the database revision check to prevent conflicting restarts", async () => {
