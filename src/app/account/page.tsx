@@ -95,7 +95,7 @@ export default function AccountPage() {
   }
 
   const permanent = Boolean(user && !user.is_anonymous && user.email_confirmed_at);
-  return <main className="landing levelLanding"><section className="panel levelSelectPanel" style={{ maxWidth: 600 }}>
+  return <main className="landing levelLanding"><section className="panel levelSelectPanel nileSouthAccountPanel" style={{ maxWidth: 680 }}>
     <p className="kicker">NILE SOUTH GAMES</p>
     <h1>Player account</h1>
     <p className="subtitle">Keep one player identity as more Nile South games join the account system.</p>
