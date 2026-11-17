@@ -25,3 +25,16 @@ Status: code prepared on feature branch; NOT activated in production.
 - Build a shared OAuth/OIDC login service for cross-domain and Capacitor single sign-on.
 - Introduce a server-verified account-to-seat linking workflow for existing accounts, including conflicts and transferred seats.
 - Expand to other Nile South games after the Nubian Kings canary passes.
+
+
+## November 17 — Cross-device My Games milestone
+
+- Added `/account/games` and navigation from the account and game landing pages.
+- Existing permanent users with the same Supabase Auth user ID can discover their own Beginner, Amateur and Master multiplayer rooms without relying on the original browser's local-storage room selection.
+- The `nsg_my_nubian_games()` RPC is security-definer because the underlying multiplayer tables intentionally block browser SELECT. It has a fixed, no-argument query, restricts rows to `auth.uid()` and non-anonymous JWTs, has an empty SQL search_path, exposes only room code, level, status, own player name/faction, host flag and modification timestamp; never returns game_state, hidden cards or opponents' data. `EXECUTE` is revoked from PUBLIC/anon and granted only to authenticated. Supabase security advisor flags exposed security-definer RPC by design: manually review this exception before production release.
+- My Games Resume sets only the established per-level local-storage room code and navigates to the existing multiplayer screen, which must still perform server-side account UUID authorization. This does not join a new seat or transfer another player's seat.
+- The RPC is installed on the existing Nubian Kings project, tested to return no rows without an authenticated identity; permission checks show anon cannot execute. The preview build passed.
+- **Not yet verified end-to-end:** account-based room listing against a real signed-in user's room, and cross-device multiplayer resume. The preview's server-side `SUPABASE_SECRET_KEY` is not configured, so existing multiplayer routes can still return 503 even when the My Games list works.
+- Guest rooms made under a *different* anonymous identity are not automatically linked to a newly created permanent account. In-place guest upgrades keep the same user ID. Previously transferred/removed seats are excluded.
+- This milestone does not sync solo localStorage saves or create a cross-game account portal.
+- Before production release: provision branch-only server secret without exposing it publicly, run positive and negative (another user's room) cross-device tests for all three levels, check inactive/expired games and disconnected-host replacement behavior, and keep existing room-table permissions unchanged.
