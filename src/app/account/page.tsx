@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { browserSupabase } from "@/lib/supabase-browser";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 type Player = { id: string; email?: string; is_anonymous?: boolean; email_confirmed_at?: string | null };
 type Mode = "create" | "login" | "guest";
@@ -17,6 +18,7 @@ export default function AccountPage() {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const client = browserSupabase();
+  const profileDb = client as SupabaseClient<any> | undefined;
 
   async function refresh() {
     if (!client) { setLoading(false); return; }
@@ -24,7 +26,7 @@ export default function AccountPage() {
       const { data } = await client.auth.getUser();
       setUser(data.user);
       if (data.user && !data.user.is_anonymous && data.user.email_confirmed_at) {
-        const { data: profile, error } = await client.from("nsg_player_profiles")
+        const { data: profile, error } = await profileDb!.from("nsg_player_profiles")
           .select("username,display_name")
           .eq("user_id", data.user.id)
           .maybeSingle();
@@ -66,7 +68,7 @@ export default function AccountPage() {
       if (shownName.length < 1 || shownName.length > 40) {
         throw new Error("Display name must be between 1 and 40 characters.");
       }
-      const { error } = await client.from("nsg_player_profiles")
+      const { error } = await profileDb!.from("nsg_player_profiles")
         .upsert({
           user_id: auth.user.id,
           username: normalized,
