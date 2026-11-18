@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { pilotAccessToken } from "@/lib/nile-south-pilot";
 import { browserSupabase } from "@/lib/supabase-browser";
 import { resumeNubianRoom, type NubianGameSummary } from "@/lib/nile-south-games";
 
@@ -18,17 +19,18 @@ export default function MyGames() {
     if (!client) { setError("Supabase account configuration is unavailable."); setLoading(false); return; }
     setLoading(true); setError("");
     try {
-      const { data: { user }, error: authError } = await client.auth.getUser();
+      const pilotToken = await pilotAccessToken();
+      const { data: { user }, error: authError } = await client.auth.getUser(pilotToken ?? undefined);
       if (authError) throw authError;
       setSignedIn(Boolean(user));
       const verified = Boolean(user && !user.is_anonymous && user.email_confirmed_at);
       setPermanent(verified);
       if (!verified) { setGames([]); return; }
-      const { data: { session }, error: sessionError } = await client.auth.getSession();
-      if (sessionError || !session) throw Error("Your session has expired. Please sign in again.");
+      const token = pilotToken ?? (await client.auth.getSession()).data.session?.access_token;
+      if (!token) throw Error("Your session has expired. Please sign in again.");
       const response = await fetch("/api/account/games", {
         cache: "no-store",
-        headers: { Authorization: `Bearer ${session.access_token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw Error(body.error ?? "Could not retrieve your games.");
