@@ -15,4 +15,5 @@ export async function pilotAccessToken(): Promise<string | null> {
 export async function endLocalPilotSession() {
   const response = await fetch("/oauth/callback", { method: "DELETE", headers, cache: "no-store" });
   if (!response.ok) throw new Error("Could not sign out of this game.");
+  window.location.assign("https://auth.nilesouth.app/oauth/authorize?logout=1");
 }
