@@ -96,3 +96,23 @@ export function GET(request) {
     publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   });
 }
+
+async function pilotSession(request, origin) {
+  const noSession = () => new Response(null, { status: 204, headers });
+  if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || new URL(request.url).origin !== origin) return noSession();
+  if (request.headers.get("origin") !== origin || request.headers.get("x-nile-south-session") !== "1") {
+    return new Response(null, { status: 403, headers });
+  }
+  if (request.method === "DELETE") {
+    return new Response(null, { status: 204, headers: { ...headers, "Set-Cookie": cookie(sessionCookie, "", 0) } });
+  }
+  const token = readCookie(request, sessionCookie);
+  if (!token || token.length > 3500 || !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(token)) return noSession();
+  return Response.json({ accessToken: token }, { headers });
+}
+
+export function POST(request) {
+  return pilotSession(request, "https://kings.nilesouth.app");
+}
+
+export const DELETE = POST;
