@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 
 const authOrigin = "https://auth.nilesouth.app";
@@ -98,10 +99,44 @@ function callbackRedirect(destination: unknown, expected?: string) {
   return response(303, null, { Location: url.href });
 }
 
+function signedOutPage() {
+  const nonce = randomBytes(16).toString("base64");
+  const endpoints = [
+    "https://kings.nilesouth.app/oauth/callback",
+    "https://hoard.nilesouth.app/oauth/callback",
+  ];
+  const body = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nile South sign-out</title><main><h1>Nile South sign-out</h1><p id="status" role="status">Clearing the two game sessions…</p>
+<noscript><p>JavaScript is required to clear both game sessions.</p></noscript>
+<p><a href="https://kings.nilesouth.app/account">Nubian Kings</a> · <a href="https://hoard.nilesouth.app/">Coptic Wizard’s Hoard</a></p>
+<script nonce="${nonce}">
+const statusLine = document.getElementById("status");
+Promise.allSettled(${JSON.stringify(endpoints)}.map(async endpoint => {
+  const result = await fetch(endpoint, {
+    method: "DELETE", credentials: "include", cache: "no-store", redirect: "error",
+    headers: { "x-nile-south-session": "1" }, signal: AbortSignal.timeout(8000),
+  });
+  if (result.status !== 204) throw new Error("Could not clear a game session.");
+})).then(results => {
+  statusLine.textContent = results.every(result => result.status === "fulfilled")
+    ? "Signed out of the Nile South pilot in this browser."
+    : "A game session could not be cleared. Reload this page to retry.";
+});
+</script></main></html>`;
+  return response(200, body, {
+    "Content-Type": "text/html; charset=utf-8",
+    "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; connect-src https://kings.nilesouth.app https://hoard.nilesouth.app; frame-ancestors 'none'; base-uri 'none'`,
+    "Set-Cookie": sessionCookie + "=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax",
+  });
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || (url.origin !== kingsOrigin && url.origin !== authOrigin)) {
     return response(404);
+  }
+  if (url.origin === authOrigin && url.searchParams.get("logout") === "1") {
+    return page('<p>Sign out of the pilot on both games in this browser.</p><form method="post" action="/oauth/authorize?logout=1"><button name="action" value="logout">Sign out</button></form>');
   }
   const id = idFrom(url);
   if (!id) return response(400);
@@ -115,8 +150,10 @@ export async function POST(request: Request) {
   if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || url.origin !== authOrigin || !settings) return response(404);
   if (request.headers.get("origin") !== authOrigin) return response(403);
   const id = idFrom(url);
-  if (!id || request.headers.get("content-type")?.split(";")[0] !== "application/x-www-form-urlencoded") return response(400);
+  if (request.headers.get("content-type")?.split(";")[0] !== "application/x-www-form-urlencoded") return response(400);
   const form = await request.formData();
+  if (url.searchParams.get("logout") === "1" && form.get("action") === "logout") return signedOutPage();
+  if (!id) return response(400);
   if (form.get("action") === "approve") return authorization(request, id, true);
   const email = form.get("email");
   const password = form.get("password");
