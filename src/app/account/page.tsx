@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { endLocalPilotSession, pilotAccessToken } from "@/lib/nile-south-pilot";
 import { browserSupabase } from "@/lib/supabase-browser";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -9,6 +10,7 @@ type Player = { id: string; email?: string; is_anonymous?: boolean; email_confir
 type Mode = "create" | "login" | "guest";
 export default function AccountPage() {
   const [user, setUser] = useState<Player | null>(null);
+  const [pilot, setPilot] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -23,9 +25,18 @@ export default function AccountPage() {
   async function refresh() {
     if (!client) { setLoading(false); return; }
     try {
-      const { data } = await client.auth.getUser();
+      const token = await pilotAccessToken();
+      setPilot(Boolean(token));
+      const { data } = await client.auth.getUser(token ?? undefined);
       setUser(data.user);
       if (data.user && !data.user.is_anonymous && data.user.email_confirmed_at) {
+        if (token) {
+          const response = await fetch("/api/account/profile", { headers: { Authorization: "Bearer " + token }, cache: "no-store" });
+          if (!response.ok) { setMessage("Could not load your player profile."); return; }
+          const { profile } = await response.json();
+          if (profile) { setUsername(profile.username); setDisplayName(profile.display_name); }
+          return;
+        }
         const { data: profile, error } = await profileDb!.from("nsg_player_profiles")
           .select("username,display_name")
           .eq("user_id", data.user.id)
@@ -131,7 +142,8 @@ export default function AccountPage() {
         </section>}
       </>}
       {user && !permanent && !user.is_anonymous && <p>Verify your email address to finish creating your permanent account. Check the inbox for {user.email}.</p>}
-      {permanent && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p>
+      {permanent && pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p><p>{displayName}{username ? " · " + username : ""}</p></>}
+      {permanent && !pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p>
         <label htmlFor="player-name">Unique username (3–24 characters)</label>
         <input id="player-name" maxLength={24} autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} />
         <label htmlFor="display-name">Display name</label>
@@ -143,7 +155,7 @@ export default function AccountPage() {
         <input id="new-password" type="password" minLength={12} autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} />
         <button disabled={busy || password.length < 12} onClick={() => void run(() => client.auth.updateUser({ password }), "Password updated.")}>Set or change password</button>
       </>}
-      {user && !user.is_anonymous && <p><button disabled={busy} onClick={() => void run(() => client.auth.signOut(), "Signed out.")}>Sign out</button></p>}
+      {user && !user.is_anonymous && <p><button disabled={busy} onClick={() => void run(async () => { if (pilot) await endLocalPilotSession(); return client.auth.signOut(); }, "Signed out.")}>Sign out</button></p>}
     </>}
     {message && <p role="status" aria-live="polite" style={{ padding: "0.75rem", border: "1px solid currentColor", borderRadius: "0.5rem", marginTop: "1rem" }}>{message}</p>}
   </section></main>;
