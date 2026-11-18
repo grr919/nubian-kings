@@ -1,22 +1,135 @@
-const authorizationUi = "https://auth.nilesouth.app/oauth/authorize";
+import { createClient } from "@supabase/supabase-js";
 
-export function GET(request: Request): Response {
-  const headers = new Headers({
+const authOrigin = "https://auth.nilesouth.app";
+const kingsOrigin = "https://kings.nilesouth.app";
+const path = "/oauth/authorize";
+const sessionCookie = "__Host-nile-south-pilot";
+const callbacks = [
+  { url: kingsOrigin + "/oauth/callback", name: "Nubian Kings", id: () => process.env.NILE_SOUTH_KINGS_CLIENT_ID },
+  { url: "https://hoard.nilesouth.app/oauth/callback", name: "Coptic Wizard’s Hoard", id: () => process.env.NILE_SOUTH_HOARD_CLIENT_ID },
+];
+
+function response(status: number, body: string | null = null, extra: Record<string, string> = {}) {
+  return new Response(body, { status, headers: {
     "Cache-Control": "no-store",
     "Referrer-Policy": "no-referrer",
+    "Content-Security-Policy": "default-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+    ...extra,
+  } });
+}
+
+function page(body: string, status = 200) {
+  return response(status, '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nile South sign-in</title><main><h1>Nile South sign-in</h1>' + body + "</main></html>", {
+    "Content-Type": "text/html; charset=utf-8",
   });
-  const url = new URL(request.url);
-  if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || url.origin !== "https://kings.nilesouth.app") {
-    return new Response(null, { status: 404, headers });
-  }
+}
 
+function idFrom(url: URL) {
   const ids = url.searchParams.getAll("authorization_id");
-  if (ids.length !== 1 || !/^[a-zA-Z0-9_-]{1,128}$/.test(ids[0])) {
-    return new Response("Invalid authorization request.", { status: 400, headers });
+  return ids.length === 1 && /^[a-zA-Z0-9_-]{1,128}$/.test(ids[0]) ? ids[0] : null;
+}
+
+function entry(origin: string, id: string) {
+  return origin + path + "?authorization_id=" + id;
+}
+
+function loginForm(id: string, failed = false) {
+  return page((failed ? '<p role="alert">Sign-in was unsuccessful.</p>' : "") +
+    '<form method="post" action="' + entry(authOrigin, id) + '">' +
+    '<label>Email <input type="email" name="email" autocomplete="username" required></label><br>' +
+    '<label>Password <input type="password" name="password" autocomplete="current-password" required></label><br>' +
+    '<button name="action" value="login">Sign in</button></form>', failed ? 401 : 200);
+}
+
+function config() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const userId = process.env.NILE_SOUTH_SSO_PILOT_USER_ID;
+  return url && key && userId && callbacks.every(callback => callback.id()) ? { url, key, userId } : null;
+}
+
+function supabase(settings: NonNullable<ReturnType<typeof config>>) {
+  return createClient(settings.url, settings.key, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
+}
+
+async function authorization(request: Request, id: string, approve: boolean) {
+  const settings = config();
+  if (!settings) return response(404);
+  const jwt = request.headers.get("cookie")?.match(/(?:^|;\s*)__Host-nile-south-pilot=([\w.-]+)(?:;|$)/)?.[1];
+  if (!jwt) return loginForm(id);
+
+  const { data: { user }, error } = await supabase(settings).auth.getUser(jwt);
+  if (error || user?.id !== settings.userId || user.is_anonymous || !user.email_confirmed_at) return loginForm(id);
+
+  const endpoint = settings.url + "/auth/v1/oauth/authorizations/" + id;
+  const headers = { apikey: settings.key, Authorization: "Bearer " + jwt, "Content-Type": "application/json" };
+  const details = await fetch(endpoint, { headers, cache: "no-store", redirect: "error" });
+  if (!details.ok) return page("<p>This authorization request is unavailable.</p>", 400);
+  const data = await details.json();
+
+  if (typeof data.redirect_url === "string") return callbackRedirect(data.redirect_url);
+  const game = callbacks.find(callback => callback.id() === data.client?.id && callback.url === data.redirect_uri);
+  if (!game || data.authorization_id !== id || data.user?.id !== user.id) return response(403);
+  if (!approve) {
+    return page('<p>Continue to ' + game.name + ' with your Nile South account.</p><form method="post" action="' +
+      entry(authOrigin, id) + '"><button name="action" value="approve">Continue</button></form>');
   }
 
-  const destination = new URL(authorizationUi);
-  destination.searchParams.set("authorization_id", ids[0]);
-  headers.set("Location", destination.href);
-  return new Response(null, { status: 303, headers });
+  const consent = await fetch(endpoint + "/consent", {
+    method: "POST", headers, body: JSON.stringify({ action: "approve" }), cache: "no-store", redirect: "error",
+  });
+  if (!consent.ok) return page("<p>Authorization failed. Return to the game and try again.</p>", 400);
+  return callbackRedirect((await consent.json()).redirect_url, game.url);
+}
+
+function callbackRedirect(destination: unknown, expected?: string) {
+  if (typeof destination !== "string") return response(403);
+  let url: URL;
+  try {
+    url = new URL(destination);
+  } catch {
+    return response(403);
+  }
+  const base = url.origin + url.pathname;
+  if (url.username || url.password || url.hash || !callbacks.some(callback => callback.url === base) ||
+      (expected && expected !== base)) return response(403);
+  return response(303, null, { Location: url.href });
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || (url.origin !== kingsOrigin && url.origin !== authOrigin)) {
+    return response(404);
+  }
+  const id = idFrom(url);
+  if (!id) return response(400);
+  if (url.origin === kingsOrigin) return response(303, null, { Location: entry(authOrigin, id) });
+  return authorization(request, id, false);
+}
+
+export async function POST(request: Request) {
+  const url = new URL(request.url);
+  const settings = config();
+  if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || url.origin !== authOrigin || !settings) return response(404);
+  if (request.headers.get("origin") !== authOrigin) return response(403);
+  const id = idFrom(url);
+  if (!id || request.headers.get("content-type")?.split(";")[0] !== "application/x-www-form-urlencoded") return response(400);
+  const form = await request.formData();
+  if (form.get("action") === "approve") return authorization(request, id, true);
+  const email = form.get("email");
+  const password = form.get("password");
+  if (form.get("action") !== "login" || typeof email !== "string" || typeof password !== "string" ||
+      email.length > 320 || password.length > 4096) return response(400);
+
+  const { data: { session, user }, error } = await supabase(settings).auth.signInWithPassword({ email: email.trim(), password });
+  if (error || !session || user?.id !== settings.userId || user.is_anonymous || !user.email_confirmed_at) {
+    return loginForm(id, true);
+  }
+  const maxAge = Math.min(session.expires_in, 900);
+  return response(303, null, {
+    Location: entry(authOrigin, id),
+    "Set-Cookie": sessionCookie + "=" + session.access_token + "; Path=/; Max-Age=" + maxAge + "; Secure; HttpOnly; SameSite=Lax",
+  });
 }
