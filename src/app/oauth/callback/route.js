@@ -100,11 +100,22 @@ export function GET(request) {
 async function pilotSession(request, origin) {
   const noSession = () => new Response(null, { status: 204, headers });
   if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || new URL(request.url).origin !== origin) return noSession();
-  if (request.headers.get("origin") !== origin || request.headers.get("x-nile-south-session") !== "1") {
+  const sender = request.headers.get("origin");
+  const sharedLogout = sender === "https://auth.nilesouth.app" &&
+    (request.method === "OPTIONS" || request.method === "DELETE");
+  const cors = sharedLogout ? {
+    "Access-Control-Allow-Origin": sender,
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "DELETE",
+    "Access-Control-Allow-Headers": "x-nile-south-session",
+    Vary: "Origin",
+  } : {};
+  if (sharedLogout && request.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...headers, ...cors } });
+  if ((!sharedLogout && sender !== origin) || request.headers.get("x-nile-south-session") !== "1") {
     return new Response(null, { status: 403, headers });
   }
   if (request.method === "DELETE") {
-    return new Response(null, { status: 204, headers: { ...headers, "Set-Cookie": cookie(sessionCookie, "", 0) } });
+    return new Response(null, { status: 204, headers: { ...headers, ...cors, "Set-Cookie": cookie(sessionCookie, "", 0) } });
   }
   const token = readCookie(request, sessionCookie);
   if (!token || token.length > 3500 || !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(token)) return noSession();
@@ -116,3 +127,4 @@ export function POST(request) {
 }
 
 export const DELETE = POST;
+export const OPTIONS = POST;
