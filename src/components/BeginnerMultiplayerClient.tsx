@@ -16,6 +16,7 @@ import MultiplayerPresenceControls from "@/components/MultiplayerPresenceControl
 import cardData from "@/data/cards.json";
 import { comparisonActionText, factionActor, multiplayerRoundOutcomeText } from "@/game/player-language";
 import { browserSupabase } from "@/lib/supabase-browser";
+import { pilotAccessToken } from "@/lib/nile-south-pilot";
 import { MultiplayerResponseGate } from "@/lib/multiplayer-response-gate";
 import { shouldPollMultiplayerRoom } from "@/lib/multiplayer-visibility";
 import { controllerHeaders, takeoverHeaders } from "@/lib/room-controller-browser";
@@ -42,6 +43,8 @@ type Review = { stat: Stat; actorPlayerId?: string; scores: Array<{ playerId: st
 type Room = { control?: { canControl: boolean; reason?: "reload" | "unavailable" | "other-device" }; code: string; status: "waiting" | "active" | "complete" | "abandoned"; isHost: boolean; settings: { isPublic?: boolean; rematchVotes?: Record<string, boolean>; totalSeats: number; npcCount: number; nileFloods: boolean; openingPlayer: "random" | "human" | "npc" }; revision: number; acknowledged: boolean; seats: Seat[]; state?: PublicState; review?: Review };
 
 async function accessToken() {
+  const pilotToken = await pilotAccessToken();
+  if (pilotToken) return pilotToken;
   const client = browserSupabase();
   if (!client) throw new Error("Multiplayer has not been configured yet.");
   let { data: { session } } = await client.auth.getSession();
