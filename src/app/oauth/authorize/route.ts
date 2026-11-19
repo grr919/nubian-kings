@@ -135,7 +135,7 @@ function page(body: string, status = 200, options: {
 </head>
 <body>
 <main>
-<img src="${logoUrl}" alt="Nile South Games" width="420" height="280">
+<a href="https://nilesouth.app/" aria-label="Nile South Games home"><img src="${logoUrl}" alt="Nile South Games" width="420" height="280"></a>
 <h1>${title}</h1>
 ${body}
 </main>
