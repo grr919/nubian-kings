@@ -130,7 +130,7 @@ export default function AccountPage() {
     {accountHost === "shared" ? (
       // The collection’s logo identifies the same account service used by every game.
       // eslint-disable-next-line @next/next/no-img-element
-      <img src="https://nilesouth.app/highland-logo.jpg" alt="Nile South Games" width="168" height="112" style={{ display: "block", margin: "0 auto 1rem", maxWidth: "100%", height: "auto" }} />
+      <a href="https://nilesouth.app/" aria-label="Nile South Games home"><img src="https://nilesouth.app/highland-logo.jpg" alt="Nile South Games" width="168" height="112" style={{ display: "block", margin: "0 auto 1rem", maxWidth: "100%", height: "auto" }} /></a>
     ) : <p className="kicker">NILE SOUTH GAMES</p>}
     <h1>Player account</h1>
     <p className="subtitle">{accountHost === "shared" ? "Manage the account you use across Nile South Games." : "Use your Nile South player account to sign in and resume games."}</p>
