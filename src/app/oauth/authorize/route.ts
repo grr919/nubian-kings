@@ -16,8 +16,14 @@ const herd = {
   id: () => process.env.NILE_SOUTH_HERD_CLIENT_ID,
 };
 
+const adwa = {
+  url: "https://adwa.nilesouth.app/oauth/callback",
+  name: "Adwa",
+  id: () => process.env.NILE_SOUTH_ADWA_CLIENT_ID,
+};
+
 function activeCallbacks() {
-  return herd.id() ? [...callbacks, herd] : callbacks;
+  return [...callbacks, ...[herd, adwa].filter(game => game.id())];
 }
 
 function response(status: number, body: string | null = null, extra: Record<string, string> = {}) {
