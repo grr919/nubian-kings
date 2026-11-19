@@ -10,6 +10,16 @@ const callbacks = [
   { url: "https://hoard.nilesouth.app/oauth/callback", name: "Coptic Wizard’s Hoard", id: () => process.env.NILE_SOUTH_HOARD_CLIENT_ID },
 ];
 
+const herd = {
+  url: "https://herd.nilesouth.app/oauth/callback",
+  name: "A Mighty Herd",
+  id: () => process.env.NILE_SOUTH_HERD_CLIENT_ID,
+};
+
+function activeCallbacks() {
+  return herd.id() ? [...callbacks, herd] : callbacks;
+}
+
 function response(status: number, body: string | null = null, extra: Record<string, string> = {}) {
   return new Response(body, { status, headers: {
     "Cache-Control": "no-store",
@@ -156,12 +166,12 @@ async function authorization(request: Request, id: string, approve: boolean) {
   if (!details.ok) {
     return page('<p>This sign-in request expired or was already used. Start again from the game.</p>' +
       '<p><a href="https://kings.nilesouth.app/oauth/callback?start=1">Continue to Nubian Kings</a> · ' +
-      '<a href="https://hoard.nilesouth.app/oauth/callback?start=1">Continue to Coptic Wizard’s Hoard</a></p>', 400);
+      activeCallbacks().slice(1).map(game => `<a href="${game.url}?start=1">Continue to ${game.name}</a>`).join(" · ") + "</p>", 400);
   }
   const data = await details.json();
 
   if (typeof data.redirect_url === "string") return callbackRedirect(data.redirect_url);
-  const game = callbacks.find(callback => callback.id() === data.client?.id && callback.url === data.redirect_uri);
+  const game = activeCallbacks().find(callback => callback.id() === data.client?.id && callback.url === data.redirect_uri);
   if (!game || data.authorization_id !== id || data.user?.id !== user.id) return response(403);
   if (!approve) {
     return page('<p>Continue to ' + game.name + ' with your Nile South account.</p><form method="post" action="' +
@@ -184,20 +194,18 @@ function callbackRedirect(destination: unknown, expected?: string) {
     return response(403);
   }
   const base = url.origin + url.pathname;
-  if (url.username || url.password || url.hash || !callbacks.some(callback => callback.url === base) ||
+  if (url.username || url.password || url.hash || !activeCallbacks().some(callback => callback.url === base) ||
       (expected && expected !== base)) return response(403);
   return response(303, null, { Location: url.href });
 }
 
 function signedOutPage() {
   const nonce = randomBytes(16).toString("base64");
-  const endpoints = [
-    "https://kings.nilesouth.app/oauth/callback",
-    "https://hoard.nilesouth.app/oauth/callback",
-  ];
+  const endpoints = activeCallbacks().map(callback => callback.url);
+  const gameOrigins = endpoints.map(endpoint => new URL(endpoint).origin).join(" ");
   const body = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nile South sign-out</title><main><h1>Nile South sign-out</h1><p id="status" role="status">Clearing the two game sessions…</p>
-<noscript><p>JavaScript is required to clear both game sessions.</p></noscript>
+<title>Nile South sign-out</title><main><h1>Nile South sign-out</h1><p id="status" role="status">Clearing your shared game sessions…</p>
+<noscript><p>JavaScript is required to clear the game sessions.</p></noscript>
 <p><a href="https://kings.nilesouth.app/account">Nubian Kings</a> · <a href="https://hoard.nilesouth.app/">Coptic Wizard’s Hoard</a></p>
 <script nonce="${nonce}">
 const statusLine = document.getElementById("status");
@@ -215,7 +223,7 @@ Promise.allSettled(${JSON.stringify(endpoints)}.map(async endpoint => {
 </script></main></html>`;
   return response(200, body, {
     "Content-Type": "text/html; charset=utf-8",
-    "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; connect-src https://kings.nilesouth.app https://hoard.nilesouth.app; frame-ancestors 'none'; base-uri 'none'`,
+    "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; connect-src ${gameOrigins}; frame-ancestors 'none'; base-uri 'none'`,
     "Set-Cookie": sessionCookie + "=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax",
   });
 }
