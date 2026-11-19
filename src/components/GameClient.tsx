@@ -1,4 +1,6 @@
 "use client";
+
+import Image from "next/image";
 import PlayIdentity from "./PlayIdentity";
 import { playDiceSound } from "./dice-sound";
 import ReadingCardGuide from "./ReadingCardGuide";
@@ -195,7 +197,7 @@ export default function GameClient() {
       <p>Lead a medieval African civilization through a contest of strength, zeal, and wealth.</p>
       <PlayIdentity destination="/beginner" playOptions="level-play-options" />
     <div className="actions" id="level-play-options"><button onClick={() => setScreen("setup")}>Play against the computer</button>{hasSave && <button className="secondary" onClick={continueGame}>Resume browser game</button>}<a className="buttonLink" href="/beginner/multiplayer">Play against other players</a></div>
-      <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><footer className="landingFooter">© 2026 Nile South Games</footer>
+      <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Beginner Rules</button><a className="landingBack" href="/">Return to Main</a></div><footer className="landingFooter">© 2026 Nile South Games<a href="https://nilesouth.app/"><Image src="/highland-logo.jpg" width={60} height={40} alt="Nile South Games home" unoptimized /></a></footer>
     </section>{help && <Help onClose={() => setHelp(false)} />}</main>
   );
 

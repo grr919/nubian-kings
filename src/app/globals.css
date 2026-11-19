@@ -315,3 +315,6 @@ body{background:#efd49b}
 .roomControlBanner p { margin: 0; line-height: 1.45; }
 .roomControlBanner button { flex-shrink: 0; }
 .roomControlBanner [role="alert"] { flex-basis: 100%; color: #872a22; }
+
+.landingFooter a {display:table;margin:4px auto 0}
+.landingFooter img {display:block}
