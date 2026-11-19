@@ -11,6 +11,7 @@ type Mode = "create" | "login" | "guest";
 export default function AccountPage() {
   const [user, setUser] = useState<Player | null>(null);
   const [pilot, setPilot] = useState(false);
+  const [sharedSignInAvailable, setSharedSignInAvailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -48,6 +49,7 @@ export default function AccountPage() {
   }
 
   useEffect(() => {
+    setSharedSignInAvailable(window.location.hostname === "kings.nilesouth.app");
     void refresh();
     const subscription = client?.auth.onAuthStateChange(() => { queueMicrotask(() => { void refresh(); }); });
     return () => subscription?.data.subscription.unsubscribe();
@@ -111,6 +113,10 @@ export default function AccountPage() {
     <h1>Player account</h1>
     <p className="subtitle">Keep one player identity as more Nile South games join the account system.</p>
     <p><Link href="/">Return to Nubian Kings</Link> · <Link href="/account/games">My Games — Resume on another device</Link></p>
+    {sharedSignInAvailable && !loading && !pilot && !user?.is_anonymous && <p style={{ margin: "1.25rem 0" }}>
+      <a href="/oauth/callback?start=1" style={{ display: "inline-block", padding: "0.85rem 1.25rem", borderRadius: "0.5rem", background: "#24584c", color: "#fffaf0", fontSize: "1.125rem", fontWeight: 700, textDecoration: "none" }}>Use shared Nile South sign-in</a>
+      <small style={{ display: "block", marginTop: "0.5rem" }}>Shared sign-in is currently available to the pilot account.</small>
+    </p>}
     {!client ? <p role="alert">Account preview is not configured. Please check its Vercel Supabase environment variables.</p>
       : loading ? <p>Checking your player session…</p> : <>
       {user?.is_anonymous && <section aria-label="Upgrade guest account"><h2>Upgrade your guest account</h2>
@@ -123,13 +129,13 @@ export default function AccountPage() {
       {!user && <>
         <nav aria-label="Account options">
           <button type="button" disabled={busy} aria-pressed={mode === "create"} onClick={() => { setMode("create"); setMessage("Create account selected. Enter an email address and a password of at least 12 characters below."); }}>Create account</button>{" "}
-          <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage("Sign in selected. Enter your existing email and password below."); }}>Sign in</button>{" "}
+          <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage("Sign in selected. Enter your existing email and password below."); }}>Sign in to Nubian Kings</button>{" "}
           <button type="button" disabled={busy} aria-pressed={mode === "guest"} onClick={() => { setMode("guest"); setMessage("Guest mode selected. Start a guest session below."); }}>Continue as guest</button>
         </nav>
         {mode === "guest" && <section><h2>Play without an account</h2><p>You can register later without changing this new guest's ID.</p>
           <button disabled={busy} onClick={() => void run(() => client.auth.signInAnonymously(), "Guest session created. You can now upgrade your guest account.")}>Start guest session</button>
         </section>}
-        {(mode === "create" || mode === "login") && <section><h2>{mode === "create" ? "Create Nile South account" : "Sign in"}</h2>
+        {(mode === "create" || mode === "login") && <section><h2>{mode === "create" ? "Create Nile South account" : "Sign in to Nubian Kings"}</h2>
           {mode === "create" && <p>Enter a valid email and a password of at least 12 characters. Already playing as a guest on another domain? Upgrade on that original domain to preserve the existing seat.</p>}
           <label htmlFor="login-email">Email</label>
           <input id="login-email" type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} />
