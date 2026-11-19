@@ -126,9 +126,10 @@ async function pilotSession(request, origin) {
   if (request.method === "DELETE") {
     return new Response(null, { status: 204, headers: { ...headers, ...cors, "Set-Cookie": cookie(sessionCookie, "", 0) } });
   }
+  const publicAccess = process.env.NILE_SOUTH_SSO_ACCESS === "public";
   const token = readCookie(request, sessionCookie);
-  if (!token || token.length > 3500 || !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(token)) return noSession();
-  return Response.json({ accessToken: token }, { headers });
+  if (!token || token.length > 3500 || !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(token)) return publicAccess ? Response.json({ publicAccess }, { headers }) : noSession();
+  return Response.json({ accessToken: token, publicAccess }, { headers });
 }
 
 export function POST(request) {
