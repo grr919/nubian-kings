@@ -67,7 +67,11 @@ async function authorization(request: Request, id: string, approve: boolean) {
   const endpoint = settings.url + "/auth/v1/oauth/authorizations/" + id;
   const headers = { apikey: settings.key, Authorization: "Bearer " + jwt, "Content-Type": "application/json" };
   const details = await fetch(endpoint, { headers, cache: "no-store", redirect: "error" });
-  if (!details.ok) return page("<p>This authorization request is unavailable.</p>", 400);
+  if (!details.ok) {
+    return page('<p>This sign-in request expired or was already used. Start again from the game.</p>' +
+      '<p><a href="https://kings.nilesouth.app/oauth/callback?start=1">Continue to Nubian Kings</a> · ' +
+      '<a href="https://hoard.nilesouth.app/oauth/callback?start=1">Continue to Coptic Wizard’s Hoard</a></p>', 400);
+  }
   const data = await details.json();
 
   if (typeof data.redirect_url === "string") return callbackRedirect(data.redirect_url);
