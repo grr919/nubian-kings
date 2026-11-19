@@ -116,25 +116,34 @@ const pageStyles = `
 `;
 const styleHash = createHash("sha256").update(pageStyles).digest("base64");
 
-function page(body: string, status = 200) {
+function page(body: string, status = 200, options: {
+  title?: string;
+  scriptNonce?: string;
+  connectOrigins?: string;
+  cookieToSet?: string;
+} = {}) {
+  const title = options.title ?? "Nile South sign-in";
+  const scriptPolicy = options.scriptNonce ? ` script-src 'nonce-${options.scriptNonce}';` : "";
+  const connectPolicy = options.connectOrigins ? ` connect-src ${options.connectOrigins};` : "";
   return response(status, `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nile South sign-in</title>
+<title>${title}</title>
 <style>${pageStyles}</style>
 </head>
 <body>
 <main>
 <img src="${logoUrl}" alt="Nile South Games" width="420" height="280">
-<h1>Nile South sign-in</h1>
+<h1>${title}</h1>
 ${body}
 </main>
 </body>
 </html>`, {
     "Content-Type": "text/html; charset=utf-8",
-    "Content-Security-Policy": `default-src 'none'; style-src 'sha256-${styleHash}'; img-src ${logoUrl}; form-action 'self'; frame-ancestors 'none'; base-uri 'none'`,
+    "Content-Security-Policy": `default-src 'none'; style-src 'sha256-${styleHash}'; img-src ${logoUrl};${scriptPolicy}${connectPolicy} form-action 'self'; frame-ancestors 'none'; base-uri 'none'`,
+    ...(options.cookieToSet ? { "Set-Cookie": options.cookieToSet } : {}),
   });
 }
 
@@ -249,10 +258,8 @@ function signedOutPage() {
   const nonce = randomBytes(16).toString("base64");
   const endpoints = activeCallbacks().map(callback => callback.url);
   const gameOrigins = endpoints.map(endpoint => new URL(endpoint).origin).join(" ");
-  const body = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nile South sign-out</title><main><h1>Nile South sign-out</h1><p id="status" role="status">Clearing your shared game sessions…</p>
+  const body = `<p id="status" role="status">Clearing your shared game sessions…</p>
 <noscript><p>JavaScript is required to clear the game sessions.</p></noscript>
-<p><a href="https://kings.nilesouth.app/account">Nubian Kings</a> · <a href="https://hoard.nilesouth.app/">Coptic Wizard’s Hoard</a></p>
 <script nonce="${nonce}">
 const statusLine = document.getElementById("status");
 Promise.allSettled(${JSON.stringify(endpoints)}.map(async endpoint => {
@@ -266,11 +273,12 @@ Promise.allSettled(${JSON.stringify(endpoints)}.map(async endpoint => {
     ? "Signed out of the Nile South pilot in this browser."
     : "A game session could not be cleared. Reload this page to retry.";
 });
-</script></main></html>`;
-  return response(200, body, {
-    "Content-Type": "text/html; charset=utf-8",
-    "Content-Security-Policy": `default-src 'none'; script-src 'nonce-${nonce}'; connect-src ${gameOrigins}; frame-ancestors 'none'; base-uri 'none'`,
-    "Set-Cookie": sessionCookie + "=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax",
+</script>`;
+  return page(body, 200, {
+    title: "Nile South sign-out",
+    scriptNonce: nonce,
+    connectOrigins: gameOrigins,
+    cookieToSet: sessionCookie + "=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Lax",
   });
 }
 
@@ -288,7 +296,7 @@ export async function GET(request: Request) {
   }
   if (url.origin === authOrigin && url.searchParams.get("session-check") === "1") return checkSharedSession(request);
   if (url.origin === authOrigin && url.searchParams.get("logout") === "1") {
-    return page('<p>Sign out of shared Nile South sign-in in this browser.</p><form method="post" action="/oauth/authorize?logout=1"><button name="action" value="logout">Sign out</button></form>');
+    return page('<p>Sign out of shared Nile South sign-in in this browser.</p><form method="post" action="/oauth/authorize?logout=1"><button name="action" value="logout">Sign out</button></form>', 200, { title: "Nile South sign-out" });
   }
   const id = idFrom(url);
   if (!id) return response(400);
