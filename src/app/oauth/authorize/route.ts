@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 
 const authOrigin = "https://auth.nilesouth.app";
@@ -19,9 +19,95 @@ function response(status: number, body: string | null = null, extra: Record<stri
   } });
 }
 
+const logoUrl = "https://nilesouth.app/highland-logo.jpg";
+const pageStyles = `
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 5vw, 4rem);
+    background: radial-gradient(ellipse at 12% 9%, #356f65 0%, transparent 52%),
+                radial-gradient(ellipse at 96% 100%, #854735 0%, transparent 56%), #172f37;
+    color: #253b36;
+    font: 1rem/1.55 system-ui, sans-serif;
+  }
+  main {
+    width: min(100%, 29rem);
+    padding: clamp(1.5rem, 6vw, 3rem);
+    border: 1px solid #e8d8b9;
+    border-top: 5px solid #d5a759;
+    border-radius: 1.25rem;
+    background: #fff9ed;
+    box-shadow: 0 24px 70px #101d2b55;
+    text-align: center;
+  }
+  img {
+    display: block;
+    width: min(100%, 13.5rem);
+    height: auto;
+    margin: 0 auto 1.35rem;
+    border-radius: .65rem;
+  }
+  h1 {
+    margin: 0 0 1.55rem;
+    color: #183e38;
+    font: 600 clamp(1.8rem, 6vw, 2.45rem)/1.15 Georgia, serif;
+  }
+  p { margin: 0 0 1.25rem; }
+  p:last-child { margin-bottom: 0; }
+  form { display: grid; gap: 1.05rem; }
+  label { display: grid; gap: .4rem; text-align: left; font-weight: 650; }
+  input, button { font: inherit; border-radius: .55rem; min-height: 3rem; }
+  input {
+    width: 100%;
+    padding: .65rem .8rem;
+    border: 1px solid #90836c;
+    background: #fffdfa;
+    color: #213732;
+  }
+  button {
+    margin-top: .4rem;
+    padding: .65rem 1rem;
+    border: 1px solid transparent;
+    background: #245c50;
+    color: #fff9ed;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:hover { background: #19483e; }
+  a { color: #245c50; text-underline-offset: .18em; }
+  :focus-visible { outline: 3px solid #a65432; outline-offset: 3px; }
+  [role="alert"] {
+    padding: .65rem .85rem;
+    border-radius: .55rem;
+    background: #f8e3d8;
+    color: #792f20;
+  }
+`;
+const styleHash = createHash("sha256").update(pageStyles).digest("base64");
+
 function page(body: string, status = 200) {
-  return response(status, '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Nile South sign-in</title><main><h1>Nile South sign-in</h1>' + body + "</main></html>", {
+  return response(status, `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nile South sign-in</title>
+<style>${pageStyles}</style>
+</head>
+<body>
+<main>
+<img src="${logoUrl}" alt="Nile South Games" width="420" height="280">
+<h1>Nile South sign-in</h1>
+${body}
+</main>
+</body>
+</html>`, {
     "Content-Type": "text/html; charset=utf-8",
+    "Content-Security-Policy": `default-src 'none'; style-src 'sha256-${styleHash}'; img-src ${logoUrl}; form-action 'self'; frame-ancestors 'none'; base-uri 'none'`,
   });
 }
 
@@ -37,8 +123,8 @@ function entry(origin: string, id: string) {
 function loginForm(id: string, failed = false) {
   return page((failed ? '<p role="alert">Sign-in was unsuccessful.</p>' : "") +
     '<form method="post" action="' + entry(authOrigin, id) + '">' +
-    '<label>Email <input type="email" name="email" autocomplete="username" required></label><br>' +
-    '<label>Password <input type="password" name="password" autocomplete="current-password" required></label><br>' +
+    '<label>Email <input type="email" name="email" autocomplete="username" required></label>' +
+    '<label>Password <input type="password" name="password" autocomplete="current-password" required></label>' +
     '<button name="action" value="login">Sign in</button></form>', failed ? 401 : 200);
 }
 
