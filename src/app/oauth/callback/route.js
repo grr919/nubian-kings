@@ -1,4 +1,4 @@
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 
 const transactionCookie = "__Host-nile-south-oauth";
 const sessionCookie = "__Host-nile-south-game";
@@ -12,11 +12,6 @@ function cookie(name, value, maxAge) {
 function readCookie(request, name) {
   return (request.headers.get("cookie") ?? "").split(";").map(part => part.trim())
     .find(part => part.startsWith(name + "="))?.slice(name.length + 1);
-}
-
-function sameState(left, right) {
-  return /^[\w-]{43}$/.test(left ?? "") && /^[\w-]{43}$/.test(right ?? "") &&
-    timingSafeEqual(Buffer.from(left), Buffer.from(right));
 }
 
 function redirect(location, cookies = []) {
@@ -35,7 +30,6 @@ async function gameOAuth(request, { origin, clientId, landing, supabaseUrl, publ
 
   const callback = origin + route;
   const target = origin + landing;
-  const clearTransaction = cookie(transactionCookie, "", 0);
   if (url.searchParams.get("start") === "1" && !url.searchParams.has("code") && !url.searchParams.has("error")) {
     const state = randomBytes(32).toString("base64url");
     const verifier = randomBytes(32).toString("base64url");
@@ -45,14 +39,16 @@ async function gameOAuth(request, { origin, clientId, landing, supabaseUrl, publ
       code_challenge: createHash("sha256").update(verifier).digest("base64url"),
       code_challenge_method: "S256",
     }).toString();
-    return redirect(authorize.href, [cookie(transactionCookie, state + "." + verifier, 600)]);
+    return redirect(authorize.href, [cookie(`${transactionCookie}-${state}`, verifier, 600)]);
   }
 
-  const [expectedState, verifier] = (readCookie(request, transactionCookie) ?? "").split(".");
   const states = url.searchParams.getAll("state");
   const codes = url.searchParams.getAll("code");
-  const failure = () => redirect(target + "?sso=failed", [clearTransaction]);
-  if (states.length !== 1 || !sameState(expectedState, states[0]) || !/^[\w-]{43}$/.test(verifier ?? "") ||
+  const name = states.length === 1 && /^[\w-]{43}$/.test(states[0]) ? `${transactionCookie}-${states[0]}` : null;
+  const verifier = name ? readCookie(request, name) : null;
+  const clearTransaction = name ? [cookie(name, "", 0)] : [];
+  const failure = () => redirect(target + "?sso=failed", clearTransaction);
+  if (!/^[\w-]{43}$/.test(verifier ?? "") ||
       codes.length !== 1 || !codes[0] || codes[0].length > 2048 || url.searchParams.has("error")) {
     return failure();
   }
@@ -79,7 +75,7 @@ async function gameOAuth(request, { origin, clientId, landing, supabaseUrl, publ
     if (user.id !== userId || user.is_anonymous || !user.email_confirmed_at) return failure();
 
     return redirect(target, [
-      clearTransaction,
+      ...clearTransaction,
       cookie(sessionCookie, tokens.access_token, Math.floor(Math.min(tokens.expires_in, 900))),
     ]);
   } catch {
