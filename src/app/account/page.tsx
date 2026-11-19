@@ -63,6 +63,7 @@ export default function AccountPage() {
     const hostname = window.location.hostname;
     if (hostname === "auth.nilesouth.app") {
       setAccountHost("shared");
+      document.title = "Nile South Games | Player account";
       if (new URLSearchParams(window.location.search).get("mode") === "create") setMode("create");
     } else if (hostname === "kings.nilesouth.app") {
       setAccountHost("kings");
@@ -150,7 +151,7 @@ export default function AccountPage() {
       {!user && publicAccess && <p><a href="https://auth.nilesouth.app/account?mode=create">Create account</a> · <a href="https://auth.nilesouth.app/account/recover">Forgot your password?</a></p>}
       {!user && !publicAccess && <>
         <nav aria-label="Account options">
-          <button type="button" disabled={busy} aria-pressed={mode === "create"} onClick={() => { setMode("create"); setMessage("Create account selected. Enter an email address and a password of at least 12 characters below."); }}>Create account</button>{" "}
+          {accountHost === "kings" ? <a href="https://auth.nilesouth.app/account?mode=create">Create account</a> : <button type="button" disabled={busy} aria-pressed={mode === "create"} onClick={() => { setMode("create"); setMessage("Create account selected. Enter an email address and a password of at least 12 characters below."); }}>Create account</button>}{" "}
           <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage("Sign in selected. Enter your existing email and password below."); }}>{accountHost === "shared" ? "Manage your account" : "Sign in to Nubian Kings"}</button>{" "}
           <button type="button" disabled={busy} aria-pressed={mode === "guest"} onClick={() => { setMode("guest"); setMessage("Guest mode selected. Start a guest session below."); }}>Continue as guest</button>
         </nav>
@@ -164,7 +165,7 @@ export default function AccountPage() {
           <label htmlFor="login-password">Password</label>
           <input id="login-password" type="password" autoComplete={mode === "create" ? "new-password" : "current-password"} minLength={mode === "create" ? 12 : undefined} value={password} onChange={event => setPassword(event.target.value)} />
           {mode === "create" && <p aria-live="polite">{password.length === 0 ? "Password required: minimum 12 characters." : password.length < 12 ? `Password needs ${12 - password.length} more character(s).` : "Password length requirement met."}</p>}
-          {mode === "login" && <p><Link href="/account/recover">Forgot your password?</Link></p>}
+          {mode === "login" && <p><Link href="https://auth.nilesouth.app/account/recover">Forgot your password?</Link></p>}
           {mode === "create" ? <button type="button" disabled={busy} onClick={() => void createAccount()}>{busy ? "Submitting registration…" : "Create account and verify email"}</button> :
             <button disabled={busy || !email.trim() || !password} onClick={() => void run(() => client.auth.signInWithPassword({ email: email.trim(), password }), "Signed in.")}>Sign in</button>}
         </section>}
