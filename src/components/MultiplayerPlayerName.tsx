@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { pilotAccessToken } from "@/lib/nile-south-pilot";
 import { browserSupabase } from "@/lib/supabase-browser";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -23,7 +24,8 @@ export function useMultiplayerPlayerName() {
     async function load() {
       if (!client) return;
       try {
-        const { data: { user }, error } = await client.auth.getUser();
+        const pilot = await pilotAccessToken();
+        const { data: { user }, error } = await client.auth.getUser(pilot ?? undefined);
         if (!mounted) return;
         if (error && error.name !== "AuthSessionMissingError") throw error;
         if (!user || user.is_anonymous) {
@@ -34,11 +36,21 @@ export function useMultiplayerPlayerName() {
           setState({ status: "missing", name: "", error: "Verify your email before joining a multiplayer room." });
           return;
         }
-        const db = client as SupabaseClient<any>;
-        const { data: profile, error: profileError } = await db.from("nsg_player_profiles")
-          .select("display_name").eq("user_id", user.id).maybeSingle();
+        let profile;
+        if (pilot) {
+          const response = await fetch("/api/account/profile", {
+            headers: { Authorization: "Bearer " + pilot }, cache: "no-store"
+          });
+          if (!response.ok) throw new Error("Could not load your Nile South profile.");
+          ({ profile } = await response.json());
+        } else {
+          const db = client as SupabaseClient<any>;
+          const result = await db.from("nsg_player_profiles")
+            .select("display_name").eq("user_id", user.id).maybeSingle();
+          if (result.error) throw result.error;
+          profile = result.data;
+        }
         if (!mounted) return;
-        if (profileError) throw profileError;
         const displayName = typeof profile?.display_name === "string" ? profile.display_name.trim() : "";
         if (!displayName) {
           setState({ status: "missing", name: "", error: "Complete your Nile South player profile before joining a game." });
@@ -65,12 +77,12 @@ export default function MultiplayerPlayerName({
 }) {
   if (player.status === "loading") return <p aria-live="polite">Checking your player account…</p>;
   if (player.status === "registered") return <div className="multiplayerField">
-    <span>Your Nile South player name</span>
+    <span>Room display name</span>
     <strong className="registeredPlayerName">{player.name}</strong>
-    <small>Change this name from <Link href="/account">your player profile</Link>, not in individual games.</small>
+    <small>Change this name in <Link href="/account">your player profile</Link>.</small>
   </div>;
   if (player.status === "missing") return <p role="alert" className="formError">{player.error} <Link href="/account">Open player account</Link></p>;
-  return <label className="multiplayerField"><span>Your guest name</span>
-    <input value={guestName} maxLength={40} autoComplete="nickname" onChange={event => onGuestNameChange(event.target.value)} />
+  return <label className="multiplayerField"><span>Guest display name</span>
+    <input id="multiplayer-player-name" value={guestName} maxLength={40} autoComplete="nickname" onChange={event => onGuestNameChange(event.target.value)} />
   </label>;
 }

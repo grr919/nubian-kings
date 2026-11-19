@@ -1,4 +1,5 @@
 "use client";
+import PlayIdentity from "./PlayIdentity";
 import { playDiceSound } from "./dice-sound";
 import SecondStrikePrompt from "./SecondStrikePrompt";
 import SecondStrikeNotice from "./SecondStrikeNotice";
@@ -338,9 +339,10 @@ export default function AmateurClient() {
         <h1>Nubian Kings</h1>
         <p className="subtitle">Protected heirs and targeted attacks</p>
         <p>Command a ten-card army, expose an enemy heir, and eliminate it before your own heir falls.</p>
-        <div className="actions">
+        <PlayIdentity destination="/amateur" playOptions="level-play-options" />
+    <div className="actions" id="level-play-options">
           <button onClick={() => setScreen("setup")}>Play against the computer</button>
-          {hasSave && <button className="secondary" onClick={continueGame}>Continue Amateur Game</button>}
+          {hasSave && <button className="secondary" onClick={continueGame}>Resume browser game</button>}
           <a className="buttonLink" href="/amateur/multiplayer">Play against other players</a>
         </div>
         <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">Return to Main</a></div>

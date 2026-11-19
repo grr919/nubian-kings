@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PlayIdentity from "@/components/PlayIdentity";
 import EparchCrownMark from "@/components/EparchCrownMark";
 
 export default function Home() {
@@ -9,8 +10,8 @@ export default function Home() {
         <EparchCrownMark className="royalMark" />
         <h1>Nubian Kings</h1>
         <p className="subtitle">Choose a level:</p>
-        <p><Link href="/account">Nile South player account</Link> · <Link href="/account/games">My Games</Link></p>
-        <div className="levelGrid">
+        <PlayIdentity destination="/" playOptions="kingdom-levels" />
+        <div className="levelGrid" id="kingdom-levels">
           <Link href="/beginner" className="levelOption">
             <span className="levelName">Beginner</span>
             <strong>The Al-Azhar Mosque</strong>

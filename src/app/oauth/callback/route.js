@@ -3,8 +3,9 @@ import { createHash, randomBytes } from "node:crypto";
 const transactionCookie = "__Host-nile-south-oauth";
 const sessionCookie = "__Host-nile-south-game";
 const route = "/oauth/callback";
-const returnPaths = new Set(["/","/account"]);
+const returnPaths = new Set(["/","/account","/beginner","/amateur","/master","/beginner/multiplayer","/amateur/multiplayer","/master/multiplayer"]);
 function allowedReturn(value) {
+  if (/^\/(?:beginner|amateur|master)\/multiplayer\?(?:room=[A-Z2-9]{6}|setup=(?:create|join))$/.test(value || "")) return value;
   const path = value?.split("#")[0];
   return returnPaths.has(path) && (path === value || value === path + "#nsg-account-ui") ? value : "";
 }
