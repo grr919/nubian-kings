@@ -11,6 +11,7 @@ type Mode = "create" | "login" | "guest";
 export default function AccountPage() {
   const [user, setUser] = useState<Player | null>(null);
   const [pilot, setPilot] = useState(false);
+  const [publicAccess, setPublicAccess] = useState(false);
   const [accountHost, setAccountHost] = useState<"shared" | "kings" | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("login");
@@ -26,7 +27,17 @@ export default function AccountPage() {
   async function refresh() {
     if (!client) { setLoading(false); return; }
     try {
-      const token = await pilotAccessToken();
+      let token: string | null;
+      if (window.location.hostname === "kings.nilesouth.app") {
+        const response = await fetch("/oauth/callback", {
+          method: "POST", headers: { "x-nile-south-session": "1" }, cache: "no-store",
+        }).catch(() => null);
+        const shared = response?.status === 200 ? await response.json().catch(() => null) : null;
+        setPublicAccess(shared?.publicAccess === true);
+        token = typeof shared?.accessToken === "string" ? shared.accessToken : null;
+      } else {
+        token = await pilotAccessToken();
+      }
       setPilot(Boolean(token));
       const { data } = await client.auth.getUser(token ?? undefined);
       setUser(data.user);
@@ -124,8 +135,8 @@ export default function AccountPage() {
     <p className="subtitle">{accountHost === "shared" ? "Manage the account you use across Nile South Games." : "Use your Nile South player account to sign in and resume games."}</p>
     <p>{accountHost === "shared" ? <a href="https://nilesouth.app/">Nile South game collection</a> : <Link href="/">Return to Nubian Kings</Link>} · <Link href="/account/games">My Games — Resume on another device</Link></p>
     {accountHost === "kings" && !loading && !pilot && !user?.is_anonymous && <p style={{ margin: "1.25rem 0" }}>
-      <a href="/oauth/callback?start=1" style={{ display: "inline-block", padding: "0.85rem 1.25rem", borderRadius: "0.5rem", background: "#24584c", color: "#fffaf0", fontSize: "1.125rem", fontWeight: 700, textDecoration: "none" }}>Use shared Nile South sign-in</a>
-      <small style={{ display: "block", marginTop: "0.5rem" }}>Shared sign-in is currently available to the pilot account.</small>
+      <a href="/oauth/callback?start=1" style={{ display: "inline-block", padding: "0.85rem 1.25rem", borderRadius: "0.5rem", background: "#24584c", color: "#fffaf0", fontSize: "1.125rem", fontWeight: 700, textDecoration: "none" }}>{publicAccess ? "Sign in" : "Use shared Nile South sign-in"}</a>
+      {!publicAccess && <small style={{ display: "block", marginTop: "0.5rem" }}>Shared sign-in is currently available to the pilot account.</small>}
     </p>}
     {!client ? <p role="alert">Account preview is not configured. Please check its Vercel Supabase environment variables.</p>
       : loading ? <p>Checking your player session…</p> : <>
@@ -136,7 +147,8 @@ export default function AccountPage() {
         <button disabled={busy || !email.trim()} onClick={() => void run(() => client.auth.updateUser({ email: email.trim() }, { emailRedirectTo: window.location.origin + "/account" }), "Check your email for the verification link; return here in the same browser.")}>Send guest upgrade verification</button>
         <p>Do not sign out, clear browser data, or switch devices before verification. If the email already belongs to an account, this does not merge their multiplayer seats.</p>
       </section>}
-      {!user && <>
+      {!user && publicAccess && <p><a href="https://auth.nilesouth.app/account?mode=create">Create account</a> · <a href="https://auth.nilesouth.app/account/recover">Forgot your password?</a></p>}
+      {!user && !publicAccess && <>
         <nav aria-label="Account options">
           <button type="button" disabled={busy} aria-pressed={mode === "create"} onClick={() => { setMode("create"); setMessage("Create account selected. Enter an email address and a password of at least 12 characters below."); }}>Create account</button>{" "}
           <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage("Sign in selected. Enter your existing email and password below."); }}>{accountHost === "shared" ? "Manage your account" : "Sign in to Nubian Kings"}</button>{" "}
@@ -158,7 +170,7 @@ export default function AccountPage() {
         </section>}
       </>}
       {user && !permanent && !user.is_anonymous && <p>Verify your email address to finish creating your permanent account. Check the inbox for {user.email}.</p>}
-      {permanent && pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p><p>{displayName}{username ? " · " + username : ""}</p></>}
+      {permanent && pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p><p>{displayName}{username ? " · " + username : ""}</p>{publicAccess && <p><a href="https://auth.nilesouth.app/account">Manage your Nile South account</a></p>}</>}
       {permanent && !pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p>
         <label htmlFor="player-name">Unique username (3–24 characters)</label>
         <input id="player-name" maxLength={24} autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} />
