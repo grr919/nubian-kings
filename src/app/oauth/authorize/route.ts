@@ -169,7 +169,11 @@ function supabase(settings: NonNullable<ReturnType<typeof config>>) {
 }
 
 function sharedSessionToken(request: Request) {
-  return request.headers.get("cookie")?.match(/(?:^|;\\s*)__Host-nile-south-pilot=([\\w.-]+)(?:;|$)/)?.[1];
+  const prefix = sessionCookie + "=";
+  const entry = request.headers.get("cookie")?.split(";").map(value => value.trim())
+    .find(value => value.startsWith(prefix));
+  const token = entry?.slice(prefix.length);
+  return token && /^[A-Za-z0-9_.-]+$/.test(token) ? token : undefined;
 }
 
 async function checkSharedSession(request: Request) {
