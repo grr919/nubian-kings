@@ -8,6 +8,7 @@ import { recoveryPasswordError, recoveryRedirectUrl } from "@/lib/nile-south-rec
 type RecoveryState = "checking" | "request" | "ready" | "complete";
 
 export default function RecoverPlayerAccount() {
+  const [sharedHost, setSharedHost] = useState(false);
   const [step, setStep] = useState<RecoveryState>("checking");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -17,6 +18,7 @@ export default function RecoverPlayerAccount() {
   const client = browserSupabase();
 
   useEffect(() => {
+    setSharedHost(window.location.hostname === "auth.nilesouth.app");
     if (!client) { setNotice("Account service is not configured."); setStep("request"); return; }
     let active = true;
     let recoveryDetected = false;
@@ -88,11 +90,11 @@ export default function RecoverPlayerAccount() {
       <p className="kicker">NILE SOUTH GAMES</p>
       <h1>Account recovery</h1>
       <p className="subtitle">Reset your password without creating a new player account.</p>
-      <p><Link href="/account">Return to player account</Link> · <Link href="/">Nubian Kings</Link></p>
+      <p><Link href="/account">Return to player account</Link> · {sharedHost ? <a href="https://nilesouth.app/">Nile South game collection</a> : <Link href="/">Nubian Kings</Link>}</p>
       {step === "checking" && <p role="status">Checking the recovery link…</p>}
       {step === "request" && <>
         <h2>Request a password-reset email</h2>
-        <p>Use the email address registered to your Nile South player account. The reset link returns you to this preview site.</p>
+        <p>Use the email address registered to your Nile South player account. Open the reset link to choose a new password.</p>
         <label htmlFor="recovery-email">Account email</label>
         <input id="recovery-email" type="email" autoComplete="email" value={email}
           onChange={event => setEmail(event.target.value)} />
