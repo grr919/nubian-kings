@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type User } from "@supabase/supabase-js";
 
 const authOrigin = "https://auth.nilesouth.app";
 const kingsOrigin = "https://kings.nilesouth.app";
@@ -161,14 +161,24 @@ function loginForm(id: string, failed = false) {
     '<form method="post" action="' + entry(authOrigin, id) + '">' +
     '<label>Email <input type="email" name="email" autocomplete="username" required></label>' +
     '<label>Password <input type="password" name="password" autocomplete="current-password" required></label>' +
-    '<button name="action" value="login">Sign in</button></form>', failed ? 401 : 200);
+    '<button name="action" value="login">Sign in</button></form>' +
+    (process.env.NILE_SOUTH_SSO_ACCESS === "public"
+      ? '<p><a href="/account?mode=create">Create account</a> · <a href="/account/recover">Forgot password?</a></p>' : ""),
+    failed ? 401 : 200);
 }
 
 function config() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const userId = process.env.NILE_SOUTH_SSO_PILOT_USER_ID;
-  return url && key && userId && callbacks.every(callback => callback.id()) ? { url, key, userId } : null;
+  const publicAccess = process.env.NILE_SOUTH_SSO_ACCESS === "public";
+  const clientsReady = callbacks.every(callback => callback.id()) && (!publicAccess || activeCallbacks().length === 6);
+  return url && key && (userId || publicAccess) && clientsReady ? { url, key, userId, publicAccess } : null;
+}
+
+function eligibleAccount(user: User | null, settings: NonNullable<ReturnType<typeof config>>): user is User {
+  return Boolean(user?.id && !user.is_anonymous && user.email_confirmed_at &&
+    (settings.publicAccess || user.id === settings.userId));
 }
 
 function supabase(settings: NonNullable<ReturnType<typeof config>>) {
@@ -198,7 +208,7 @@ async function checkSharedSession(request: Request) {
   if (!settings || !jwt) return response(401, null, cors);
   try {
     const { data: { user }, error } = await supabase(settings).auth.getUser(jwt);
-    return response(!error && user?.id === settings.userId && !user.is_anonymous && user.email_confirmed_at ? 204 : 401, null, cors);
+    return response(!error && eligibleAccount(user, settings) ? 204 : 401, null, cors);
   } catch {
     return response(401, null, cors);
   }
@@ -213,7 +223,7 @@ async function authorization(request: Request, id: string, approve: boolean) {
   if (!jwt) return loginForm(id);
 
   const { data: { user }, error } = await supabase(settings).auth.getUser(jwt);
-  if (error || user?.id !== settings.userId || user.is_anonymous || !user.email_confirmed_at) return loginForm(id);
+  if (error || !eligibleAccount(user, settings)) return loginForm(id);
 
   const endpoint = settings.url + "/auth/v1/oauth/authorizations/" + id;
   const headers = { apikey: settings.key, Authorization: "Bearer " + jwt, "Content-Type": "application/json" };
@@ -324,7 +334,7 @@ export async function POST(request: Request) {
       email.length > 320 || password.length > 4096) return response(400);
 
   const { data: { session, user }, error } = await supabase(settings).auth.signInWithPassword({ email: email.trim(), password });
-  if (error || !session || user?.id !== settings.userId || user.is_anonymous || !user.email_confirmed_at) {
+  if (error || !session || !eligibleAccount(user, settings)) {
     return loginForm(id, true);
   }
   const maxAge = Math.min(session.expires_in, 900);
