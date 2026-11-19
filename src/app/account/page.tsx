@@ -11,7 +11,7 @@ type Mode = "create" | "login" | "guest";
 export default function AccountPage() {
   const [user, setUser] = useState<Player | null>(null);
   const [pilot, setPilot] = useState(false);
-  const [sharedSignInAvailable, setSharedSignInAvailable] = useState(false);
+  const [accountHost, setAccountHost] = useState<"shared" | "kings" | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -49,7 +49,13 @@ export default function AccountPage() {
   }
 
   useEffect(() => {
-    setSharedSignInAvailable(window.location.hostname === "kings.nilesouth.app");
+    const hostname = window.location.hostname;
+    if (hostname === "auth.nilesouth.app") {
+      setAccountHost("shared");
+      if (new URLSearchParams(window.location.search).get("mode") === "create") setMode("create");
+    } else if (hostname === "kings.nilesouth.app") {
+      setAccountHost("kings");
+    }
     void refresh();
     const subscription = client?.auth.onAuthStateChange(() => { queueMicrotask(() => { void refresh(); }); });
     return () => subscription?.data.subscription.unsubscribe();
@@ -109,11 +115,15 @@ export default function AccountPage() {
 
   const permanent = Boolean(user && !user.is_anonymous && user.email_confirmed_at);
   return <main className="landing levelLanding"><section className="panel levelSelectPanel nileSouthAccountPanel" style={{ maxWidth: 680 }}>
-    <p className="kicker">NILE SOUTH GAMES</p>
+    {accountHost === "shared" ? (
+      // The collection’s logo identifies the same account service used by every game.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src="https://nilesouth.app/highland-logo.jpg" alt="Nile South Games" width="168" height="112" style={{ display: "block", margin: "0 auto 1rem", maxWidth: "100%", height: "auto" }} />
+    ) : <p className="kicker">NILE SOUTH GAMES</p>}
     <h1>Player account</h1>
-    <p className="subtitle">Keep one player identity as more Nile South games join the account system.</p>
-    <p><Link href="/">Return to Nubian Kings</Link> · <Link href="/account/games">My Games — Resume on another device</Link></p>
-    {sharedSignInAvailable && !loading && !pilot && !user?.is_anonymous && <p style={{ margin: "1.25rem 0" }}>
+    <p className="subtitle">{accountHost === "shared" ? "Manage the account you use across Nile South Games." : "Use your Nile South player account to sign in and resume games."}</p>
+    <p>{accountHost === "shared" ? <a href="https://nilesouth.app/">Nile South game collection</a> : <Link href="/">Return to Nubian Kings</Link>} · <Link href="/account/games">My Games — Resume on another device</Link></p>
+    {accountHost === "kings" && !loading && !pilot && !user?.is_anonymous && <p style={{ margin: "1.25rem 0" }}>
       <a href="/oauth/callback?start=1" style={{ display: "inline-block", padding: "0.85rem 1.25rem", borderRadius: "0.5rem", background: "#24584c", color: "#fffaf0", fontSize: "1.125rem", fontWeight: 700, textDecoration: "none" }}>Use shared Nile South sign-in</a>
       <small style={{ display: "block", marginTop: "0.5rem" }}>Shared sign-in is currently available to the pilot account.</small>
     </p>}
@@ -129,13 +139,13 @@ export default function AccountPage() {
       {!user && <>
         <nav aria-label="Account options">
           <button type="button" disabled={busy} aria-pressed={mode === "create"} onClick={() => { setMode("create"); setMessage("Create account selected. Enter an email address and a password of at least 12 characters below."); }}>Create account</button>{" "}
-          <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage("Sign in selected. Enter your existing email and password below."); }}>Sign in to Nubian Kings</button>{" "}
+          <button type="button" disabled={busy} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setMessage("Sign in selected. Enter your existing email and password below."); }}>{accountHost === "shared" ? "Manage your account" : "Sign in to Nubian Kings"}</button>{" "}
           <button type="button" disabled={busy} aria-pressed={mode === "guest"} onClick={() => { setMode("guest"); setMessage("Guest mode selected. Start a guest session below."); }}>Continue as guest</button>
         </nav>
         {mode === "guest" && <section><h2>Play without an account</h2><p>You can register later without changing this new guest's ID.</p>
           <button disabled={busy} onClick={() => void run(() => client.auth.signInAnonymously(), "Guest session created. You can now upgrade your guest account.")}>Start guest session</button>
         </section>}
-        {(mode === "create" || mode === "login") && <section><h2>{mode === "create" ? "Create Nile South account" : "Sign in to Nubian Kings"}</h2>
+        {(mode === "create" || mode === "login") && <section><h2>{mode === "create" ? "Create Nile South account" : accountHost === "shared" ? "Sign in to manage your account" : "Sign in to Nubian Kings"}</h2>
           {mode === "create" && <p>Enter a valid email and a password of at least 12 characters. Already playing as a guest on another domain? Upgrade on that original domain to preserve the existing seat.</p>}
           <label htmlFor="login-email">Email</label>
           <input id="login-email" type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} />
