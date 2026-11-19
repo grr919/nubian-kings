@@ -13,7 +13,7 @@ const callbacks = [
 function response(status: number, body: string | null = null, extra: Record<string, string> = {}) {
   return new Response(body, { status, headers: {
     "Cache-Control": "no-store",
-    "Referrer-Policy": "no-referrer",
+    "Referrer-Policy": "same-origin",
     "Content-Security-Policy": "default-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
     ...extra,
   } });
