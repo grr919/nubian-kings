@@ -22,8 +22,19 @@ const adwa = {
   id: () => process.env.NILE_SOUTH_ADWA_CLIENT_ID,
 };
 
+const cloth = {
+  url: "https://cloth.nilesouth.app/oauth/callback",
+  name: "Shared Cloth",
+  id: () => process.env.NILE_SOUTH_CLOTH_CLIENT_ID,
+};
+const quest = {
+  url: "https://nile.nilesouth.app/oauth/callback",
+  name: "Quest for the Nile",
+  id: () => process.env.NILE_SOUTH_QUEST_CLIENT_ID,
+};
+
 function activeCallbacks() {
-  return [...callbacks, ...[herd, adwa].filter(game => game.id())];
+  return [...callbacks, ...[herd, adwa, cloth, quest].filter(game => game.id())];
 }
 
 function response(status: number, body: string | null = null, extra: Record<string, string> = {}) {
