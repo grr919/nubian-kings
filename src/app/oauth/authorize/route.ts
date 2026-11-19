@@ -282,13 +282,16 @@ Promise.allSettled(${JSON.stringify(endpoints)}.map(async endpoint => {
   });
 }
 
+const directSignInScript = "(() => {\n  const paths = {\n    \"kings.nilesouth.app\": [\"/\", \"/account\"],\n    \"herd.nilesouth.app\": [\"/\"],\n    \"hoard.nilesouth.app\": [\"/\", \"/index.html\", \"/play.html\"],\n    \"adwa.nilesouth.app\": [\"/\", \"/index.html\", \"/multiplayer.html\"],\n    \"cloth.nilesouth.app\": [\"/\", \"/index.html\"],\n    \"nile.nilesouth.app\": [\"/\", \"/index.html\", \"/quest-for-the-nile-game.html\", \"/quest-for-the-nile-game.html?online=1\"],\n  };\n  const returnTo = location.pathname + location.search;\n  if (!paths[location.hostname]?.includes(returnTo)) return;\n  if (location.hash && location.hash !== \"#nsg-account-ui\") return;\n\n  async function checkSession() {\n    const loading = document.createElement(\"div\");\n    loading.setAttribute(\"role\", \"status\");\n    loading.textContent = \"Checking your Nile South session…\";\n    Object.assign(loading.style, {\n      position: \"fixed\", inset: \"0\", zIndex: \"2147483647\",\n      display: \"grid\", placeItems: \"center\", padding: \"1rem\",\n      textAlign: \"center\", background: \"#fff9ed\", color: \"#183e38\",\n      font: \"600 1rem system-ui, sans-serif\",\n    });\n    document.body.append(loading);\n    const release = setTimeout(() => loading.remove(), 2500);\n    let navigating = false;\n    try {\n      const request = { cache: \"no-store\", signal: AbortSignal.timeout(1600) };\n      const local = await fetch(\"/oauth/callback\", {\n        ...request, method: \"POST\", headers: { \"x-nile-south-session\": \"1\" },\n      });\n      if (local.status === 200 && (await local.json()).accessToken) return;\n      const shared = await fetch(\"https://auth.nilesouth.app/oauth/authorize?session-check=1\", {\n        ...request, credentials: \"include\", redirect: \"error\",\n      });\n      if (shared.status !== 204 || document.visibilityState === \"hidden\") return;\n      const query = new URLSearchParams({ start: \"1\", return_to: returnTo + location.hash });\n      location.replace(\"/oauth/callback?\" + query);\n      navigating = true;\n    } catch {\n      // Keep the game available when the sign-in service is slow or unreachable.\n    } finally {\n      if (!navigating) {\n        clearTimeout(release);\n        loading.remove();\n      }\n    }\n  }\n  function start() {\n    if (document.visibilityState === \"hidden\") return;\n    document.removeEventListener(\"visibilitychange\", start);\n    void checkSession();\n  }\n  document.addEventListener(\"visibilitychange\", start);\n  start();\n})();\n";
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || (url.origin !== kingsOrigin && url.origin !== authOrigin)) {
     return response(404);
   }
-  if (url.origin === authOrigin && url.searchParams.get("client-script") === "1") {
-    return response(200, autoSignInScript, {
+  const scriptVersion = url.searchParams.get("client-script");
+  if (url.origin === authOrigin && (scriptVersion === "1" || scriptVersion === "2")) {
+    return response(200, scriptVersion === "2" ? directSignInScript : autoSignInScript, {
       "Content-Type": "text/javascript; charset=utf-8",
       "Access-Control-Allow-Origin": "*",
       "X-Content-Type-Options": "nosniff",
