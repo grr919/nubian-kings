@@ -33,7 +33,7 @@ export default function Home() {
             <span className="levelAction">Play Master</span>
           </Link>
         </div>
-        <footer className="landingFooter">© 2026 Nile South Games<a href="https://nilesouth.app/"><Image src="/highland-logo.jpg" width={60} height={40} alt="Nile South Games home" unoptimized /></a></footer>
+        <footer className="landingFooter">© 2026 Nile South Games<a href="https://nilesouth.app/"><Image src="/highland-logo.png" width={60} height={40} alt="Nile South Games home" unoptimized /></a></footer>
       </section>
     </main>
   );

@@ -468,7 +468,7 @@ export default function MasterClient() {
     <div className="actions" id="level-play-options"><button onClick={() => setScreen("setup")}>Play against the computer</button>{hasSave && <button className="secondary" onClick={continueGame}>Resume browser game</button>}<a className="buttonLink secondary" href="/master/multiplayer">Play against other players</a></div>
     <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Master Rules</button><a className="landingBack" href="/">Return to Main</a></div>
     <small>Build your army and challenge the other kingdoms.</small>
-    <footer className="landingFooter">© 2026 Nile South Games<a href="https://nilesouth.app/"><Image src="/highland-logo.jpg" width={60} height={40} alt="Nile South Games home" unoptimized /></a></footer>
+    <footer className="landingFooter">© 2026 Nile South Games<a href="https://nilesouth.app/"><Image src="/highland-logo.png" width={60} height={40} alt="Nile South Games home" unoptimized /></a></footer>
   </section>{help && <MasterHelp effectsMode={effectsMode} onClose={() => setHelp(false)} />}</main>;
 
   if (screen === "setup") return <main className="setupPage"><section className="setupPanel">

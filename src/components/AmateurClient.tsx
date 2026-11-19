@@ -348,7 +348,7 @@ export default function AmateurClient() {
           <a className="buttonLink" href="/amateur/multiplayer">Play against other players</a>
         </div>
         <div className="routeLinks landingLinks"><button className="textButton" onClick={() => setHelp(true)}>Amateur Rules</button><a className="landingBack" href="/">Return to Main</a></div>
-        <footer className="landingFooter">© 2026 Nile South Games<a href="https://nilesouth.app/"><Image src="/highland-logo.jpg" width={60} height={40} alt="Nile South Games home" unoptimized /></a></footer>
+        <footer className="landingFooter">© 2026 Nile South Games<a href="https://nilesouth.app/"><Image src="/highland-logo.png" width={60} height={40} alt="Nile South Games home" unoptimized /></a></footer>
       </section>
       {help && <AmateurHelp onClose={() => setHelp(false)} />}
     </main>
