@@ -168,10 +168,35 @@ function supabase(settings: NonNullable<ReturnType<typeof config>>) {
   });
 }
 
+function sharedSessionToken(request: Request) {
+  return request.headers.get("cookie")?.match(/(?:^|;\\s*)__Host-nile-south-pilot=([\\w.-]+)(?:;|$)/)?.[1];
+}
+
+async function checkSharedSession(request: Request) {
+  const origin = request.headers.get("origin");
+  if (!origin || !activeCallbacks().some(game => new URL(game.url).origin === origin)) return response(403);
+  const cors = {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Credentials": "true",
+    Vary: "Origin",
+  };
+  const settings = config();
+  const jwt = sharedSessionToken(request);
+  if (!settings || !jwt) return response(401, null, cors);
+  try {
+    const { data: { user }, error } = await supabase(settings).auth.getUser(jwt);
+    return response(!error && user?.id === settings.userId && !user.is_anonymous && user.email_confirmed_at ? 204 : 401, null, cors);
+  } catch {
+    return response(401, null, cors);
+  }
+}
+
+const autoSignInScript = "(() => {\n  const entryPaths = {\n    \"kings.nilesouth.app\": [\"/\", \"/account\"],\n    \"herd.nilesouth.app\": [\"/\"],\n    \"hoard.nilesouth.app\": [\"/\", \"/index.html\", \"/play.html\"],\n    \"adwa.nilesouth.app\": [\"/\", \"/index.html\", \"/multiplayer.html\"],\n    \"cloth.nilesouth.app\": [\"/\", \"/index.html\"],\n    \"nile.nilesouth.app\": [\"/\", \"/index.html\", \"/quest-for-the-nile-game.html\"],\n  };\n  const paths = entryPaths[location.hostname];\n  if (!paths || !paths.includes(location.pathname)) return;\n  const callback = \"/oauth/callback\";\n  const pending = \"nile-south-auto-sign-in\";\n  const failure = new URLSearchParams(location.search).get(\"sso\") === \"failed\";\n  if (!failure && location.search && location.search !== \"?online=1\") return;\n  if (location.hash && location.hash !== \"#nsg-account-ui\") return;\n\n  async function recognizeSession() {\n    const previous = JSON.parse(sessionStorage.getItem(pending) || \"null\");\n    if (failure) {\n      sessionStorage.removeItem(pending);\n      return;\n    }\n\n    const local = await fetch(callback, {\n      method: \"POST\",\n      headers: { \"x-nile-south-session\": \"1\" },\n      cache: \"no-store\",\n      signal: AbortSignal.timeout(5000),\n    });\n    const session = local.status === 200 ? await local.json() : null;\n    if (session?.accessToken) {\n      sessionStorage.removeItem(pending);\n      if (!previous || Date.now() - previous.started > 600000) return;\n      const target = new URL(previous.href, location.origin);\n      if (target.origin === location.origin && paths.includes(target.pathname) && target.href !== location.href) {\n        location.replace(target.href);\n      }\n      return;\n    }\n\n    if (previous && Date.now() - previous.started < 600000) return;\n    const shared = await fetch(\"https://auth.nilesouth.app/oauth/authorize?session-check=1\", {\n      credentials: \"include\",\n      cache: \"no-store\",\n      redirect: \"error\",\n      signal: AbortSignal.timeout(5000),\n    });\n    if (shared.status !== 204 || document.visibilityState === \"hidden\") return;\n    sessionStorage.setItem(pending, JSON.stringify({\n      started: Date.now(),\n      href: location.pathname + location.search + location.hash,\n    }));\n    location.replace(callback + \"?start=1\");\n  }\n\n  function start() {\n    if (document.visibilityState === \"hidden\") return;\n    document.removeEventListener(\"visibilitychange\", start);\n    void recognizeSession().catch(() => {});\n  }\n\n  document.addEventListener(\"visibilitychange\", start);\n  start();\n})();\n";
+
 async function authorization(request: Request, id: string, approve: boolean) {
   const settings = config();
   if (!settings) return response(404);
-  const jwt = request.headers.get("cookie")?.match(/(?:^|;\s*)__Host-nile-south-pilot=([\w.-]+)(?:;|$)/)?.[1];
+  const jwt = sharedSessionToken(request);
   if (!jwt) return loginForm(id);
 
   const { data: { user }, error } = await supabase(settings).auth.getUser(jwt);
@@ -250,8 +275,16 @@ export async function GET(request: Request) {
   if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || (url.origin !== kingsOrigin && url.origin !== authOrigin)) {
     return response(404);
   }
+  if (url.origin === authOrigin && url.searchParams.get("client-script") === "1") {
+    return response(200, autoSignInScript, {
+      "Content-Type": "text/javascript; charset=utf-8",
+      "Access-Control-Allow-Origin": "*",
+      "X-Content-Type-Options": "nosniff",
+    });
+  }
+  if (url.origin === authOrigin && url.searchParams.get("session-check") === "1") return checkSharedSession(request);
   if (url.origin === authOrigin && url.searchParams.get("logout") === "1") {
-    return page('<p>Sign out of the pilot on both games in this browser.</p><form method="post" action="/oauth/authorize?logout=1"><button name="action" value="logout">Sign out</button></form>');
+    return page('<p>Sign out of shared Nile South sign-in in this browser.</p><form method="post" action="/oauth/authorize?logout=1"><button name="action" value="logout">Sign out</button></form>');
   }
   const id = idFrom(url);
   if (!id) return response(400);
