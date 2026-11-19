@@ -170,15 +170,15 @@ function loginForm(id: string, failed = false) {
 function config() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  const userId = process.env.NILE_SOUTH_SSO_PILOT_USER_ID;
+  const pilotUserIds = (process.env.NILE_SOUTH_SSO_PILOT_USER_ID ?? "").split(",").map(id => id.trim()).filter(Boolean);
   const publicAccess = process.env.NILE_SOUTH_SSO_ACCESS === "public";
   const clientsReady = callbacks.every(callback => callback.id()) && (!publicAccess || activeCallbacks().length === 6);
-  return url && key && (userId || publicAccess) && clientsReady ? { url, key, userId, publicAccess } : null;
+  return url && key && (pilotUserIds.length || publicAccess) && clientsReady ? { url, key, pilotUserIds, publicAccess } : null;
 }
 
 function eligibleAccount(user: User | null, settings: NonNullable<ReturnType<typeof config>>): user is User {
   return Boolean(user?.id && !user.is_anonymous && user.email_confirmed_at &&
-    (settings.publicAccess || user.id === settings.userId));
+    (settings.publicAccess || settings.pilotUserIds.includes(user.id)));
 }
 
 function supabase(settings: NonNullable<ReturnType<typeof config>>) {
