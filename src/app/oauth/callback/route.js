@@ -26,11 +26,11 @@ function redirect(location, cookies = []) {
 }
 
 async function gameOAuth(request, { origin, clientId, landing, supabaseUrl, publishableKey }) {
-  const userId = process.env.NILE_SOUTH_SSO_PILOT_USER_ID;
+  const pilotUserIds = (process.env.NILE_SOUTH_SSO_PILOT_USER_ID ?? "").split(",").map(id => id.trim()).filter(Boolean);
   const publicAccess = process.env.NILE_SOUTH_SSO_ACCESS === "public";
   const url = new URL(request.url);
   if (process.env.NILE_SOUTH_SSO_PILOT !== "enabled" || url.origin !== origin ||
-      !clientId || (!publicAccess && !userId) || !supabaseUrl || !publishableKey) {
+      !clientId || (!publicAccess && !pilotUserIds.length) || !supabaseUrl || !publishableKey) {
     return new Response(null, { status: 404, headers });
   }
 
@@ -85,7 +85,7 @@ async function gameOAuth(request, { origin, clientId, landing, supabaseUrl, publ
     });
     if (!userResponse.ok) return failure();
     const user = await userResponse.json();
-    if (!user.id || (!publicAccess && user.id !== userId) || user.is_anonymous || !user.email_confirmed_at) return failure();
+    if (!user.id || (!publicAccess && !pilotUserIds.includes(user.id)) || user.is_anonymous || !user.email_confirmed_at) return failure();
 
     return redirect(target.href, [
       ...clearTransaction,
