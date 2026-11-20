@@ -9,6 +9,7 @@ type RecoveryState = "checking" | "request" | "ready" | "complete";
 
 export default function RecoverPlayerAccount() {
   const [sharedHost, setSharedHost] = useState(false);
+  const [fromHorses, setFromHorses] = useState(false);
   const [step, setStep] = useState<RecoveryState>("checking");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -18,6 +19,7 @@ export default function RecoverPlayerAccount() {
   const client = browserSupabase();
 
   useEffect(() => {
+    setFromHorses(window.location.hostname === "auth.nilesouth.app" && new URLSearchParams(window.location.search).get("from") === "lord-of-horses");
     setSharedHost(window.location.hostname === "auth.nilesouth.app");
     if (!client) { setNotice("Account service is not configured."); setStep("request"); return; }
     let active = true;
@@ -53,7 +55,7 @@ export default function RecoverPlayerAccount() {
     setNotice("");
     try {
       const { error } = await client.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: recoveryRedirectUrl(window.location.origin)
+        redirectTo: recoveryRedirectUrl(window.location.origin) + (fromHorses ? "?from=lord-of-horses" : "")
       });
       if (error) throw error;
       // Do not reveal account existence in the reset-request UI.
@@ -79,7 +81,7 @@ export default function RecoverPlayerAccount() {
       // Password recovery updates the existing Supabase user, not their user ID.
       setStep("complete");
       setNotice("Password updated. Your player identity and existing multiplayer seats are preserved.");
-      window.history.replaceState(null, "", window.location.pathname);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not update your password.");
     } finally { setBusy(false); }
@@ -90,7 +92,7 @@ export default function RecoverPlayerAccount() {
       <p className="kicker">NILE SOUTH GAMES</p>
       <h1>Account recovery</h1>
       <p className="subtitle">Reset your password without creating a new player account.</p>
-      <p><Link href="/account">Return to player account</Link> · {sharedHost ? <a href="https://nilesouth.app/">Nile South game collection</a> : <Link href="/">Nubian Kings</Link>}</p>
+      <p><Link href={fromHorses ? "/account?from=lord-of-horses" : "/account"}>Return to player account</Link> · {sharedHost ? <a href="https://nilesouth.app/">Nile South game collection</a> : <Link href="/">Nubian Kings</Link>}</p>
       {step === "checking" && <p role="status">Checking the recovery link…</p>}
       {step === "request" && <>
         <h2>Request a password-reset email</h2>
@@ -116,7 +118,7 @@ export default function RecoverPlayerAccount() {
           {busy ? "Updating password…" : "Save new password"}
         </button>
       </>}
-      {step === "complete" && <p><Link href="/account/games">Open My Games</Link></p>}
+      {step === "complete" && <p>{fromHorses ? <a href="https://lord-of-horses.vercel.app/">Continue to Lord of Horses</a> : <Link href="/account/games">Open My Games</Link>}</p>}
       {notice && <p role="status" aria-live="polite" style={{ padding: "0.75rem", border: "1px solid currentColor", borderRadius: "0.5rem", marginTop: "1rem" }}>{notice}</p>}
     </section>
   </main>;

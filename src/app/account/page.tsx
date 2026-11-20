@@ -13,6 +13,7 @@ export default function AccountPage() {
   const [pilot, setPilot] = useState(false);
   const [publicAccess, setPublicAccess] = useState(false);
   const [accountHost, setAccountHost] = useState<"shared" | "kings" | null>(null);
+  const [fromHorses, setFromHorses] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -63,6 +64,7 @@ export default function AccountPage() {
     const hostname = window.location.hostname;
     if (hostname === "auth.nilesouth.app") {
       setAccountHost("shared");
+      setFromHorses(new URLSearchParams(window.location.search).get("from") === "lord-of-horses");
       document.title = "Nile South Games | Player account";
       if (new URLSearchParams(window.location.search).get("mode") === "create") setMode("create");
     } else if (hostname === "kings.nilesouth.app") {
@@ -120,12 +122,16 @@ export default function AccountPage() {
     if (!address) { setMessage("Enter your email address before registering."); return; }
     if (password.length < 12) { setMessage("Choose a password with at least 12 characters."); return; }
     await run(
-      () => client.auth.signUp({ email: address, password, options: { emailRedirectTo: window.location.origin + "/account" } }),
+      () => client.auth.signUp({ email: address, password, options: { emailRedirectTo: window.location.origin + (fromHorses ? "/account?from=lord-of-horses" : "/account") } }),
       "Signup request accepted. Check your email (including spam) for a verification message. If no email arrives, registration email delivery or redirect settings need administrator attention."
     );
   }
 
   const permanent = Boolean(user && !user.is_anonymous && user.email_confirmed_at);
+  useEffect(() => {
+    if (fromHorses && permanent) window.location.replace("https://lord-of-horses.vercel.app/");
+  }, [fromHorses, permanent]);
+
   return <main className="landing levelLanding"><section className="panel levelSelectPanel nileSouthAccountPanel" style={{ maxWidth: 680 }}>
     {accountHost === "shared" ? (
       // The collection’s logo identifies the same account service used by every game.
@@ -134,7 +140,7 @@ export default function AccountPage() {
     ) : <p className="kicker">NILE SOUTH GAMES</p>}
     <h1>Player account</h1>
     <p className="subtitle">{accountHost === "shared" ? "Manage the account you use across Nile South Games." : "Use your Nile South player account to sign in and resume games."}</p>
-    <p>{accountHost === "shared" ? <a href="https://nilesouth.app/">Nile South game collection</a> : <Link href="/">Return to Nubian Kings</Link>} · <Link href="/account/games">My Games — Resume on another device</Link></p>
+    {fromHorses ? <p><a href="https://lord-of-horses.vercel.app/">Continue to Lord of Horses</a> · <a href="https://prototypes.nilesouth.app/">Return to prototypes</a></p> : <p>{accountHost === "shared" ? <a href="https://nilesouth.app/">Nile South game collection</a> : accountHost === "kings" ? <Link href="/">Return to Nubian Kings</Link> : null} · <Link href="/account/games">My Games — Resume on another device</Link></p>}
     {accountHost === "kings" && !loading && !pilot && !user?.is_anonymous && <p style={{ margin: "1.25rem 0" }}>
       <a href="/oauth/callback?start=1" style={{ display: "inline-block", padding: "0.85rem 1.25rem", borderRadius: "0.5rem", background: "#24584c", color: "#fffaf0", fontSize: "1.125rem", fontWeight: 700, textDecoration: "none" }}>{publicAccess ? "Sign in" : "Use shared Nile South sign-in"}</a>
       {!publicAccess && <small style={{ display: "block", marginTop: "0.5rem" }}>Shared sign-in is currently available to the pilot account.</small>}
@@ -165,7 +171,7 @@ export default function AccountPage() {
           <label htmlFor="login-password">Password</label>
           <input id="login-password" type="password" autoComplete={mode === "create" ? "new-password" : "current-password"} minLength={mode === "create" ? 12 : undefined} value={password} onChange={event => setPassword(event.target.value)} />
           {mode === "create" && <p aria-live="polite">{password.length === 0 ? "Password required: minimum 12 characters." : password.length < 12 ? `Password needs ${12 - password.length} more character(s).` : "Password length requirement met."}</p>}
-          {mode === "login" && <p><Link href="https://auth.nilesouth.app/account/recover">Forgot your password?</Link></p>}
+          {mode === "login" && <p><Link href={fromHorses ? "/account/recover?from=lord-of-horses" : "https://auth.nilesouth.app/account/recover"}>Forgot your password?</Link></p>}
           {mode === "create" ? <button type="button" disabled={busy} onClick={() => void createAccount()}>{busy ? "Submitting registration…" : "Create account and verify email"}</button> :
             <button disabled={busy || !email.trim() || !password} onClick={() => void run(() => client.auth.signInWithPassword({ email: email.trim(), password }), "Signed in.")}>Sign in</button>}
         </section>}
