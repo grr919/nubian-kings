@@ -237,7 +237,7 @@ async function authorization(request: Request, id: string, approve: boolean) {
   if (!details.ok) {
     return page('<p>This sign-in request expired or was already used. Start again from the game.</p>' +
       '<p><a href="https://kings.nilesouth.app/oauth/callback?start=1">Continue to Nubian Kings</a> · ' +
-      activeCallbacks().slice(1).map(game => `<a href="${game.url}?start=1">Continue to ${game.name}</a>`).join(" · ") + "</p>", 400);
+      activeCallbacks().slice(1).filter(game => game !== horses).map(game => `<a href="${game.url}?start=1">Continue to ${game.name}</a>`).join(" · ") + "</p>", 400);
   }
   const data = await details.json();
 
