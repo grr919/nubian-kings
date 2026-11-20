@@ -71,7 +71,7 @@ export default function AccountPage() {
       setAccountHost("kings");
     }
     void refresh();
-    const subscription = client?.auth.onAuthStateChange(() => { queueMicrotask(() => { void refresh(); }); });
+    const subscription = client?.auth.onAuthStateChange(() => { window.setTimeout(() => { void refresh(); }, 0); });
     return () => subscription?.data.subscription.unsubscribe();
   }, []);
 
@@ -129,7 +129,7 @@ export default function AccountPage() {
 
   const permanent = Boolean(user && !user.is_anonymous && user.email_confirmed_at);
   useEffect(() => {
-    if (fromHorses && permanent) window.location.replace("https://lord-of-horses.vercel.app/");
+    if (fromHorses && permanent) window.location.replace("https://lord-of-horses.vercel.app/api/nile-south?start=1");
   }, [fromHorses, permanent]);
 
   return <main className="landing levelLanding"><section className="panel levelSelectPanel nileSouthAccountPanel" style={{ maxWidth: 680 }}>

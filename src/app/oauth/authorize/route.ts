@@ -33,8 +33,14 @@ const quest = {
   id: () => process.env.NILE_SOUTH_QUEST_CLIENT_ID,
 };
 
+const horses = {
+  url: "https://lord-of-horses.vercel.app/api/nile-south",
+  name: "Lord of Horses",
+  id: () => process.env.NILE_SOUTH_HORSES_CLIENT_ID,
+};
+
 function activeCallbacks() {
-  return [...callbacks, ...[herd, adwa, cloth, quest].filter(game => game.id())];
+  return [...callbacks, ...[herd, adwa, cloth, quest, horses].filter(game => game.id())];
 }
 
 function response(status: number, body: string | null = null, extra: Record<string, string> = {}) {
@@ -172,7 +178,7 @@ function config() {
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const pilotUserIds = (process.env.NILE_SOUTH_SSO_PILOT_USER_ID ?? "").split(",").map(id => id.trim()).filter(Boolean);
   const publicAccess = process.env.NILE_SOUTH_SSO_ACCESS === "public";
-  const clientsReady = callbacks.every(callback => callback.id()) && (!publicAccess || activeCallbacks().length === 6);
+  const clientsReady = callbacks.every(callback => callback.id()) && (!publicAccess || [herd, adwa, cloth, quest].every(game => game.id()));
   return url && key && (pilotUserIds.length || publicAccess) && clientsReady ? { url, key, pilotUserIds, publicAccess } : null;
 }
 
