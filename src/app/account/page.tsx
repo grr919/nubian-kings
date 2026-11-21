@@ -177,18 +177,18 @@ export default function AccountPage() {
         </section>}
       </>}
       {user && !permanent && !user.is_anonymous && <p>Verify your email address to finish creating your permanent account. Check the inbox for {user.email}.</p>}
-      {permanent && pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p><p>{displayName}{username ? " · " + username : ""}</p>{publicAccess && <p><a href="https://auth.nilesouth.app/account">Manage your Nile South account</a></p>}</>}
+      {permanent && pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p><p>{displayName}{username ? " · " + username : ""}</p>{publicAccess && <p><a href="https://auth.nilesouth.app/account">Manage account</a></p>}</>}
       {permanent && !pilot && <><h2>Your player profile</h2><p>Signed in as {user?.email}</p>
         <label htmlFor="player-name">Unique username (3–24 characters)</label>
         <input id="player-name" maxLength={24} autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} />
         <label htmlFor="display-name">Display name</label>
         <input id="display-name" maxLength={40} value={displayName} onChange={event => setDisplayName(event.target.value)} />
         <button disabled={busy} onClick={() => void saveProfile()}>Save profile</button>
-        <h2>Password and recovery</h2>
+        <h2>Change password</h2>
         <p>After verifying your email, set a password of at least 12 characters if you upgraded from a guest account.</p>
         <label htmlFor="new-password">New password</label>
         <input id="new-password" type="password" minLength={12} autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} />
-        <button disabled={busy || password.length < 12} onClick={() => void run(() => client.auth.updateUser({ password }), "Password updated.")}>Set or change password</button>
+        <button disabled={busy || password.length < 12} onClick={() => void run(() => client.auth.updateUser({ password }), "Password updated.")}>Save password</button>
       </>}
       {user && !user.is_anonymous && <p><button disabled={busy} onClick={() => void run(async () => { if (pilot) await endLocalPilotSession(); return client.auth.signOut(); }, "Signed out.")}>Sign out</button></p>}
     </>}
