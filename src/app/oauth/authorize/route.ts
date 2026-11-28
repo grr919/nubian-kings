@@ -39,8 +39,14 @@ const horses = {
   id: () => process.env.NILE_SOUTH_HORSES_CLIENT_ID,
 };
 
+const khufu = {
+  url: "https://khufu.nilesouth.app/api/account",
+  name: "Khufu",
+  id: () => process.env.NILE_SOUTH_GIZA_CLIENT_ID,
+};
+
 function activeCallbacks() {
-  return [...callbacks, ...[herd, adwa, cloth, quest, horses].filter(game => game.id())];
+  return [...callbacks, ...[herd, adwa, cloth, quest, horses, khufu].filter(game => game.id())];
 }
 
 function response(status: number, body: string | null = null, extra: Record<string, string> = {}) {
